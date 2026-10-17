@@ -1,0 +1,784 @@
+<resources>
+    <string name="app_name">Luyện Thi Vật Lí 12</string>
+    <string name="mau_1">Trắc nghiệm, Vật Lí 12, nhé 1 </string>
+    <string name="mau_2">Trắc nghiệm, Vật Lí 12, nhé 2 </string>
+    <string name="NH06_C"> </string>
+    <string name="NH06_C1_0">Chất rắn nở ra khi nóng lên, co lại khi lạnh đi</string>
+    <string name="NH06_C4">Nhìn chung thì hiện tượng “nóng nở, lạnh co” xảy ra với </string>
+    <string name="NH06_C4_3">Cả chất rắn, lỏng, khí</string>
+    <string name="NH06_C5">Điền từ thích hợp vào dấu “....”. “Các chất … khác nhau nở vì nhiệt giống nhau”</string>
+    <string name="NH06_C6">Từ các khối kim loại riêng biệt là sắt, thủy ngân, nhôm và đồng đều có thể tích ban đầu là một 1000 cm³ và đều có chung nhiệt độ là 20°C. Nếu cùng tăng nhiệt độ lên đến 60°C thì lúc này khối kim loại nào sẽ có thể tích lớn nhất ?</string>
+    <string name="NH06_C8">Cấu tạo của băng kép gồm hai dải kim loại có hệ số giãn nở nhiệt khác nhau được ghép chặt lại với nhau. Khi nhiệt độ thay đổi, hai kim loại sẽ giãn nở không đều, làm cho băng kép bị uốn cong do các kim loại có hệ số giãn nở nhiệt khác nhau. Khi bị nung nóng hoặc làm lạnh, một bên sẽ giãn nhiều hơn bên kia. Sự khác biệt này khiến băng kép cong theo hướng của kim loại có hệ số giãn nở thấp hơn. Dụng cụ nào sau đây không có băng kép ?</string>
+    <string name="NH06_C11">Theo nội dung của Nhiệt học Vật lí 06, điều kiện nào dưới đây không được đề cập như một điều kiện ảnh hưởng đến tốc độ bay hơi của nước.</string>
+    <string name="NH06_C13">Khi nước đóng băng có thể gây ra một số tác hại như làm vỡ ống dẫn nước, chai đựng nước, tảng đá có kẽ hở chứa nước là do hiện tượng</string>
+
+    <string name="NH06_C17">Các chất rắn,lỏng, khí thì thứ tự các chất có sự nở vì nhiệt giảm dần là.....</string>
+    <string name="NH06_C17_0">Khí, rắn, lỏng</string>
+    <string name="NH06_C17_1">Rắn, lỏng, khí</string>
+    <string name="NH06_C17_2">Khí, lỏng, rắn</string>
+    <string name="NH06_C17_3">Rắn, khí, lỏng</string>
+    <string name="NH06_C19">Trong các chất sau, chất nào có nhiệt độ nóng chảy lớn nhất</string>
+
+    <string name="NH06_C20">Cho các khối khí heli, hidro, nitơ, cacbonic và oxi đều có thể tích bằng nhau tại điều kiện tiêu chuẩn ban đầu là 22,4 lít. Sau đó thì cùng tăng nhiệt độ các khối khí đó lên đến 56°C thì lúc này khí nitơ có thể tích là 27 lít. Vậy thể tích các khối khí còn lại…</string>
+    <string name="NH06_C20_0">Đều là 27 lít</string>
+    <string name="NH06_C20_1">Khí heli sẽ lớn hơn 27 lít, các khối khí còn lại sẽ nhỏ hơn 27 lít</string>
+    <string name="NH06_C20_2">Khí cacbonic và oxi sẽ lớn hơn 27 lít, các khối khí heli và hidro sẽ nhỏ hơn 27 lít</string>
+    <string name="NH06_C20_3">Khí heli và hidro sẽ lớn hơn 27 lít, còn các khối khí cacbonic và oxi sẽ nhỏ hơn 27 lít</string>
+
+    <string name="NH06_C21">Các thang nhiệt độ mà chúng ta đã được làm quen ở Nhiệt học Vật lí 6 KHÔNG CÓ thang nhiệt độ …?</string>
+    <string name="NH06_C21_0">Kelvin</string>
+    <string name="NH06_C21_1">Fahrenheit</string>
+    <string name="NH06_C21_2">Celsius</string>
+    <string name="NH06_C21_3">Rankine</string>
+
+    <string name="NH06_C22">........</string>
+    <string name="NH06_C22_0">Chất lỏng nở ra khi nóng lên</string>
+    <string name="NH06_C22_1">Các chất lỏng khác nhau nở vì nhiệt khác nhau</string>
+    <string name="NH06_C22_2">Rượu nở nhiệt nhiều hơn nước</string>
+    <string name="NH06_C22_3">Nước nở nhiệt nhiều  hơn dầu</string>
+
+    <string name="NH06_C23">........</string>
+    <string name="NH06_C23_0">Các chất khí khác nhau nở vì nhiệt khác nhau</string>
+    <string name="NH06_C23_1">Kim loại có hệ số nở nhiệt lớn nhất là nhôm</string>
+    <string name="NH06_C23_2">Chất khí nở vì nhiệt nhiều hơn chất lỏng</string>
+    <string name="NH06_C23_3">Chất lỏng nở vì nhiệt ít hơn chất rắn</string>
+
+    <string name="NH06_C24">Trong các hoạt động dưới đây, hoạt động nào không xảy ra hiện tượng chuyển thể.</string>
+    <string name="NH06_C24_0">Rèn thép</string>
+    <string name="NH06_C24_1">Đúc chuông</string>
+    <string name="NH06_C24_2">Làm muối</string>
+    <string name="NH06_C24_3">Rã đông thực phẩm</string>
+
+    <string name="NH06_C25">Nhìn chung thì nước khi đun sôi (không dùng nồi áp suất) ở vùng nào trong các vùng sau sẽ có nhiệt độ sôi cao nhất ?</string>
+    <string name="NH06_C25_0">Tây nguyên</string>
+    <string name="NH06_C25_1">Tây nam bộ</string>
+    <string name="NH06_C25_2">Đông bắc bộ</string>
+    <string name="NH06_C25_3">Tây bắc bộ</string>
+
+    <string name="NH06_C26">Thời tiết nào sau đây có liên quan đến hiện tượng đóng băng của nước?</string>
+    <string name="NH06_C26_0">Mưa đá</string>
+    <string name="NH06_C26_1">Mưa phùn</string>
+    <string name="NH06_C26_2">Mưa rào</string>
+    <string name="NH06_C26_3">Mưa axit</string>
+
+    <string name="NH06_C27">Hiện tượng chuyển thể được ứng dụng trong việc tạc tượng đá?</string>
+    <string name="NH06_C27_0">Đúng</string>
+    <string name="NH06_C27_1">Sai</string>
+
+    <string name="NH06_C28">Một số chất như nước, đồng, gang, bitmut… khi đông đặc sẽ tăng thể tích?</string>
+    <string name="NH06_C28_0">Đúng</string>
+    <string name="NH06_C28_1">Sai</string>
+
+    <string name="NH06_C29">Nhiệt độ môi trường giống nhau, lượng nước, nhiệt độ ban đầu của nước và loại ấm nước siêu tốc khi nấu nước là như nhau, nước nấu ở đồng bằng sẽ nhanh sôi hơn nước nấu ở miền núi cao?</string>
+    <string name="NH06_C29_0">Đúng</string>
+    <string name="NH06_C29_1">Sai</string>
+
+    <string name="NH06_C30">Nhiệt độ –40°C khi chuyển sang thang nhiệt Fahrenheit sẽ là –40°F?</string>
+    <string name="NH06_C30_0">Đúng</string>
+    <string name="NH06_C30_1">Sai</string>
+
+    <string name="NH06_C31">Nhiệt độ nước đá đang tan theo nhiệt giai Fahrenheit là 212°F?</string>
+    <string name="NH06_C31_0">Đúng</string>
+    <string name="NH06_C31_1">Sai</string>
+
+    <string name="NH06_C32">Nhiệt kế y tế (loại cổ điển) có chứa thủy ngân nên phải tuyệt đối cẩn thận khi sử dụng để tránh rơi, vỡ ?</string>
+    <string name="NH06_C32_0">Đúng</string>
+    <string name="NH06_C32_1">Sai</string>
+
+    <string name="NH06_C33">Mọi chất rắn đều có thể chuyển thể sang thể lỏng bằng cách nóng chảy?</string>
+    <string name="NH06_C33_0">Đúng</string>
+    <string name="NH06_C33_1">Sai</string>
+
+    <string name="NH06_C34">Chúng ta không thể bắt gặp hiện tượng nước sôi ngoài tự nhiên?</string>
+    <string name="NH06_C34_0">Đúng</string>
+    <string name="NH06_C34_1">Sai</string>
+
+    <string name="NH08_1_C4_3">Phần nhiệt năng bị chuyển hóa thành dạng năng lượng khác như cơ năng, điện năng, quang năng…</string>
+    <string name="NH08_1_C21">Trong thí nghiệm Brao-nơ thì các hạt phấn hoa có cấu tạo tế bào nên chuyển động hạt phấn hoa trong nước là nhờ các lực sống từ tế bào phấn hoa?</string>
+    <string name="NH08_1_C21_0">Đúng</string>
+    <string name="NH08_1_C21_1">Sai</string>
+    <string name="NH08_1_C11_3">Ở cả chất khí, chất lỏng và chất rắn</string>
+    <string name="NH08_1_C12_3">Cách thức nhận nhiệt (dẫn nhiệt, đối lưu, bức xạ nhiệt) của vật</string>
+    <string name="NH08_1_C14_3">Cách thức truyền nhiệt có thể là dẫn nhiệt, bức xạ nhiệt, đối lưu</string>
+    <string name="NH08_1_C16">Trong các loại chất đốt sau, chất đốt nào có năng xuất tỏa nhiệt lớn nhất</string>
+    <string name="NH08_1_C22">Nhiệt độ càng cao, các hạt cấu thành vật chất chuyển động càng nhanh. Vì chuyển động hỗn độn của các hạt vật chất liên quan chặt chẽ đến nhiệt độ nên chuyển động hỗn độn này gọi là chuyển động nhiệt?</string>
+
+    <string name="NH08_1_C23">Tổng động năng của các hạt cấu thành nên vật là nhiệt năng của vật. Vậy nên nhiệt độ của vật càng cao thì nhiệt năng của vật càng lớn?</string>
+
+    <string name="NH08_1_C24">Bản chất của nhiệt là một dạng vật chất có thể truyền từ vật này sang vật khác chứ không phải là một trạng thái?</string>
+
+    <string name="NH08_1_C25">Định luật bảo toàn và chuyển hóa năng lượng: “Năng lượng không tự sinh ra cũng không tự mất đi; nó chỉ truyền từ vật này sang vật khác, chuyển hóa từ dạng này sang dạng khác”. Quá trình truyền nhiệt giữa các vật là một quá trình chuyển hóa năng lượng?</string>
+
+    <string name="NH08_1_C26">Động cơ đốt trong là động cơ nhiệt mà nhiên liệu được đốt cháy ngay bên trong xilanh. Động cơ của flycam, UAV (máy bay không người lái) chủ yếu là động cơ đốt trong?</string>
+
+    <string name="NH08_1_C27">Nhiệt dung riêng của nước là 4200 J/kg⋅K. Như vậy một calo = 4,2 J?</string>
+
+    <string name="NH08_1_C28">Một mã lực (HP) có độ lớn là 736W (hoặc một CV = 746W). Nếu lấy giá trị một cách phiên phiến thì cứ công suất 1,5 kW tương đương với 2 mã lực?</string>
+
+    <string name="NH08_1_C29">Bóng đèn huỳnh quang là dụng cụ tiêu thụ điện năng để chuyển hóa chúng thành nhiệt năng và quang năng?</string>
+
+    <string name="NH08_1_C30">Những vật được cấu tạo từ các chất có nhiệt dung riêng lớn thì càng dễ nóng lên và dễ lạnh đi trong quá trình truyền nhiệt?</string>
+
+    <string name="NH08_2_C2">Trong ấm siêu tốc, nồi cơm điện thì dây đốt nóng bắt buộc phải nằm ở đáy ấm, đáy nồi. Việc dây đốt nóng buộc phải nằm ở phần đáy ấm, đáy nồi là vận dụng hiện tượng truyền nhiệt … </string>
+    <string name="NH08_2_C3">Bức xạ nhiệt là hình thức truyền nhiệt bằng các tia nhiệt đi thẳng. Bức xạ nhiệt có thể xảy ra ngay cả trong chân không. Vậy bản chất các tia nhiệt là…</string>
+    <string name="NH08_2_C3_3">Dòng chất lỏng, chất khí có nhiệt độ cao</string>
+    <string name="NH08_2_C4">Một ấm siêu tốc nấu 1,8 lít nước từ nhiệt độ 20ºC lên đến nhiệt độ sôi thì ấm tự tắt.
+        Biết nhiệt dung riêng của nước được nấu là 4100 J/kg⋅K, khối lượng riêng của nước là 1 kg/lít và hiệu suất của ấm là 80%.
+        Điện năng mà ấm tiêu thụ khi nấu 1,8 lít nước trên là ….?</string>
+    <string name="NH08_2_C4_0">0,164 kWh</string>
+    <string name="NH08_2_C4_1">0,256 kWh</string>
+    <string name="NH08_2_C4_2">0,165 kWh</string>
+    <string name="NH08_2_C4_3">0,205 kWh</string>
+    <string name="NH08_2_C5_0">Hút nhiên liệu, đốt nhiên liệu, nén nhiên liệu, thoát khí</string>
+    <string name="NH08_2_C5_1">Thoát khí, hút nhiên liệu, nén nhiên liệu, đốt nhiên liệu</string>
+    <string name="NH08_2_C5_2">Hút nhiên liệu, nén nhiên liệu, thoát khí, đốt nhiên liệu</string>
+    <string name="NH08_2_C5_3">Hút nhiên liệu, nén nhiên liệu, đốt nhiên liệu, thoát khí</string>
+
+    <string name="NH08_2_C7">Chọn câu đúng trong các câu sau. Trong các chất có thể làm chất đốt như: củi khô, than đá, than bùn, dầu hoả, năng suất toả nhiệt của chúng được xếp giảm dần như sau:</string>
+    <string name="NH08_2_C7_0">Dầu hỏa, than bùn, than đá, củi khô.</string>
+    <string name="NH08_2_C7_1">Than bùn, củi khô, than đá, dầu hỏa.</string>
+    <string name="NH08_2_C7_2">Dầu hỏa, than đá, than bùn, củi khô.</string>
+    <string name="NH08_2_C7_3">Than đá, dầu hỏa, than bùn, củi khô.</string>
+    <string name="NH08_2_C19">Nhà máy nhiệt điện sử dụng chất đốt để chuyển đổi nguồn nhiệt thông qua việc đốt chất đốt thành năng lượng điện bằng cách tạo ra hơi nước để làm quay tuabin và tạo ra điện năng. Nhà máy nhiệt điện có quá trình đốt chất đốt diễn ra bên trong xilanh ?</string>
+    <string name="NH08_2_C20">Phương trình cân bằng nhiệt có đặc điểm khi hai vật truyền nhiệt cho nhau thì nhiệt lượng tỏa ra bằng với nhiệt lượng thu vào. Vậy phương trình cân bằng nhiệt là trường hợp tuân theo “Định luật bảo toàn và chuyển hóa năng lượng” ?
+</string>
+
+    <string name="CK_C1_0">Đều có thể “nóng nở, lạnh co”</string>
+    <string name="CK_C1_1">Đều cấu tạo từ các hạt như nguyên tử, phân tử, ion ….</string>
+    <string name="CK_C3">Ở điều kiện tiêu chuẩn (273K, 1 atm) thì chất nào sau đây không tồn tại ở thể khí ?</string>
+
+    <string name="CK_C4">Trong các loại chất khí sau, chất khí nào không phải là chất đốt ?</string>
+    <string name="CK_C5">Cho các loại chất khí nitơ, oxi, cacbonic, metan, hiđro, clo, heli… Số lượng chất khí nhẹ hơn không khí là</string>
+    <string name="CK_C7">Cho các loại chất đốt hidro, propan, ethanol, xăng, amoniac, dầu diesel, axetilen thì có bao nhiêu chất có thể đựng được trong bình chứa thông thường (bình xăng xe máy, bình dầu xe tải, can đựng nhiên liệu…) cũng như sang chiết không cần dụng cụ phức tạp ?</string>
+    <string name="CK_C8">Biết khối lượng mol của không khí là 28,6 g/mol, vậy trong các loại khí hidro, heli, nito, oxi, cacbonic thì có bao nhiêu loại khí có thể bơm vào quả bóng bay để quả bóng bay nhẹ hơn không khí để có thể bay lên ?</string>
+    <string name="CK_C11">Ở điều kiện tiêu chuẩn (273K, 1 atm) thì thể tích của chất khí chỉ phụ thuộc vào</string>
+
+    <string name="CK_C12">Khí đốt người ta thường nén khí trong các bình chứa chuyên dụng (loại bình chứa có thể chịu được áp lực cao, có van khóa chắc chắn) thành khí hóa lỏng để tiện trong việc lưu trữ, vận chuyển, sử dụng…. Sở dĩ người ta có thể làm vậy vì khí đốt có tính chất nào của chất khí ?</string>
+    <string name="CK_C12_0">Khó cháy nổ, có thể thăng hoa</string>
+    <string name="CK_C12_1">Dễ nén, có thể ngưng tụ</string>
+    <string name="CK_C12_2">Dễ nén, khó cháy nổ</string>
+    <string name="CK_C12_3">Khó cháy nổ, có thể ngưng kết</string>
+    <string name="CK_C13">Nếu có một vụ cháy ở trong khu dân cư, trong khu đó có các chất đốt như củi, nến, bình ga, rơm rạ thì khi cứu hỏa sẽ ưu tiên di chuyển, tẩu tán chất đốt nào ra khỏi khu dân cư đó trước ?</string>
+
+    <string name="CK_C14">Trong các loại khí đốt sau, khí đốt nào nặng hơn các khí đốt còn lại</string>
+    <string name="CK_C15">Một quả bóng bay chứa một lượng khí nhất định, quả bóng bay này sẽ nở ra nếu …?</string>
+    <string name="CK_C16">CHỌN CÂU SAI. Giếng sâu và giếng bịt kín lâu ngày có thể chứa nhiều loại khí độc, khí không duy trì sự hô hấp (CH₄, CO, CO₂, SO₂, H₂S…) có thể gây tử vong khi ngạt khí, ngộ độc khí. Ở miền nam vào mùa khô người ta thường đào sâu thêm hoặc nạo vét, vệ sinh giếng để phục vụ tưới tiêu vào mùa khô. Vậy làm sao để xua đuổi hết các khi độc này khỏi giếng để tránh gây ngạt khí, ngộ độc khí khi có người xuống giếng ?</string>
+    <string name="CK_C16_3"> Dùng các cành tươi, có nhiều lá buộc dây thả xuống đáy giếng rồi kéo lên miệng giếng nhiều lần</string>
+    <string name="CK_C17">Cho các khối có khối lượng như sau: 7 gam khí heli, 3 gam khí hidro, 40 gam khí oxi, 50 gam khí cacbonic. Nếu ở cùng điều kiện tiêu chuẩn (273K, 1 atm) thì khối khí nào sẽ có thể tích lớn nhất ?</string>
+    <string name="CK_C18">Khối lượng mol của không khí là 28,6 g/mol là bởi vì trong không khí thì thành phần chủ yếu là......</string>
+    <string name="CK_C19">Trong các loại khí đốt hóa lỏng dưới dây, khí đốt hóa lỏng nào có liên kết hidro giữa các phân tử ?</string>
+    <string name="CK_C20">Không khí là hỗn hợp rất nhiều chất khí, biết rằng ở cùng một hỗn hợp khí thì khí nào có phân tử khối càng lớn thì chuyển động càng chậm. Trong hỗn hợp khí ở nhiệt độ 300K thì phân tử khí nitơ chuyển động nhiệt với tốc độ 517 m/s. Vậy trong khối khí đó thì phân tử khí nào chuyển động nhiệt cũng có trị số 517 m/s ?</string>
+
+    <string name="NK_C2">Trong các loại nhiệt kế sau, loại nhiệt kế nào có nguyên lý hoạt động KHÔNG dựa trên sự dãn nở vì nhiệt của chất lỏng ?</string>
+    <string name="NK_C8">Trong các loại nhiệt kế sau, nhiệt kế nào có thể đo được nhiệt độ cơ thể người một cách nhanh chóng mà không cần phải tiếp xúc ?</string>
+    <string name="NK_C12">Trong nhiệt kế lưỡng kim, sự thay đổi nhiệt độ được biểu diễn bằng cách nào?</string>
+    <string name="NK_C14">Trong quá trình sử dụng, nhiệt kế thủy ngân cần được xử lý cẩn thận vì lý do nào ?</string>
+    <string name="NK_C19">Nếu nhiệt kế có chứa thủy ngân bị vỡ (nhiệt kế thủy ngân, nhiệt kế y tế cổ điển) thì ta có thế xử lý bằng cách phủ chất nào lên thủy ngân để tránh bị ngộ độc ?</string>
+    <string name="NG_C14">Ở điều kiện tiêu chuẩn thì một mol chất khí sẽ có thể tích là 22,4 lít. Vậy nhiệt độ ở điều kiện tiêu chuẩn nói trên là …</string>
+    <string name="NG_C16">Điểm ba trạng thái của nước xảy ra khi có nhiệt độ 273,16K và áp suất khoảng 611,73 Pa. Vậy áp suất này…</string>
+    <string name="NG_C22">Nếu nhiệt độ nước đá đang tan theo thang nhiệt độ Fahrenheit và thang nhiệt độ Kelvin lần lượt là 32°F và 273K thì nhiệt độ 754,25°F cũng là 754,25K ?</string>
+    <string name="NG_C23">Nhiệt giai Fahrenheit được sử phổ biến ở Mỹ ?</string>
+    <string name="NG_C24">Nhiệt giai Kelvin được sử dụng chủ yếu trong lĩnh vực y tế ?</string>
+    <string name="NG_C25">Trong lĩnh vực khí tượng, y tế ở nước ta thì người ta chủ yếu dùng nhiệt giai Celsius ?</string>
+
+    <string name="CTVC_C3">Ở điều kiện tiêu chuẩn (0°C, 1 atm) thì kim loại nào sau đây tồn tại ở trạng thái lỏng ?</string>
+    <string name="CTVC_C8">Trạng thái tồn tại của một chất (rắn, lỏng hoặc khí) phụ thuộc vào điều kiện …</string>
+    <string name="CTVC_C21">Tất cả các khí trơ (heli, neon, argon, krypton…) đều có hạt cấu thành là các nguyên tử riêng biệt ?</string>
+    <string name="CTVC_C22">Các chất khí như nitơ, oxi, clo, hidro tồn tại ở dạng phân tử hai nguyên tử ?</string>
+    <string name="CTVC_C23">Nước tinh khiết không có các hạt ion mang điện (cation và anion) ?</string>
+    <string name="CTVC_C24">Ở thể khí và thể lỏng thì các hạt cấu thành vật chất luôn di chuyển ?</string>
+    <string name="CTVC_C25">Trong các đơn chất khí tồn tại ở dạng phân tử như hidro, nito, oxi, clo thì liên kết trong phân tử nitơ là liên kết bền vững nhất ?</string>
+
+    <string name="MHDH_C2">Các hạt cấu tạo nên vật chất như nguyên tử, phân tử, ion… có đặc điểm chung là …</string>
+    <string name="MHDH_C3">Theo mô hình động học phân tử, các phân tử chuyển động hỗn độn không ngừng gọi là …</string>
+    <string name="MHDH_C14">Biết rằng ở cùng điều kiện nhiệt độ thì các hạt có phân tử có khối lượng càng lớn sẽ chuyển động càng chậm. Vậy hỗn hợp khí gồm có khí oxygen, hydrogen, carbon dioxide, nitrogen thì phân tử khí nào sẽ chuyển động chậm nhất ?</string>
+    <string name="MHDH_C15">Ở cùng điều kiện nhiệt độ thì các hạt có phân tử có khối lượng càng lớn sẽ chuyển động càng chậm. Thực tế cùng nhiệt độ 300K thì phân hydrogen chuyển động với tốc độ khoảng 1934 m/s, còn các phân tử oxygen chuyển động với tốc độ khoảng 484 m/s. Vậy với nhiệt độ trên thì phân tử carbon dioxide chuyển động với tốc độ gần giá trị nào nhất trong các giá trị dưới đây ?</string>
+    <string name="MHDH_C17">Khi ở cùng điều kiện nhiệt độ thì phân tử khí nào có phân tử khối càng nhỏ thì chuyển động càng nhanh, vậy phân tử khí nào dưới đây chuyển động với tốc độ nhanh nhất nếu có chung nhiệt độ ?</string>
+    <string name="MHDH_C19">Trong các lực tương tác dưới đây, lực tương tác nào có bản chất là tương tác điện từ giữa các phân tử ?</string>
+    <string name="MHDH_C21">Lực tương tác giữa các phân tử có hiện tượng góp chung electron hóa trị để tạo ra tương tác tĩnh điện ?</string>
+    <string name="MHDH_C22">Với mọi chật thì mật độ phân tử dày đặc nhất khi chất đó ở thể rắn ?</string>
+    <string name="MHDH_C23">Lực tương tác giữa các phân tử với nhau có bản chất là lực liên kết ion, liên kết cộng hóa trị ?</string>
+    <string name="MHDH_C24">Lực liên kết hidro là một lực tương tác giữa các phân tử phân cực như nước, amoniac ?</string>
+    <string name="MHDH_C25">Tốc độ chuyển động của các phân tử luôn luôn tỉ lệ thuận với nhiệt độ ?</string>
+
+    <string name="RLK_C1">-----</string>
+    <string name="RLK_C7">Các nguyên liệu dùng trong nấu ăn dưới đây, nguyên liệu nào là chất rắn vô định hình ?</string>
+    <string name="RLK_C9">CHỌN CÂU SAI khi nói về điểm chung của các chất rắn kết tinh: “Các chất rắn kết tinh có các hạt cấu thành (nguyên tử, phân tử, ion) đều …”</string>
+    <string name="RLK_C10_2">Sáp nến, pha lê, nhựa đường, cao su… là chất rắn tinh thể</string>
+    <string name="RLK_C11">Băng phiến có nhiệt độ nóng chảy là 80 °C, nhiệt độ nóng chảy của sáp nến là khoảng 46°C đến 68°C, nhiệt độ nóng chảy của sáp ong là 62°C đến 65°C,  nhiệt độ nóng chảy của thủy tinh borosilicate (một loại thủy tinh chịu nhiệt) có nhiệt độ nóng chảy là 820°C đến 860°C, nhiệt độ nóng chảy của đường mía tinh luyện (sucrose) là khoảng 186°C. Vậy với các chất kể trên có bao nhiêu chất rắn vô định hình ?</string>
+    <string name="RLK_C13">Gali khi ở trạng thái rắn là chất rắn tinh thể, gali có thể tan chảy ngay khi ở gần nhiệt độ phòng và nó thậm chí có thể tan chảy khi tiếp xúc với nhiệt độ của bàn tay người. Vậy nhiệt độ nóng chảy của gali là ?</string>
+    <string name="RLK_C14_1">Các phân tử trong chất lỏng vừa dao động, vừa dịch chuyển</string>
+    <string name="RLK_C15_2">Một chất ở trạng thái rắn, lỏng, khí chỉ tùy thuộc vào nhiệt độ</string>
+    <string name="RLK_C18">Nếu một chất có thể tồn tại ở các thể rắn, lỏng, khí thì …?</string>
+    <string name="RLK_C19">Hầu hết các chất khi đông đặc đều giảm thể tích, nhưng một số chất khi đông đặc lại tăng thể tích (giảm khối lượng riêng) như đồng, gang, bitmut.. nên có hiện tượng bitmut rắn nổi lên trên bitmut lỏng, gang cục không chìm trong gang lỏng, đồng thỏi nổi trên bề mặt đồng lỏng. Vậy chất nào dưới đây cũng có hiện tượng thường thấy khi ở thể rắn nhẹ hơn nên nổi lên trên bề mặt thể lỏng ?</string>
+    <string name="RLK_C21">Các phân tử (gọi chung) trong chất rắn chỉ có thể dao động tại một vị trí cố định ?</string>
+    <string name="RLK_C22">Chất lỏng và chất khí có các phân tử (gọi chung) có thể thay đổi vị trí bằng cách chuyển động tịnh tiến nên hiện tượng khuếch tán có thể xảy ra với chất lỏng hoặc chất khí ?</string>
+    <string name="RLK_C23">Có một số chất có mật độ phân tử (gọi chung) dày đặc nhất khi ở thể lỏng chứ không phải ở thể rắn ?</string>
+    <string name="RLK_C24">Lực tương tác giữa các phân tử chỉ thay đổi khi có hiện tượng chuyển thể ?</string>
+    <string name="RLK_C25">Ở thể lỏng thì các phân tử ngoài chuyển động dao động thì cũng có thể chuyển động tịnh tiến bằng cách trườn, trượt lên nhau nên chất lỏng có thể chuyển động thành dòng ?</string>
+    <string name="RLK_C26">Chất rắn được cấu tạo từ các đại phân tử có cấu trúc polime là chất rắn tinh thể ?</string>
+
+    <string name="SCT_C1">....</string>
+    <string name="SCT_C6">Nước nóng chảy ở nhiệt độ 273K, Gali nóng chảy ở nhiệt độ 30°C, rượu nóng chảy ở nhiệt độ  –117°C, Băng phiến nóng chảy ở nhiệt độ 353 K, chì nóng chảy ở nhiệt độ 327°C. Vậy các chất trên khi tiếp xúc với da tay người thì có bao nhiêu chất sẽ tồn tại ở thể lỏng ?</string>
+    <string name="SCT_C7">Trong các chất dưới đây, chất nào không tồn tại ở trạng thái hơi (cũng như không có hiện tượng bay hơi, không có hiện tượng sôi) ?</string>
+    <string name="SCT_C10">Trong các chất tinh bột, đường mía, xenlulozơ, canxi cacbonat, muối ăn thì chất có thể nóng chảy là …</string>
+    <string name="SCT_C16">Ở điều kiện áp suất khí quyển (khoảng 1atm) và nhiệt độ phòng thì trong các vật chất dưới đây, vật chất nào có thể gây ra hiện tượng thăng hoa mà không cần đun nóng ?</string>
+    <string name="SCT_C21">Mọi chất lỏng đều có thể bay hơi hoặc sôi để chuyển sang thể khí ?</string>
+    <string name="SCT_C22">Cầu thang đệm khí thoát hiểm trên máy bay hoạt động nhờ hiện tượng thăng hoa của đá khô ?</string>
+    <string name="SCT_C23">Một chất có thể thăng hoa, ngưng kết thì cũng có thể nóng chảy, đông đặc, bay hơi, ngưng tụ ?</string>
+    <string name="SCT_C24">Đá khô có thể thăng hoa ở điều kiện phòng, nhưng muốn iot thăng hoa thì cần phải đun nóng nhẹ ?</string>
+    <string name="SCT_C25">Trong quá trình tuần hoàn của nước trong tự nhiên không có xảy ra hiện tượng thăng hoa và ngưng kết ?</string>
+
+
+    <string name="DBN_C2_2">Nhiệt độ sôi của nước thấp nhất là 0,01°C</string>
+    <string name="DBN_C14">Trong các cách chế biến món ăn sau, thì cách nào hạn chế được khả năng món ăn bị cháy, bị nhiệt phân hủy so với các cách chế biến còn lại ?</string>
+    <string name="DBN_C17">Cho hai chén giống nhau được đặt ở trên cùng một cái bàn, trong đó một chén đựng nước và một chén đựng cồn với khối lượng như chất lỏng như nhau. Hiện tượng quan sát thấy chén có cồn khô cạn trước chén có nước. Hiện tượng trên cho thấy tốc độ bay hơi của chất lỏng phụ thuộc vào … ?</string>
+    <string name="DBN_C20">Trong các hiện tượng chuyển thể của nước thì hiện tượng mới được ứng dụng (chưa được lâu đời, không phải là cách làm truyền thống) trong việc chế biến, bảo quản thực phẩm là .....</string>
+    <string name="DBN_C21">Khi nước ở điều kiện nhiệt độ và áp suất tại điểm ba thì sẽ xảy ra nhiều hiện tượng chuyển thể cùng lúc ?</string>
+    <string name="DBN_C22">Hiện tượng thăng hoa của nước được ứng dụng để chế biến thực phẩm ?</string>
+    <string name="DBN_C23">Mưa đá được hình thành nhờ hiện tượng nước ngưng kết lại thành các tinh thể nước đá ?</string>
+    <string name="DBN_C24">Nhiệt độ sôi và nhiệt độ đóng băng của nước thấp hơn nhiều so với các chất có cùng khối lượng mol là do liên kết giữa nguyên tử oxi và hai nguyên tử hidro trong phân tử nước là liên kết hidro ?</string>
+    <string name="DBN_C25">Để nước thăng hoa thì nhiệt độ và áp suất phải cao hơn nhiệt độ và áp suất điểm ba của nước ?</string>
+
+    <string name="NN_C8">Trong cuộc sống, chúng ta ít thấy dạng năng lượng nào dưới đây chuyển hóa thành nhiệt năng ?</string>
+    <string name="NN_C10">Trong các hiện tượng chuyển thể sau, hiện tượng nào thế năng tương tác của các phân tử giảm đi nhiều nhất ?</string>
+    <string name="NN_C17">Trong động cơ 4 kỳ (nạp, nén, nổ, xả) thì kỳ nào là kỳ có sự tăng nội năng nhiều nhất ?</string>
+    <string name="NN_C18">Trong các loài động vật dưới đây, khi sống trong môi trường nóng ấm (mùa hè) sang môi trường lạnh hơn (mùa đông) thì loài nào sau đây có thân nhiệt giảm đi nhiều nhất ?</string>
+    <string name="NN_C21">Khi nước đóng băng thì thể tích và thế năng tương tác giữa các phân tử nước đều tăng ?</string>
+    <string name="NN_C22">Khi một khối khí có nhiệt độ và thể tích đều tăng thì nội năng khối khí cũng tăng ?</string>
+    <string name="NN_C23">Khi một vật nóng hơn tiếp xúc và truyền nhiệt với một vật lạnh hơn thì có xảy ra quá trình chuyển hóa năng lượng ?</string>
+    <string name="NN_C24">Trong một chu trình của động cơ 4 kỳ, kỳ nén là kỳ có hòa khí trong xi lanh tăng cả nhiệt độ lẫn thế năng tương tác ?</string>
+    <string name="NN_C25">Động cơ nhiệt sử dụng chất đốt là than thì không thể là động cơ đốt trong ?</string>
+
+    <string name="NDR_C1">Nhiệt lượng cần truyền vào cho vật để làm tăng nhiệt độ của nó theo tuân theo công thức Q = m⋅c⋅Δt (Δt = t₂- t₁ là độ tăng nhiệt độ, tính ra °C hoặc K). Vậy độ lớn của nhiệt lượng Q = m⋅c⋅Δt này KHÔNG PHỤ THUỘC vào yếu tố nào dưới đây ?</string>
+    <string name="NDR_C2_2">Không phụ thuộc vào trạng thái (rắn, lỏng, hơi) của chất hóa học đó</string>
+    <string name="NDR_C3">Các chất rượu, nước, đất và nước đá thì chất nào có nhiệt dung riêng lớn hơn các chất còn lại ?</string>
+    <string name="NDR_C6">Một nồi thủy tinh nặng 0,5 kg có nhiệt dung riêng là 840 J/kg⋅K đang đựng 1 lít nước có nhiệt dung riêng là 4200 J/kg⋅K. Biết lúc ban đầu cả nước và nồi có nhiệt độ bằng nhiệt độ môi trường là 20°C, sau quá trình nấu nước thì cả nước và nồi đều có chung nhiệt độ là 100°C. Vậy nhiệt lượng mà nước nhận được gấp bao nhiêu lần nhiệt lượng mà nồi thủy tinh nhận được trong quá trình nấu nước biết nước thất thoát do bay hơi không đáng kể ?</string>
+    <string name="NDR_C8">Một ca nước 2 lít có nhiệt độ 10°C, một ấm nước 4 lít có nhiệt độ 40°C và một ca nước 2 lít có nhiệt độ 30°C hòa lẫn vào nhau. Vậy nhiệt độ của 8 lít nước hòa lẫn sẽ có nhiệt độ là khoảng …?</string>
+    <string name="NDR_C9">Một cái tô sứ có nhiệt dung riêng là 840 J/kg⋅K với nhiệt độ ban đầu là 10°C. Người ta rót vào cái tô sứ đó một lượng nước đang sôi thì sau đó nước và tô sứ đó đều có nhiệt độ là 25°C. Biết lượng nhiệt dung riêng của nước gấp năm lần nhiệt dung riêng của tô sứ và nước trong tô là 0,5 lít. Vậy cái tô sứ đó nặng bao nhiêu (nước bay hơi, nhiệt lượng thất thoát ra môi trường là không đáng kể) ?</string>
+    <string name="NDR_C10" formatted="false">Biết một ấm siêu tốc đun sôi 2 lít nước từ nhiệt độ ban đầu đến lúc nước sôi thì tốn hết 0,3 kWh điện năng. Trong đó năng lượng nước nhận được khi tăng nhiệt độ chỉ chiếm 75% năng lượng điện chuyển hóa thành nhiệt, còn 25% bị hao phí do nhiệt tỏa ra môi trường, làm nóng các bộ phận của ấm siêu tốc (vỏ ấm, dây đốt…). Nước thất thoát do hóa hơi không đáng kể, vậy năng nhiệt lượng mà nước nhận được khi nấu bằng ấm siêu tốc là bao nhiêu ?</string>
+    <string name="NDR_C10_0">0,2 kWh</string>
+    <string name="NDR_C10_1">0,25 kWh</string>
+    <string name="NDR_C12">Biết nhiệt dung riêng càng nhỏ thì chất càng dễ nóng lên và dễ nguội đi trong quá trình nhận và tỏa nhiệt. Nước có nhiệt dung riêng là 4200 J/kg⋅K và đất có nhiệt dung riêng là 800 J/kg⋅K. Ở Trung Quốc, nhiệt độ chênh lệch giữa ngày và đêm ở khu vực nào dưới đây sẽ lớn hơn các khu vực còn lại ?</string>
+    <string name="NDR_C14">Nhóm kim loại sắt, đồng, thủy ngân và chì có đặc điểm chất nào có nhiệt độ nóng chảy lớn hơn thì có nhiệt nóng chảy riêng lớn hơn. Biết nhiệt độ nóng chảy của các kim loại như sắt, đồng và thủy ngân giảm dần theo thứ tự 1535°C, 1084°C và –39°C. Đồng thời nhiệt nóng chảy riêng của Sắt, Đồng và Thủy ngân cũng giảm dần theo thứ tự 2,77⋅10⁵ J/kg, 1,80⋅10⁵ J/kg và 1,15⋅10⁴ J/kg. Vậy kim loại chì có nhiệt độ nóng chảy là 327°C thì sẽ có nhiệt nóng chảy riêng …</string>
+    <string name="NDR_C15">Nhiệt nóng chảy riêng của hầu hết các kim loại điển hình như thủy ngân, chì, đồng, sắt, nhôm, vàng, bạc… có giá trị khoảng …</string>
+    <string name="NDR_C16">Nhiệt hóa hơi riêng của hầu hết các kim loại điển hình như thủy ngân, chì, đồng, sắt, nhôm, vàng, bạc… có giá trị khoảng …</string>
+    <string name="NDR_C17">Hầu hết các kim loại điển hình như thủy ngân, chì, kẽm, đồng, sắt, nhôm, vàng, bạc…</string>
+
+    <string name="KT1_1_C2">Cho bảy hiện tượng chuyển thể của nước bao gồm (1) nóng chảy, (2) đông đặc, (3) thăng hoa, (4) ngưng kết, (5) bay hơi, (6) sôi, (7) ngưng tụ. Trong số bảy hiện tượng chuyển thể như trên thì có mấy hiện tượng chuyển thể mà nước sẽ tăng thể tích khi chuyển thể ?</string>
+    <string name="KT1_1_C4_0">Trung du và miền núi Bắc Bộ, ºF, ºC</string>
+    <string name="KT1_1_C4_1">Đồng bằng sông Cửu Long, ºF, ºC</string>
+    <string name="KT1_1_C4_2">Trung du và miền núi Bắc Bộ, ºC, ºF</string>
+    <string name="KT1_1_C4_3">Đồng bằng sông Cửu Long, ºC, ºF</string>
+    <string name="KT1_1_C6">Định luật bảo toàn và chuyển hóa năng lượng : Năng lượng không tự nhiên sinh ra cũng không tự nhiên mất đi, nó chỉ truyền từ vật này sang vật khác, chuyển hóa từ dạng này sang dạng khác. Đây là định luật cơ bản của vật lí học mà các em đã được học ở Vật lí 8. Vậy với bóng đèn sợi đốt, nồi cơm điện, ấm siêu tốc, bàn ủi điện thì khi sử dụng thì phần lớn điện năng tiêu thụ chuyển hóa thành …</string>
+    <string name="KT1_1_C7">Một học sinh (ở Nha Trang) làm thí nghiệm xác định hiệu suất của ấm đun nước siêu tốc. Thí nghiệm gồm có ấm siêu tốc (có vạch chia thể tích nước max 1,8 lít, min 0,5 lít, công suất tiêu thụ điện 2000W), oát kế, mấy bịch nước đá trong tủ lạnh, nước lấy từ vòi nước sinh hoạt, nhiệt kế, phần mềm bấm giờ trên điện thoại. Biết nhiệt dung riêng của nước là 4180 J/kg⋅K, khối lượng riêng là 1 tấn/khối và dòng điện dùng đun nước hoàn toàn ổn định. Vậy nếu thiếu những thứ nào sau đây thì học sinh đó vẫn có thể làm được thí nghiệm để xác định được hiệu suất của ấm đun nước siêu tốc (không sử dụng thêm dụng cụ thay thế cho dụng cụ bị thiếu)</string>
+    <string name="KT1_1_C8">Cho biết nhiệt dung riêng của nước (lỏng) là 4200 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg. Dùng ấm đun một kg nước đá từ –5ºC lên đến 5ºC. Chọn phát biểu đúng trong các phát biểu dưới đây ?</string>
+    <string name="KT1_1_C10">Cho biết nhiệt dung riêng của nước (lỏng) là 4200 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg, nhiệt hóa hơi riêng của nước tại nhiệt độ sôi là 2260 kJ/kg. Dùng nồi đun một kg nước đá từ –5°C đến lúc nước chớm sôi thì tắt bếp. Nhiệt lượng mà nước thu được dùng nhiều nhất vào việc phá vỡ cấu trúc tinh thể nước đá để nó tan chảy ?</string>
+    <string name="KT1_1_C11">Cho biết nhiệt dung riêng của nước (lỏng) là 4200 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg, nhiệt hóa hơi riêng của nước tại nhiệt độ sôi là 2260 kJ/kg. Dùng nồi đun một kg nước đá từ –5°C đến lúc nước chớm sôi thì tắt bếp. Nhiệt nóng chảy là 334 kJ ?</string>
+    <string name="KT1_1_C12">Cho biết nhiệt dung riêng của nước (lỏng) là 4200 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg, nhiệt hóa hơi riêng của nước tại nhiệt độ sôi là 2260 kJ/kg. Dùng nồi đun một kg nước đá từ –5°C đến lúc nước chớm sôi thì tắt bếp. Nước xảy ra các hiện tượng chuyển thể là tan chảy và sôi ?</string>
+    <string name="KT1_1_C13">Cho biết nhiệt dung riêng của nước (lỏng) là 4200 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg, nhiệt hóa hơi riêng của nước tại nhiệt độ sôi là 2260 kJ/kg. Dùng nồi đun một kg nước đá từ –5°C đến lúc nước chớm sôi thì tắt bếp. Nếu tiếp tục đun cho đến khi nồi cạn nước thì nhiệt lượng mà nước thu được dùng nhiều nhất vào việc hóa hơi ?</string>
+    <string name="KT1_1_C17">Bỏ 1 kg nước đá có nhiệt độ 0°C và 3 lít nước có nhiệt độ 20°C vào chung một cái ca để cho đá tan dần nhằm mục đích thu được nước mát để sử dụng. Thực tế chúng ta sẽ thấy có 3 hiện tượng chuyển thể của nước là tan chảy, bay hơi và ngưng tụ ?</string>
+    <string name="KT1_1_C19_2">x = 20,5</string>
+    <string name="KT1_1_C20">Một ấm siêu tốc đun 1,7 lít nước từ nhiệt độ môi trường là 16°C lên đến nhiệt độ sôi mất 6 phút 15 giây. Biết công suất của ấm nước là 2000W, nhiệt dung riêng của nước là 4200 J/kg⋅K, khối lượng riêng của nước là 1 tấn/khối, nước hóa hơi không đáng kể, nhiệt lượng mà nước nhận được là có ích. Vậy hiệu suất của ấm siêu tốc là …?</string>
+
+    <string name="KT1_2_C4">Nhiệt kế y tế (loại cổ điển có chứa thủy ngân lỏng, chuyên dùng cho việc đo thân nhiệt) có thường có thang đo nhiệt nằm trong khoảng …</string>
+    <string name="KT1_2_C8">Cho biết nhiệt dung riêng của nước (lỏng) là 4180 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg. Một 1 kg nước đá lúc ban đầu có nhiệt độ – 0,1ºC hấp thụ hoàn toàn một nhiệt lượng 668 kJ thì nhiệt độ của nước sẽ gần giá trị nào nhất ?</string>
+    <string name="KT1_2_C8_1">0,08ºC</string>
+    <string name="KT1_2_C8_2">88,8ºC</string>
+    <string name="KT1_2_C9">Cho biết nhiệt dung riêng của nước (lỏng) là 4200 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg, nhiệt hóa hơi riêng của nước tại nhiệt độ sôi là 2260 kJ/kg. Chọn khẳng định đúng ?</string>
+    <string name="KT1_2_C10">Bạn Bình dùng một ấm siêu tốc Rạng Đông có công suất 2000W, vạch chia thể tích (max 1,8 lít, min 0,5 lít). Nước được lấy từ bể nước sinh hoạt có nhiệt độ theo nhiệt độ môi trường là 20ºC, nhiệt dung riêng khoảng 4150 J/kg⋅K. Lần thứ nhất, bạn Bình xả vòi nước vào đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,9 phút. Sau đó bạn Bình liền đổ nước đã nấu ra và xả vòi nước cho đến khi nước dâng lên đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,1 phút. Biệt khối lượng riêng của nước là 1 tấn/khối, hiệu suất của cả hai lần nấu nước đều nhỏ hơn 1 ?</string>
+    <string name="KT1_2_C11">Bạn Bình dùng một ấm siêu tốc Rạng Đông có công suất 2000W, vạch chia thể tích (max 1,8 lít, min 0,5 lít). Nước được lấy từ bể nước sinh hoạt có nhiệt độ theo nhiệt độ môi trường là 20ºC, nhiệt dung riêng khoảng 4150 J/kg⋅K. Lần thứ nhất, bạn Bình xả vòi nước cho đến khi nước dâng lên đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,9 phút. Sau đó bạn Bình liền đổ nước đã nấu ra và xả vòi nước vào đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,1 phút. Biệt khối lượng riêng của nước là 1 tấn/khối, hiệu suất của cả hai lần nấu nước đều lớn hơn 0,75 ?</string>
+    <string name="KT1_2_C12">Bạn Bình dùng một ấm siêu tốc Rạng Đông có công suất 2000W, vạch chia thể tích (max 1,8 lít, min 0,5 lít). Nước được lấy từ bể nước sinh hoạt có nhiệt độ theo nhiệt độ môi trường là 20ºC, nhiệt dung riêng khoảng 4150 J/kg⋅K. Lần thứ nhất, bạn Bình xả vòi nước cho đến khi nước dâng lên đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,9 phút. Sau đó bạn Bình liền đổ nước đã nấu ra và xả vòi nước vào đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,1 phút. Biệt khối lượng riêng của nước là 1 tấn/khối, lần nấu nước đầu tiên có hiệu suất khoảng 72% ?</string>
+    <string name="KT1_2_C13">Bạn Bình dùng một ấm siêu tốc Rạng Đông có công suất 2000W, vạch chia thể tích (max 1,8 lít, min 0,5 lít). Nước được lấy từ bể nước sinh hoạt có nhiệt độ theo nhiệt độ môi trường là 20ºC, nhiệt dung riêng khoảng 4150 J/kg⋅K. Lần thứ nhất, bạn Bình xả vòi nước cho đến khi nước dâng lên đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,9 phút. Sau đó bạn Bình liền đổ nước đã nấu ra và xả vòi nước vào đúng vạch max rồi đem nấu thì thời gian từ lúc bật công tắc nấu nước đến lúc nước sôi là 6,1 phút. Nếu cần nấu hai ấm nước thì nên nấu hai lần liên tiếp sẽ tiết kiệm điện hơn so với hai lần nấu cách nhau một khoảng thời gian dài ?</string>
+    <string name="KT1_2_C14">Một quả bóng bay được bơm căng bằng khí nitơ thì được hình cầu có đường kính là 20cm (nhiệt độ môi trường là 273 K, áp suất không khí tác dụng lên mặt ngoài quả bóng bay là 1 atm). Biết khối lượng mol của nitơ là 28 g/mol, khối lượng mol của không khí là 28,6 g/mol, vậy khối lượng khí nitơ trong quả bóng bay là 5,236 g ?</string>
+    <string name="KT1_2_C15">Một quả bóng bay được bơm căng bằng khí nitơ thì được hình cầu có đường kính là 20cm (nhiệt độ môi trường là 273 K, áp suất không khí tác dụng lên mặt ngoài quả bóng bay là 1 atm). Biết khối lượng mol của nitơ là 28 g/mol, khối lượng mol của không khí là 28,6 g/mol, vậy khi thả quả bóng bay thì quả bóng bay sẽ bay chầm chậm lên cao ?
+</string>
+    <string name="KT1_2_C16">Một quả bóng bay được bơm căng bằng khí nitơ thì được hình cầu có đường kính là 20cm (nhiệt độ môi trường là 273K, áp suất không khí tác dụng lên mặt ngoài quả bóng bay là 1 atm). Nếu đem quả bóng bay bỏ vào trong kho đông lạnh thì thế năng tương tác của các phân tử nitơ sẽ tăng ?</string>
+    <string name="KT1_2_C17">Một quả bóng bay được bơm căng bằng khí nitơ thì được hình cầu có đường kính là 20cm (nhiệt độ môi trường là 273K, áp suất không khí tác dụng lên mặt ngoài quả bóng bay là 1 atm). Nếu nhúng ngập sâu quả bóng bay vào trong nước ấm thì nhiệt năng, thế năng tương tác cũng như nội năng của khí nitơ trong quả bóng bay đều tăng ?
+</string>
+    <string name="KT1_2_C18">Một hỗn hợp khí gồm có khí CH₄ và SO₂ đang có nhiệt độ 302K. Biết rằng các phân tử khí CH₄ và SO₂ đều có cùng động năng, tốc độ trung bình của các phân tử khí metan là 686 m/s thì tốc độ trung bình của các phân tử SO₂ là …. ?</string>
+    <string name="KT1_2_C20">Một hỗn hợp khí gồm có CH₄, NH₃, N₂, CO₂, CO, H₂, O₂, N₂O, SO₂. Biết rằng các phân tử khí có cùng một động năng, số loại khí có phân tử chuyển động nhanh hơn phân tử O₂ là ….</string>
+
+
+
+
+
+    <string name="KT1_3_C1_1">Chỉ có tương tác đẩy, không có tương tác hút</string>
+    <string name="KT1_3_C1_3">Chỉ có tương tác hút, không có tương tác đẩy</string>
+    <string name="KT1_3_C2">Trong các chất rắn thì chất rắn dạng nào dưới đây sẽ không có cấu trúc mạng tinh thể cũng như không có nhiệt độ nóng chảy, nhiệt độ đông đặc xác định ?</string>
+    <string name="KT1_3_C8_0">Nội năng, nhiệt lượng</string>
+    <string name="KT1_3_C8_1">Nhiệt năng, nhiệt lượng</string>
+    <string name="KT1_3_C8_2">Năng lượng, nhiệt năng</string>
+    <string name="KT1_3_C8_3">Nội năng, năng lượng</string>
+    <string name="KT1_3_C10">Cho biết nhiệt dung riêng của nước (lỏng) là 4180 J/kg⋅K, nhiệt dung riêng của nước đá là 2100 J/kg⋅K và nhiệt nóng chảy riêng của nước là 334 kJ/kg. Bỏ 1 kg nước đá viên có nhiệt độ –5ºC vào một kg nước trong cùng một cái xô cách nhiệt đậy kín. Biết rằng khi đá viên vừa tan hết thì nhiệt độ của nước trong xô là 0ºC. Nhiệt độ ban đầu của nước trong xô có giá trị khoảng ….?</string>
+    <string name="KT1_3_C10_0">58,2 ºC</string>
+    <string name="KT1_3_C10_1">4,2 ºC</string>
+    <string name="KT1_3_C10_2">2,6 ºC</string>
+    <string name="KT1_3_C10_3">82,5 ºC</string>
+    <string name="KT1_3_C11">Calo là nhiệt lượng cần thiết để làm cho một gam nước tăng từ 14,5°C lên 15,5°C. Hãy cho biết 1 calo bằng bao nhiêu jun (nhiệt dung riêng của nước là 4180 J/kg⋅K) ?</string>
+    <string name="KT1_3_C11_0">1 calo ≈ 253,3 J</string>
+    <string name="KT1_3_C11_1">1 calo ≈ 4,2 J</string>
+    <string name="KT1_3_C11_3">1 calo ≈ 269,6 kJ</string>
+    <string name="KT1_3_C12">Trước khi có sự xuất hiện của động cơ đốt trong thì đầu máy xe lửa có máy hơi nước. Máy hơi nước hoạt động theo chu trình gồm 4 giai đoạn chính: (1) Đun sôi và tạo hơi nước: Nước trong nồi hơi được đun nóng nhờ nhiệt từ lò đốt, tạo ra hơi nước áp suất cao; (2) Đẩy piston: Hơi nước áp suất cao được dẫn vào xi lanh, đẩy piston di chuyển, tạo ra chuyển động cơ học; (3) Truyền động quay: Chuyển động của piston được truyền qua thanh truyền và bánh đà, chuyển thành chuyển động quay để vận hành máy móc; (4) Ngưng tụ và tái sử dụng nước: Hơi nước sau khi đẩy piston sẽ đi qua bộ phận ngưng tụ, ngưng tụ lại thành nước và được bơm về nồi hơi để tiếp tục chu trình. Chất đốt tạo nhiệt cho lò đốt là chất đốt có chỉ số octan cao ?</string>
+    <string name="KT1_3_C13">Trước khi có sự xuất hiện của động cơ đốt trong thì đầu máy xe lửa có máy hơi nước. Máy hơi nước hoạt động theo chu trình gồm 4 giai đoạn chính: (1) Đun sôi và tạo hơi nước: Nước trong nồi hơi được đun nóng nhờ nhiệt từ lò đốt, tạo ra hơi nước áp suất cao; (2) Đẩy piston: Hơi nước áp suất cao được dẫn vào xi lanh, đẩy piston di chuyển, tạo ra chuyển động cơ học; (3) Truyền động quay: Chuyển động của piston được truyền qua thanh truyền và bánh đà, chuyển thành chuyển động quay để vận hành máy móc; (4) Ngưng tụ và tái sử dụng nước: Hơi nước sau khi đẩy piston sẽ đi qua bộ phận ngưng tụ, ngưng tụ lại thành nước và được bơm về nồi hơi để tiếp tục chu trình. Máy hơi nước không phải động cơ đốt trong ?
+    </string>
+    <string name="KT1_3_C14">Trước khi có sự xuất hiện của động cơ đốt trong thì đầu máy xe lửa có máy hơi nước. Máy hơi nước hoạt động theo chu trình gồm 4 giai đoạn chính: (1) Đun sôi và tạo hơi nước: Nước trong nồi hơi được đun nóng nhờ nhiệt từ lò đốt, tạo ra hơi nước áp suất cao; (2) Đẩy piston: Hơi nước áp suất cao được dẫn vào xi lanh, đẩy piston di chuyển, tạo ra chuyển động cơ học; (3) Truyền động quay: Chuyển động của piston được truyền qua thanh truyền và bánh đà, chuyển thành chuyển động quay để vận hành máy móc; (4) Ngưng tụ và tái sử dụng nước: Hơi nước sau khi đẩy piston sẽ đi qua bộ phận ngưng tụ, ngưng tụ lại thành nước và được bơm về nồi hơi để tiếp tục chu trình. Toàn bộ chu trình thì nước có ba quá trình chuyển thể là sôi, bay hơi và ngưng tụ ?
+    </string>
+    <string name="KT1_3_C15">Trước khi có sự xuất hiện của động cơ đốt trong thì đầu máy xe lửa có máy hơi nước. Máy hơi nước hoạt động theo chu trình gồm 4 giai đoạn chính: (1) Đun sôi và tạo hơi nước: Nước trong nồi hơi được đun nóng nhờ nhiệt từ lò đốt, tạo ra hơi nước áp suất cao; (2) Đẩy piston: Hơi nước áp suất cao được dẫn vào xi lanh, đẩy piston di chuyển, tạo ra chuyển động cơ học; (3) Truyền động quay: Chuyển động của piston được truyền qua thanh truyền và bánh đà, chuyển thành chuyển động quay để vận hành máy móc; (4) Ngưng tụ và tái sử dụng nước: Hơi nước sau khi đẩy piston sẽ đi qua bộ phận ngưng tụ, ngưng tụ lại thành nước và được bơm về nồi hơi để tiếp tục chu trình. Nước trong máy hơi nước có giai đoạn ngưng tụ và tái sử dụng nước nên không cần phải châm thêm nước vào nồi hơi ?
+    </string>
+    <string name="KT1_3_C16">Trước khi có sự xuất hiện của động cơ đốt trong thì đầu máy xe lửa có máy hơi nước. Máy hơi nước hoạt động theo chu trình gồm 4 giai đoạn chính: (1) Đun sôi và tạo hơi nước: Nước trong nồi hơi được đun nóng nhờ nhiệt từ lò đốt, tạo ra hơi nước áp suất cao; (2) Đẩy piston: Hơi nước áp suất cao được dẫn vào xi lanh, đẩy piston di chuyển, tạo ra chuyển động cơ học; (3) Truyền động quay: Chuyển động của piston được truyền qua thanh truyền và bánh đà, chuyển thành chuyển động quay để vận hành máy móc; (4) Ngưng tụ và tái sử dụng nước: Hơi nước sau khi đẩy piston sẽ đi qua bộ phận ngưng tụ, ngưng tụ lại thành nước và được bơm về nồi hơi để tiếp tục chu trình. Hơi nước được ngưng tụ nên hiệu suất chuyển hóa năng lượng của máy hơi nước rất cao ?
+    </string>
+    <string name="KT1_3_C18_1">1,2 lít</string>
+    <string name="KT1_3_C18_2">1,5 lít</string>
+    <string name="KT1_3_C18_3">1,8 lít</string>
+    <string name="KT1_3_C19_0">0.96 kJ</string>
+    <string name="KT1_3_C19_2">0.04 kWh</string>
+    <string name="KT1_3_C20">Một ấm siêu tốc có công suất 2000W dùng đun 1,8 lít nước từ 20ºC đến lúc sôi mất đúng 7 phút. Biết nước có nhiệt dung riêng là 4200 J, khối lượng riêng là 1g/cc, nhiệt lượng mà nước nhận được là có ích. Hiệu suất tiêu thụ điện của ấm là ….?</string>
+
+    <string name="KT1_4_C2">CHỌN CÂU SAI. Các phân tử cấu tạo nên chất rắn chỉ dao động quanh một vị trí cân bằng cố định chứ không chuyển động hỗn loạn tự do như chất khí, cũng không chuyển đồng trườn, trượt lên nhau như chất lỏng nên …</string>
+    <string name="KT1_4_C5_2">t(ºC) = 32 – 1,8T(ºF)</string>
+    <string name="KT1_4_C5_3">T(ºF) = 32 +1,8t(ºC)</string>
+    <string name="KT1_4_C7">Khi ta nấu cơm bằng nồi cơm điện thì có dây đốt nóng, ruột nồi, nước, gạo đều tăng nội năng. Vậy vật nào tăng nội năng bằng cách thực hiện công ?</string>
+    <string name="KT1_4_C8">Cho một cái thau chứa một lượng nước với mấy quả trứng ở bên trong. Cái thau được đặt cạnh một chai cồn, một bịch vôi sống, một bịch muối, một bịch đường. Tất cả đều có nhiệt độ theo nhiệt độ môi trường là 25ºC. Vậy nên hòa tan chất gì vào nước trong thau để nội năng của quả trứng tăng lên thậm chí có thể làm chín quả trứng ?</string>
+    <string name="KT1_4_C9">Lẩu tự sôi là loại lẩu không cần dùng đến bếp lửa hay bất kỳ dụng cụ tạo ra lửa nào để làm nóng. Để lẩu có thể chín, nhà sản xuất đã cho thêm gói tạo nhiệt dưới đáy hộp. Theo đó, gói bao gồm những chất hóa học mà khi tiếp xúc với nước sẽ tỏa ra lượng nhiệt lớn và nhanh chóng. Giúp món lẩu có thể sôi dễ dàng mà không cần tốn nhiều thời gian chờ đợi. Quy trình chuẩn bị lẩu tự sôi khá đơn giản, chỉ cần cho nước vào gói hóa chất, đặt dưới hộp đựng thức ăn được đậy kín nắp rồi đợi khoảng 5 – 10 phút là có thể thưởng thức. Tuy nhiên, cần sử dụng dụng cụ chịu nhiệt và không để trẻ nhỏ tự chuẩn bị để đảm bảo an toàn. CHỌN KHẲNG ĐỊNH SAI</string>
+    <string name="KT1_4_C11">Nhiệt dung riêng của nước là 4180 J/kg⋅K, nhiệt dung riêng của nước biển là 3900 J/kg⋅K. Vậy khi nấu canh (có thêm gia vị muối để tạo vị mặn) bằng bếp ga mà muốn nước nhanh sôi, tiết kiệm chất đốt thì ta nên hòa tan muối vào lúc …</string>
+    <string name="KT1_4_C16">Mỗi động cơ nhiệt đều có ba bộ phận chính: (1) Nguồn nóng có nhiệt độ T₁ cung cấp nhiệt cho động cơ; (2) bộ phận phát động trong đó tác nhân nhận nhiệt từ nguồn nóng, giãn nở sinh công (trong máy hơi nước tác nhân là hơi nước, trong động cơ đốt trong tác nhân là hòa khí có nhiên liệu bị đốt cháy tỏa ra trong xilanh); (3) Nguồn lạnh có nhiệt độ T₂ nhỏ hơn T₁ nhận nhiệt lượng do động cơ tỏa ra. Đối với động cơ đốt trong 4 kỳ thì nhiệt độ T₁ của nguồn nóng là nhiệt độ của khối khí trong xi lanh tại kỳ …</string>
+    <string name="LBL_C1_2">Dễ bị nén, có thể chuyển thể bằng cách ngưng tụ, ngưng kết</string>
+    <string name="LBL_C1_3">Gây ra áp suất lên thành bình, không gây ra áp suất cho vật nằm trong khối khí</string>
+
+    <string name="LBL_C2_0">2,4 m³</string>
+    <string name="LBL_C2_1">0,224 m³</string>
+    <string name="LBL_C2_2">0,0224 m³</string>
+    <string name="LBL_C2_3">0,024 m³</string>
+    <string name="LBL_C4">Ở điều kiện tiêu chuẩn (273K và 1 atm) thì 22,4 lít khí nitơ sẽ có khối lượng là:</string>
+    <string name="LBL_C5">Khí X ở điều kiện tiêu chuẩn (273K,1 atm) thì 22,4 lít khí sẽ có khối lượng là 28 gam. Biết khí X là chất dễ cháy, vậy X có thể là:</string>
+    <string name="LBL_C7">Định luật Boyle: "Trong quá trình đẳng nhiệt, áp suất của một khối lượng khí xác định … với thể tích của nó".</string>
+    <string name="LBL_C9">Một mol khí oxi ở điều kiện chuẩn (273K và 1 atm) có mật độ phân tử là Y hạt/m³. Vậy khi nén hai mol khí oxi xuống còn thể tích là 5,6 lít thì mật độ phân tử là:</string>
+    <string name="LBL_C14">Áp suất dưới biển phụ thuộc vào độ sâu như sau p = pn + ρgh. Trong đó pn là áp suất khí quyển trên
+        mặt biển, ρ là khối lượng riêng của nước biển, g là gia tốc trong trường, h là độ sâu tính theo đơn vị mét. Biết áp suất
+        khí quyển pn = 1 atm = 101325 pascal, khối lượng riêng của nước biển là ρ = 1030 kg/m³, gia tốc trọng trường g = 9,81 m/s².
+        Vậy áp suất dưới biển có độ sâu 50 mét là</string>
+    <string name="LBL_C14_2">p ≈ 1,5 atm</string>
+    <string name="LBL_C15">Nhiệt độ của nước biển và nhiệt độ không khí đều là 4°C, một con cá heo đang lặn ở độ sâu 70 mét
+        thì thổi ra một bong bóng khí. Bong bóng khí này càng lên cao càng nhỏ lại do khí của bong bóng bị hòa tan dần vào nước biển ?</string>
+    <string name="LBL_C16">Nhiệt độ của nước biển và nhiệt độ không khí đều là 4°C, một con cá heo đang lặn ở độ sâu 70 mét thì thổi
+        ra một bong bóng khí. Cá heo là loài động vật biến nhiệt nên lúc đầu nhiệt độ bong bóng khí này không chênh lệch nhiều với
+        nhiệt độ nước biển?</string>
+    <string name="LBL_C17">Nhiệt độ của nước biển và nhiệt độ không khí đều là 4°C, một con cá heo đang lặn ở độ sâu 70 mét
+        thì thổi ra một bong bóng khí. Biết áp suất của nước biển theo độ sâu có công thức p = pn + ρgh (pn là áp suất khí
+        quyển trên mặt biển 1 atm = 101325 pascal, ρ là khối lượng riêng của nước biển 1030 kg/m³, g là gia tốc trọng trường
+        9,82 m/s², h là độ sâu tính theo đơn vị mét), nếu bong bóng khí này có lượng khí hòa tan vào nước biển không đáng kể thì ở độ
+        sâu 30 mét sẽ có thể tích gần bằng một phần tư so với thể tích khi đã trồi lên khỏi mặt nước biển ?</string>
+    <string name="LBL_C18">Nhiệt độ của nước biển và nhiệt độ không khí đều là 4°C, một con cá heo đang lặn ở độ sâu 40 mét thì thổi ra
+        một bong bóng khí. Lúc đầu có hiện tượng truyền nhiệt từ bong bóng khí vào nước biển, còn phần lớn thời gian bong bóng khí
+        trồi lên thì giữa bong bóng khí và nước biển không có hiện tượng trao đổi nhiệt ?</string>
+    <string name="LBL_C19">Một xi lanh loại loại 150 cc. Lúc xi lanh đang ở mức 30 cc thì người ta bắt đầu dùng nút bịt kín đầu gắn
+        kim tiêm để xi lanh kín hoàn toàn. Sau đó xi lanh được kéo chầm chậm cho đến vạch cuối cùng 150 cc. Biết áp suất không khí là
+        1 atm = 101325 pascal. Vậy khi xi lanh cân bằng nhiệt với môi trường thì áp suất của khối khí trong xi lanh là</string>
+    <string name="LBL_C19_1">1,25 atm</string>
+    <string name="LBL_C19_2">0,2 atm</string>
+    <string name="LBL_C19_3">1,25 atm</string>
+    <string name="LBL_C20">Cho 6 gam khí heli được bơm căng trong một quả bóng bay hình cầu làm cho áp suất bên trong quả bóng là
+        1,25 atm. Biết quả bóng bay có nhiệt độ bằng với môi trường là 0 ºC, vậy quả bóng bay trên có đường kính .....</string>
+    <string name="LBL_C20_0">d = 37,2 cm</string>
+    <string name="LBL_C20_1">d = 18,6 cm</string>
+    <string name="LBL_C20_2">d = 21,6 cm</string>
+    <string name="LBL_C20_3">d = 43,1 cm</string>
+    <string name="LBL_C21">Cho hai bình ga có vỏ bình cùng loại có nhiệt độ cân bằng nhiệt với môi trường. Một bình đựng đầy khí
+        metan có áp suất là 2 atm và một bình kín đựng đầy khí butan có áp suất là 3 atm. Người ta dùng máy bơm cao áp để bơm hết
+        khí metan vào bình đựng khí butan, sau một thời gian thì bình đựng hỗn hợp khí cân bằng với nhiệt độ môi trường. Khí hỗn hợp
+        này sẽ có áp suất là .....</string>
+    <string name="LBL_C21_1">2,5 atm</string>
+    <string name="LBL_C22">Một quả bóng bay được bơm đầy khí hidro có thể tích là 11,2 lít và nhiệt độ của quả bóng bay là 273 K.
+        Biết áp suất trong quả bóng bay là 1,25 atm. Vậy khối lượng khí hidro có trong quả bóng bay là...</string>
+    <string name="LBL_C22_0">1,25 g</string>
+    <string name="LBL_C22_1">2,5 g</string>
+    <string name="LBL_C22_2">4,48 g</string>
+    <string name="LBL_C22_3">5,15 g</string>
+    <string name="LBL_C23">Một bình nén khí dùng để bơm lốp xe có thể tích là 30 lít và luôn được cắm điện để áp suất khí trong
+        bình nén luôn giữ ở mức 7,5 atm. Nếu như nhiệt độ của khí trong bình bằng với nhiệt độ vỏ bình và nhiệt độ môi trường là
+        0ºC, khối lượng mol của không khí là 28,6 gam thì khối lượng khí nén trong bình trên là...</string>
+    <string name="LBL_C23_1">114,4 g</string>
+    <string name="LBL_C23_3">287,3 g</string>
+    <string name="LBL_C24">Một quả bóng bay hình cầu do được bơm đầy bằng 3 gam khí hidro. Khí bên trong quả bóng bay có áp suất là
+        1,25 atm, có nhiệt độ cân bằng nhiệt với nhiệt độ môi trường 32ºC. Biết một mol khí hidro ở nhiệt độ 32ºC, áp suất 1 atm
+        sẽ có thể tích là 25 lít. Vậy bán kính của quả bóng bay trên có độ dài là …?</string>
+    <string name="LBL_C24_0">28,2 cm</string>
+    <string name="LBL_C24_1">19,2 cm</string>
+    <string name="LBL_C24_2">3,6 cm</string>
+    <string name="LBL_C24_3">27,1 cm</string>
+
+    <string name="LBLBT_C1">Một khối khi nằm trong xi lanh chưa bị bịt kín. Khi pit-tông đang ở vạch X cc thì người ta bắt
+        đầu bịt kín đầu kim tiêm của xi lanh để xi lanh được bịt kín hoàn toàn. Sau đó người ta kéo hết sức chầm chậm xi lanh
+        ra đến vạch (10 + X) cc. Khi ở vạch (10 + X) cc thì áp suất khí trong xi lanh chỉ còn ⅓ atm. Biết áp suất khí
+        quyển là 1 atm, X có giá trị là ... </string>
+    <string name="LBLBT_C2_2">1,013 bar</string>
+    <string name="LBLBT_C3">Cho 3 quả bóng bay được bơm căng có hình cầu và có cùng đường kính. Áp suất không khí bên
+        trong quả bóng bay đều là 1.3 atm, mỗi quả bóng bay chứa một loại khí khác nhau là metan, hidro và heli. Nắm
+        giữ ba cái cuống của ba quả bóng bay rồi thả đồng thời để chúng bay lên trong một căn phòng có trần nhà đủ cao
+        để các quả bóng bay lên rồi chạm trần nhà một cách lần lượt. Các quả bóng bay sẽ chạm trần nhà theo thứ tự là các
+        quả bóng chứa khí …?</string>
+    <string name="LBLBT_C3_0">Hidro, metan, heli</string>
+    <string name="LBLBT_C3_1">Metan, heli, hidro</string>
+    <string name="LBLBT_C3_2">Heli, metan, hidro</string>
+    <string name="LBLBT_C3_3">Hidro, heli, metan</string>
+    <string name="LBLBT_C4">Một quả bóng bay đang cần bằng nhiệt với môi trường ở nhiệt độ 32ºC. Quả bóng có dạng hình cầu
+        với đường kính 30 cm, áp suất khí bên trong quả bóng có độ lớn là 1,3 atm, lượng khí bên trong quả bóng bay nặng
+        20,6 gam. Biết thể tích một mol khí bất kì ở điều kiện nhiệt độ 32ºC, áp suất 1 atm luôn luôn là 25 lít. Vậy khí
+        đã bơm vào trong quả bóng bay là loại khí</string>
+    <string name="LBLBT_C5">Cho các thông số của một khối khí như sau (1) áp suất, (2) nhiệt độ, (3) thể tích, (4) mật độ
+        phân tử, (5) khối lượng, (6) động năng trung bình phân tử, (7) lực tương tác giữa các phân tử, (8) khoảng cách
+        trung bình giữa các phân tử, (9) tốc độ trung bình phân tử, (10) số mol, (11) khối lượng riêng, (12) khối lượng mol.
+        Vậy khi khối khí đó được nén lại một cách vô cùng chậm (nén đẳng nhiệt) thì có bao nhiêu thông số KHÔNG bị thay đổi ?</string>
+    <string name="LBLBT_C10">Trong một buổi huấn luyện thoát hiểm cho các thủy thủ tàu ngầm, để minh họa cho việc cần phải
+        thở ra để tránh bị bể phổi khi nổi lên từ tàu đắm thì người ta dùng một cái bao (loại không đàn hồi) chứa một lượng
+        khí được thả từ đáy biển để nó trồi lên từ từ. Cái bao chứa khí  khi càng lên cao thì càng nở ra và khi còn cách mặt
+        nước 10 mét thì bị vỡ. Thể tích của cái bao chứa khí lúc sắp vỡ gấp đôi thể tích lúc mới thả dưới đáy biển. Biết áp
+        suất khí quyển ở mặt biển là 1 atm = 101325 pa, khối lượng riêng của nước biển là 1030 kg/m³, gia tốc trọng trường là
+        9,81 m/s², độ sâu của đáy biển là …?</string>
+    <string name="LBLBT_C11">Áp suất khí quyển tại bề mặt nước biển là 1 atm = 760 mmHg = 101325 pa. Ở độ cao từ 2800m đến 3500m áp suất khí quyển giảm theo công thức gần đúng p = 760 – h/12,75 (p là áp suất tính theo mmHg, h là độ cao tuyệt đối tính theo đơn vị mét), áp suất khí quyển tại đỉnh Phăng Xi Păng là …?</string>
+    <string name="LBLBT_C11_1">Khoảng 508,6 mmHg</string>
+    <string name="LBLBT_C11_2">Khoảng 0,648 atm</string>
+    <string name="LBLBT_C12">Một bình khí nén heli loại mini có thể tích lòng bình chứa là 1,2 lít và áp suất khí heli trong
+        bình là 12 bar khi cân bằng nhiệt với nhiệt độ môi trường 19,5ºC. Bình này được dùng để bơm một quả bóng bay bằng cách
+        xả van khí một cách từ từ. Khi quả bóng bay không thể nhận thêm khí nữa thì áp suất của khí trong quả bóng bằng với
+        áp suất khí còn lại trong bình là 1,3 bar (tất cả đều cân bằng nhiệt với môi trường ở nhiệt độ 19,5ºC). Khí thất thoát
+        trong quá trình bơm bóng không đáng kể, vậy quả bóng bay có thể tích là ….?</string>
+    <string name="LBLBT_C12_0">11,08 lít</string>
+    <string name="LBLBT_C12_1">9,88 lít</string>
+    <string name="LBLBT_C12_2">18,46 lít</string>
+    <string name="LBLBT_C12_3">17,26 lít</string>
+    <string name="LBLBT_C13">Vào một ngày mùa thu năm 2023 thì hai đường ống dẫn khí đốt “Dòng Chảy Phương Bắc” từ Nga sang
+        Đức bị rò rỉ ở nhiều vị trí. Trong đó có một đoạn đường ống sâu nằm ở độ sâu 70 mét bị vỡ dẫn đến nhiều khí metan rò
+        rỉ ra ngoài đường ống. GIẢ SỬ có một bong bóng khí metan có thể tích là 1 lít ở độ sâu 70 mét đang trồi lên thì vỡ ra
+        thành nhiều bong bóng nhỏ. Khi lên khỏi mặt biển thì tổng thể tích của các bong bóng nhỏ là 7 lít. Áp suất dưới biển
+        phụ thuộc vào độ sâu như sau p = pa + ρgh. Trong đó pa là áp suất khí quyển trên mặt biển, ρ là khối lượng riêng của
+        nước biển, g là gia tốc trong trường, h là độ sâu tính theo đơn vị mét. Biết áp suất khí quyển pa = 1 atm = 101325 pa,
+        khối lượng riêng của nước biển là ρ = 1030 kg/m³, gia tốc trọng trường g = 9,83 m/s², vậy lượng khí metan đã hòa tan
+        trong nước biển là khoảng …?</string>
+    <string name="LBLBT_C13_0">7,9 %</string>
+    <string name="LBLBT_C13_1">14,2 %</string>
+    <string name="LBLBT_C13_2">12,4 %</string>
+    <string name="LBLBT_C13_3">9,7 %</string>
+    <string name="LBLBT_C14">Một quả bóng bay hình cầu được bơm căng bởi hỗn hợp khí gồm có 2g hidro và 44g cacbonic. Khi
+        thả quả bóng ngoài không khí thì quả bóng bay lơ lửng. Biết nhiệt độ không khí và nhiệt độ quả bóng bay là 19,5ºC,
+        áp suất không khí là 1 atm, khối lượng mol của không khí là 29 g/mol, khối lượng vỏ bóng bay không đáng kể, thể tích
+        một mol khí bất kì tại nhiệt độ 19,5ºC và áp suất 1 atm là 24 lít. Vậy quả bóng bay trên có đường kính là ...</string>
+    <string name="LBLBT_C14_0">41,74 cm</string>
+    <string name="LBLBT_C14_1">23,80 cm	</string>
+    <string name="LBLBT_C14_2">20,87 cm</string>
+    <string name="LBLBT_C14_3">25,28 cm</string>
+    <string name="LBLBT_C15">Sân khấu sự kiện được trang trí các quả bóng bay hình cầu có đường kính 40 cm do
+        được bơm đầy khí heli. Biết một mol khí bất kỳ ở nhiệt độ 20ºC, áp suất 1 atm sẽ có thể tích là 24 lít
+        và nhiệt độ của bóng bay cân bằng nhiệt với nhiệt độ phòng được bật điều hòa cũng ở nhiệt độ 20ºC, áp suất khí
+        heli tác động lên mặt trong của quả bóng bay là 1.3 atm, vậy khối lượng khí heli có trong mỗi quả bóng bay là ...</string>
+    <string name="LBLBT_C15_0">7,26 g</string>
+    <string name="LBLBT_C15_1">58,08 g</string>
+    <string name="LBLBT_C15_2">44,68 g</string>
+    <string name="LBLBT_C15_3">11,17 g</string>
+    <string name="LBLBT_C16">Một bình khí nito có dung tích 47 lít có áp suất khí bên trong bình là 4 atm và nhiệt độ 50ºC.
+        Biết một mol khí nitơ ở nhiệt độ 50ºC, áp suất 1 atm sẽ có thể tích là 0,0265 m khối. Vậy trong bình trên chứa bao
+        nhiêu mol khí nitơ ?</string>
+    <string name="LBLBT_C16_0">3,21 mol</string>
+    <string name="LBLBT_C16_1">0,31 mol</string>
+    <string name="LBLBT_C16_2">4,98 mol</string>
+    <string name="LBLBT_C16_3">7,09 mol</string>
+    <string name="LBLBT_C17">Một bình ga mini chứa khí butan tinh khiết hóa lỏng có khối lượng tịnh là 220 gam. Biết butan
+        khi ở nhiệt độ 19,5ºC và áp suất 1 atm sẽ có thể tích là mol là 0,024 m³/mol. Vậy cần bao nhiêu lít khí butan ở điều
+        kiện 19,5ºC và áp suất 1 atm để nén vào bình ga mini trên</string>
+    <string name="LBLBT_C17_0">125,7 lít</string>
+    <string name="LBLBT_C17_3">75,4 lít</string>
+
+    <string name="LBLBT_C19">Một xi lanh chứa một thể tích 100ml thì người ta bắt đầu bịt kín xi lanh. Sau đó người ta
+        đẩy pit–tông một cách từ từ để thể tích khí trong xi lanh bị nén lại thành 80ml thì lúc này áp suất của khí bên
+        trong xi lanh là 1,2 atm. Vậy so với trước khi nén thì sau khi nén thì áp suất khí trong xi lanh đã biến thiên như
+        thế nào ?</string>
+    <string name="LBLBT_C19_0">Giảm đi 0,2 atm</string>
+    <string name="LBLBT_C19_1">Tăng lên 0,24 atm</string>
+    <string name="LBLBT_C19_2">Giảm đi 0,24 atm</string>
+    <string name="LBLBT_C19_3">Tăng lên 0,2 atm</string>
+    <string name="LBLBT_C20">Một xi lanh được bịt kín để chứa một lượng khí nhất định. Nếu người ta đẩy chậm pit–tông để
+        khối khí giảm thể tích đi 50ml thì áp suất khí trong xi lanh là 2 atm. Nếu người ta kéo chậm pit – tông để khối khí
+        tăng thể tích thêm 100 ml thì áp suất khí trong xi lanh 0,5 atm. Vậy lúc ban đầu thể tích của khối khí là</string>
+    <string name="LBLBT_C21">Một xi lanh kín chứa một lượng khí V và áp suất p. Sau đó người ta đẩy pit–tông một cách đủ chậm
+        để khối khí khí bị nén đẳng nhiệt. Khi nén thì thể tích khối khí giảm đi 30ml và áp suất tăng thêm 0,4 atm. Sau đó
+        người ta lại kéo pit–tông một cách đủ chậm để khối khí bị dãn đẳng nhiệt. Khi ngừng kéo pit–tông thì thể tích khối khí
+        tăng thêm 30 ml và áp suất giảm đi 0,24 atm so với lúc ban đầu. Vậy lúc đầu khối khí có trong xi lanh có áp suất là …?</string>
+    <string name="LBLBT_C21_0">1,2 atm</string>
+    <string name="LBLBT_C21_1">1,0 atm</string>
+    <string name="LBLBT_C21_2">0,5 atm</string>
+    <string name="LBLBT_C21_3">0,8 atm</string>
+    <string name="LBLBT_C22">Một khối khí ban đầu có thể tích V và áp suất p. Người ta nén đẳng nhiệt khối khí đó xuống
+        thể tích chỉ còn 40 % thể tích ban đầu thì thấy áp suất tăng thêm 1,8 atm. Vậy lúc ban đầu áp suất p có giá trị là … ?</string>
+    <string name="LBLBT_C22_0">4,5 atm</string>
+    <string name="LBLBT_C22_1">3,0 atm</string>
+    <string name="LBLBT_C22_2">1,2 atm</string>
+    <string name="LBLBT_C22_3">0,72 atm</string>
+    <string name="LBLBT_C23">Một khối khí nằm trong xi lanh được dãn đẳng nhiệt thì thấy áp suất giảm đi 20 %, còn thể
+        tích tăng thêm 20 cm³ so với lúc đầu. Vậy lúc ban đầu thì khối khí có thể tích là …</string>
+    <string name="LBLBT_C24" formatted="false">Một khối khí được nén đẳng nhiệt, khi áp suất tăng thêm 25 % thì thể tích khí giảm đi 36 ml
+        so với lúc chưa nén. Vậy khi áp suất tăng lên đến 200 % so với lúc chưa nén thì thể tích sẽ giảm đi … ?</string>
+
+
+
+    <string name="TH9_C1">Chọn phát biểu đúng:</string>
+    <string name="TH9_C1_0">Xung quanh nam châm và xung quanh dòng điện có từ trường</string>
+    <string name="TH9_C1_1">Bầu khí quyển của trái đất không có từ trường</string>
+    <string name="TH9_C1_2">Một nam châm vĩnh cửu luôn luôn có hai cực</string>
+    <string name="TH9_C1_3">Một nam châm điện luôn luôn có hai cực</string>
+    <string name="TH9_C2">Nam châm thẳng và hàm châm chữ U dùng để giảng dạy ở các trường học thì cực bắc của nam châm có dấu hiệu nhận biết là …</string>
+    <string name="TH9_C2_0">Màu xanh dương, có chữ N</string>
+    <string name="TH9_C2_1">Màu xanh dương, có chữ S</string>
+    <string name="TH9_C2_2">Màu đỏ, có chữ N</string>
+    <string name="TH9_C2_3">Màu đỏ, có chữ S</string>
+
+    <string name="TH9_C3">Xung quanh dòng điện tồn tại một từ trường, từ trường này có thể tác dụng lực từ lên …</string>
+    <string name="TH9_C3_0">Một dòng điện chạy trong từ trường</string>
+    <string name="TH9_C3_1">Một nam châm đặt trong từ trường</string>
+    <string name="TH9_C3_2">Một nam châm thử đặt trong từ trường</string>
+    <string name="TH9_C3_3">Cả ba đáp án trên đều đúng</string>
+
+    <string name="TH9_C4">Đường sức từ …</string>
+    <string name="TH9_C4_0">Không thể nhìn thấy bằng mắt thường</string>
+    <string name="TH9_C4_1">Có thể nhìn thấy bằng mắt thường</string>
+    <string name="TH9_C4_2">Có thể nhìn thấy bằng từ phổ</string>
+    <string name="TH9_C4_3">Có chiều đi vào cực bắc, đi ra ở cực nam của nam châm thử</string>
+
+    <string name="TH9_C5">Một nam châm vĩnh của thì thành phần chính cấu tạo nên nam châm là</string>
+    <string name="TH9_C5_0">Bạc</string>
+    <string name="TH9_C5_1">Sắt</string>
+    <string name="TH9_C5_2">Nhôm</string>
+    <string name="TH9_C5_3">Đồng</string>
+
+    <string name="TH9_C6">Với một nam châm điện ta có thể xác định được chiều của đường sức từ bên trong lòng ống dây khi</string>
+    <string name="TH9_C6_0">Xác định được chiều dòng điện của khung dây nam châm điện</string>
+    <string name="TH9_C6_1">Dùng nam châm thử đặt ở gần cực của nam châm điện</string>
+    <string name="TH9_C6_2">Dùng nam châm thẳng đặt ở gần cực của nam châm điện</string>
+    <string name="TH9_C6_3">Cả ba cách trên đều đúng</string>
+
+    <string name="TH9_C7">Một cửa hàng bán đồ điện có nhập về một số cuộn dây điện. Biết dây điện có thể lõi dây được làm bằng đồng hoặc bằng nhôm, nhưng bọn lừa đảo có thể làm lõi dây làm bằng thép để lừa bán cho cửa hàng. Vậy cách nhanh nhất để phát hiện các cuộn dây có lõi làm bằng thép là</string>
+    <string name="TH9_C7_0">Dùng nam vĩnh cửu có từ trường mạnh để rà các cuộn dây điện</string>
+    <string name="TH9_C7_1">Dùng nam châm thử có từ trường mạnh để rà các cuộn dây điện</string>
+    <string name="TH9_C7_2">Dùng la bàn có từ trường mạnh để rà các cuộn dây điện</string>
+    <string name="TH9_C7_3">Dùng mắt để phân biệt màu sắc của lõi dây</string>
+    <string name="TH9_C8">Nam châm được ứng dụng để tạo ra</string>
+    <string name="TH9_C8_0">Loa</string>
+    <string name="TH9_C8_1">Rơ le</string>
+    <string name="TH9_C8_2">Cực của nguồn điện</string>
+    <string name="TH9_C8_3">Cực của pin</string>
+
+    <string name="TH9_C9">CHỌN CÂU SAI. Động cơ điện có trong</string>
+    <string name="TH9_C9_0">Nồi chiên không dầu</string>
+    <string name="TH9_C9_1">Cối xay gió</string>
+    <string name="TH9_C9_2">Mô tơ</string>
+    <string name="TH9_C9_3">Máy sấy tóc</string>
+
+    <string name="TH9_C10">Động cơ điện khi hoạt động có thể chuyển hóa phần lớn điện năng thành</string>
+    <string name="TH9_C10_0">Quang năng</string>
+    <string name="TH9_C10_1">Nhiệt năng</string>
+    <string name="TH9_C10_2">Cơ năng</string>
+    <string name="TH9_C10_3">Nội năng</string>
+
+    <string name="TH9_C11">CHỌN CÂU SAI. “Một cuộn dây dẫn kín xuất hiện dòng điện cảm ứng trong cuộn dây khi mà số đường sức từ đi qua cuộn dây …</string>
+    <string name="TH9_C11_0">Tăng lên</string>
+    <string name="TH9_C11_1">Giảm đi</string>
+    <string name="TH9_C11_2">Biến thiên</string>
+    <string name="TH9_C11_3">Không đổi</string>
+
+    <string name="TH9_C12">Dòng điện dân dụng của nước ta là dòng điện AC 220V, nghĩa là dòng điện</string>
+    <string name="TH9_C12_0">Xoay chiều có hiệu điện thế định mức 220V</string>
+    <string name="TH9_C12_1">Một chiều có hiệu điện thế định mức 220V</string>
+    <string name="TH9_C12_2">Xoay chiều có hiệu điện thế hiệu dụng 220V</string>
+    <string name="TH9_C12_3">Một chiều có hiệu điện thế hiệu dụng 220V</string>
+
+    <string name="TH9_C13">Dòng điện dân dụng của nước ta có tần số 50 Hz, vậy trong một giây thì chiều dòng điện sẽ thay đổi</string>
+    <string name="TH9_C13_0">25 lần</string>
+    <string name="TH9_C13_1">50 lần</string>
+    <string name="TH9_C13_2">100 lần</string>
+    <string name="TH9_C13_3">200 lần</string>
+
+    <string name="TH9_C14">Máy biến thế có hai loại là máy tăng áp và máy hạ áp, vậy dụng cụ nào sau đây có máy biến thế hạ áp</string>
+    <string name="TH9_C14_0">Bóng đèn sưởi hồng ngoại</string>
+    <string name="TH9_C14_1">Nồi cơm điện</string>
+    <string name="TH9_C14_2">Củ sạc điện thoại</string>
+    <string name="TH9_C14_3">Máy xay sinh tố</string>
+
+    <string name="TH9_C15">CHỌN CÂU SAI. Hiện tượng cảm ứng điện từ được ứng dụng để tạo ra dòng điện</string>
+    <string name="TH9_C15_0">trong động cơ điện một chiều</string>
+    <string name="TH9_C15_1">từ máy phát điện xoay chiều</string>
+    <string name="TH9_C15_2">trong cuộn thứ cấp của máy biến thế hạ áp</string>
+    <string name="TH9_C15_3">trong cuộn thứ cấp của máy biến thế tăng áp</string>
+
+    <string name="TH9_C16">“Truyền tải điện năng đi xa thì cần máy biến áp … để giảm điện năng hao phí do tỏa nhiệt trên dây dẫn. Khi sử dụng với mục đích dân dụng thì cần máy biến áp … để có dòng điện với hiệu điện thế hiệu dụng 220V”. Từ còn thiếu theo thứ tự là</string>
+    <string name="TH9_C16_0">“Hạ áp” và “ổn áp”</string>
+    <string name="TH9_C16_1">“Tăng áp” và “hạ áp”</string>
+    <string name="TH9_C16_2">“Biến áp” và “tăng áp”</string>
+    <string name="TH9_C16_3">“Hạ áp” và “ổn áp”</string>
+
+    <string name="TH9_C17">Dòng điện xoay chiều không có tác dụng trong việc</string>
+    <string name="TH9_C17_0">chuyển hóa thành nhiệt năng</string>
+    <string name="TH9_C17_1">tạo ra lực từ</string>
+    <string name="TH9_C17_2">tạo ra ánh sáng</string>
+    <string name="TH9_C17_3">Sạc điện cho pin</string>
+
+    <string name="TH9_C18">Khi truyền tải điện năng đi xa người ta thường dùng phương pháp gì để giảm thiểu hao phí do tỏa nhiệt trên đường dây ?</string>
+    <string name="TH9_C18_0">Sử dụng dây dẫn có điện dẫn suất cao như bạc hoặc đồng</string>
+    <string name="TH9_C18_1">Tăng cường độ dòng điện chạy trên đường dây</string>
+    <string name="TH9_C18_2">Tăng điện áp dòng điện trên dây dẫn</string>
+    <string name="TH9_C18_3">Tăng tiết diện của dây dẫn</string>
+
+
+    <string name="TH9_C19">Dòng điện trong dây dẫn kim loại là dòng dịch chuyển của các hạt electron tự do?</string>
+    <string name="TH9_C19_0">Đúng</string>
+    <string name="TH9_C19_1">Sai</string>
+
+    <string name="TH9_C20">Dòng điện một chiều có ký hiệu là AC hoặc là ~?</string>
+
+    <string name="TH9_C21">Dòng điện tạo ra từ các tấm pin năng lượng mặt trời là dòng điện xoay chiều</string>
+
+    <string name="TH9_C22">Dòng điện Bắc – Nam dòng AC 500V?</string>
+
+    <string name="TH9_C23">Dinamo xe đạp có nam châm tạo ra từ trường là loại nam châm điện?</string>
+
+    <string name="TH9_C24">Trong máy phát điện ở các nhà máy điện (thủy điện, nhiệt điện) thì khung dây đứng yên, còn nam châm quay?</string>
+
+    <string name="TH9_C25">Dòng điện phổ biến để sạc điện thoại là dòng DC 12V?</string>
+
+    <string name="TH9_C26">Các công thức áp dụng cho dòng điện một chiều có thể áp dụng cho dòng điện xoay chiều trong một số trường hợp?</string>
+
+    <string name="TH9_C27">Khi đưa nam châm thử lại gần dòng điện dân dụng Việt Nam thì nam châm thử không bị lệch?</string>
+
+    <string name="TH9_C28">Máy biến thế thì dòng điện trong cuộn dây sơ cấp và thứ cấp đều là dòng điện xoay chiều?</string>
+
+    <string name="TT_C9">Chúng ta rất khó nhận biết được tương tác từ trong trường hợp …</string>
+    <string name="TT_C9_0">Hai dây dẫn đặt song song có dòng điện không đổi chạy qua tương tác với nhau</string>
+    <string name="TT_C9_1">Hai dây dẫn đặt song song có dòng điện xoay chiều cao tần chạy quat tương tác với nhau</string>
+    <string name="TT_C9_2">Đưa hai nam châm thẳng có hai cực cùng tên lại gần nhau</string>
+    <string name="TT_C9_3">Đưa hai nam châm thẳng có hai cực khác tên lại gần nhau</string>
+
+    <string name="TT_C10">CHỌN CÂU SAI. “Từ trường…”</string>
+    <string name="TT_C10_0">có ở xung quanh nam châm</string>
+    <string name="TT_C10_1">là một dạng của vật chất và có khối lượng</string>
+    <string name="TT_C10_2">có ở xung quanh dòng điện xoay chiều</string>
+    <string name="TT_C10_3">có ở xung quanh dòng điện không đổi</string>
+
+    <string name="TT_C11">Từ trường là trường lực gây ra bởi dòng điện hoặc nam châm, biểu hiện cụ thể là xuất hiện của lực từ tác dụng lên … ở trong nó</string>
+    <string name="TT_C11_0">Dòng điện</string>
+    <string name="TT_C11_1">Nam châm khác</string>
+    <string name="TT_C11_2">Hạt điện tích chuyển động</string>
+    <string name="TT_C11_3">Cả ba đáp án đều đúng</string>
+
+    <string name="TT_C12">Trong các từ trường sau, từ trường yếu nhất là từ trường …</string>
+    <string name="TT_C12_0">Đầu cực Bắc nam châm thẳng</string>
+    <string name="TT_C12_1">Đầu cực Nam nam châm thẳng</string>
+    <string name="TT_C12_2">Của trái đất</string>
+    <string name="TT_C12_3">Trong lòng máy chụp cộng hưởng từ khi hoạt động</string>
+
+    <string name="TT_C13">CHỌN CÂU SAI. “Cảm ứng từ …”</string>
+    <string name="TT_C13_0">Là một đại lượng véctơ</string>
+    <string name="TT_C13_1">Có chiều từ cực Nam sang cực Bắc của nam châm thử</string>
+    <string name="TT_C13_2">Bằng nhau tại mọi điểm trong không gian có từ trường đều</string>
+    <string name="TT_C13_3">Có phương luôn thay đổi</string>
+
+    <string name="TT_C14">Chúng ta thấy hình ảnh trực quan và bao quát của từ trường khi chúng ta quan sát …</string>
+    <string name="TT_C14_0">Từ phổ</string>
+    <string name="TT_C14_1">Nam châm thử</string>
+    <string name="TT_C14_2">Đường sức từ</string>
+    <string name="TT_C14_3">Cảm ứng từ</string>
+
+    <string name="TT_C15">Hình ảnh nào dưới đây là hình ảnh chụp từ phổ của hai nam châm đang hút nhau ?
+</string>
+
+    <string name="TT_C16">Chọn phát biểu SAI khi nói về đường sức từ:</string>
+    <string name="TT_C16_0">Đường sức từ của dòng điện không đổi có dạng ổn định</string>
+    <string name="TT_C16_1">Đường sức từ của nam châm là đường cong kín</string>
+    <string name="TT_C16_2">Đường sức từ của dòng điện là đường elip</string>
+    <string name="TT_C16_3">Đường sức từ của dòng điện xoay chiều không có dạng ổn định</string>
+
+    <string name="TT_C17_0">Màu của nam châm thử</string>
+    <string name="TT_C17_1">Chiều của đường sức từ</string>
+    <string name="TT_C17_2">Chiều của dòng điện</string>
+    <string name="TT_C17_3">Không cần thay đổi gì cả</string>
+
+    <string name="TT_C18_0">Nhầm màu của nam châm thử</string>
+    <string name="TT_C18_1">Nhầm chiều của đường sức từ</string>
+    <string name="TT_C18_2">Nhầm màu của nam châm thẳng</string>
+    <string name="TT_C18_3">Nhầm ký hiệu N–S của nam châm</string>
+
+    <string name="TT_C19_0">Đúng</string>
+    <string name="TT_C19_1">Sai</string>
+    <string name="TT_C23">Một vòng dây có chiều chuyển động của electron cùng chiều với chiều quay của đầu kim đồng hồ thì chiều đường sức từ trong lòng ống dây là chiều hướng về mắt người quan sát ?</string>
+    <string name="TT_C24">Một số loại động vật có thể xác định phương hướng nhờ vào từ trường trái đất ?</string>
+    <string name="TT_C25">Nếu coi trái đất có một nam châm khổng lồ để tạo ra từ trường trái đất thì cực Bắc của nam châm này nằm chính tại nam Cực ?</string>
+    <string name="TT_C26">Một ống dây có dòng điện xoay chiều với tần số f chạy qua thì đường sức từ trong lòng ống dây sẽ đổi chiều với tần số là 2f</string>
+    <string name="TT_C27">Từ trường của dòng điện không đổi hoặc dòng điện xoay chiều thấp tần có thể làm lệch nam châm thử khỏi kinh tuyến từ, còn từ trường của dòng điện xoay chiều cao tần không thể làm lệch nam châm thử khỏi kinh tuyến từ ?</string>
+    <string name="TT_C28">Hiện nay là bàn vẫn còn dùng trên các tàu viễn dương với vai trò dự phòng ?</string>
+
+    <string name="LTDD_C7">Câu 7. Cho công thức của định luật Ampe về lực từ tác dụng lên dây dẫn đặt trong từ trường đều là F = BILsinα. Sinα có trị số là 1 khi góc hợp bởi … là góc vuông ?</string>
+    <string name="LTDD_C7_0">A. Chiều của đường sức từ và chiều của lực từ</string>
+    <string name="LTDD_C7_1">B. Chiều chuyển động của dòng electron trong dây dẫn và chiều của đường sức từ</string>
+    <string name="LTDD_C7_2">C. Chiều của dòng điện và chiều của chuyển động của dòng electron trong dây dẫn</string>
+    <string name="LTDD_C7_3">D.  Chiều của dòng điện và chiều của của lực từ</string>
+
+    <string name="LTDD_C8">Câu 8. Từ trường của trái đất có cảm ứng từ không đều. Từ trường ở hai cực sẽ mạnh hơn từ trường ở xích đạo. Vậy từ trường của trái đất có độ lớn khoảng …</string>
+    <string name="LTDD_C8_0">A. Vài chục Tesla</string>
+    <string name="LTDD_C8_1">B. Vài chục phần ngàn Tesla</string>
+    <string name="LTDD_C8_2">C. Vài chục phần triệu Tesla</string>
+    <string name="LTDD_C8_3">D. Vài chục phần tỉ Tesla</string>
+
+    <string name="LTDD_C9">Câu 9. Từ trường được ứng dụng trong …</string>
+    <string name="LTDD_C9_0">A. Chụp CT</string>
+    <string name="LTDD_C9_1">B. Chụp X-Quang</string>
+    <string name="LTDD_C9_2">C. Siêu âm</string>
+    <string name="LTDD_C9_3">D. Chụp MRI</string>
+
+    <string name="LTDD_C10">Câu 10. Thường khi bệnh nhân có kim loại trong cơ thể thì người ta không thể chụp cộng hưởng từ (chụp MRI) bởi vì</string>
+    <string name="LTDD_C10_0">A. Từ trường mạnh của máy chụp làm ảnh hưởng xấu đến kim loại dẫn đến tổn thương mô hoặc cơ quan xung quanh</string>
+    <string name="LTDD_C10_1">B. Kim loại có thể gây nhiễu tín hiệu MRI</string>
+    <string name="LTDD_C10_2">C. Kim loại trong cơ thể có thể tạo ra sự nóng lên khi chúng tương tác với từ trường mạnh của MRI, có thể tiềm ẩn nguy cơ bị hỏng do quá nhiệt.</string>
+    <string name="LTDD_C10_3">D. Cả 3 đáp án trên đều đúng</string>
+
+    <string name="LTDD_C11">Câu 11. Hiện tượng xuất hiện lực từ tác dụng vào dây dẫn mang dòng điện đặt trong từ trường đều được ứng dụng để chế tạo ra</string>
+    <string name="LTDD_C11_0">A. Động cơ điện</string>
+    <string name="LTDD_C11_1">B. Máy phát điện</string>
+    <string name="LTDD_C11_2">C. Máy biến thế</string>
+    <string name="LTDD_C11_3">D. Máy rà kim loại, rà mìn</string>
+
+    <string name="LTDD_C12">Câu 12. Một dây dẫn thẳng có dòng điện chạy qua được đặt trong từ trường đều sẽ không dịch chuyển bởi lực từ nếu …</string>
+    <string name="LTDD_C12_0">A. Dòng điện trong dây dẫn là dòng điện xoay chiều cao tần</string>
+    <string name="LTDD_C12_1">B. Dây dẫn được đặt vuông góc với đường sức từ</string>
+    <string name="LTDD_C12_2">C. Dòng điện trong dây dẫn là dòng điện không đổi</string>
+    <string name="LTDD_C12_3">D. Dây dẫn được đặt sao cho góc hợp bởi chiều của dòng điện và chiều của đường sức từ là góc tù</string>
+
+    <string name="LTDD_C13">Câu 13. Hình vẽ minh họa nào dưới đây mô tả đúng quy tắc bàn tay trái về cách xác định chiều của lực từ ?</string>
+
+    <string name="LTDD_C14">Câu 14. Cho phương trình xác định độ lớn của lực từ F tác dụng lên đoạn dây dẫn thẳng chiều dài L có dòng điện không đổi I chạy trong dây dẫn đặt trong từ trường đều B là F = ½ BIL. Vậy góc hợp bởi chiều của lực từ F và chiều của đường sức từ của từ trường đều B có độ lớn là …</string>
+    <string name="LTDD_C14_0">A. 30°</string>
+    <string name="LTDD_C14_1">B. 60°</string>
+    <string name="LTDD_C14_2">C. 90°</string>
+    <string name="LTDD_C14_3">D. 120°</string>
+
+    <string name="LTDD_C15">Câu 15. Cho lực từ F tác dụng lên đoạn dây dẫn thẳng chiều dài L có dòng điện không đổi I chạy trong dây dẫn đặt trong từ trường đều B có góc hợp bởi chiều của đường sức từ B và chiều chuyển động dòng electron trong dây dẫn L là 150°. Vậy công thức nào dưới đây là công thức xác định đúng độ lớn lực từ tác dụng lên đoạn dây L ?</string>
+    <string name="LTDD_C15_0">A. F = ½ BIL</string>
+    <string name="LTDD_C15_1">B. F = BIL</string>
+    <string name="LTDD_C15_2">C. F = √3BIL</string>
+    <string name="LTDD_C15_3">D. F = ½⋅√3BIL</string>
+
+    <string name="LTDD_C16">Câu 16. Cho công thức của định luật Ampe về lực từ tác dụng lên dây dẫn đặt trong từ trường đều là F = BILsinα. Lực từ F sẽ không thay đổi nếu chúng ta</string>
+    <string name="LTDD_C16_0">A. Đổi ngược chiều cảm ứng từ B</string>
+    <string name="LTDD_C16_1">B. Đổi ngược chiều dòng điện I</string>
+    <string name="LTDD_C16_2">C. Đổi dây dẫn từ có chiều dài L thành 2L</string>
+    <string name="LTDD_C16_3">D. Đổi ngược chiều cảm ứng từ B và đồng thời đổi ngược chiều dòng điện I</string>
+
+    <string name="LTDD_C17">Câu 17. Cảm ứng từ của vật nào sau đây luôn luôn thay đổi chiều ?</string>
+    <string name="LTDD_C17_0">A. Nam châm vĩnh cửu</string>
+    <string name="LTDD_C17_1">B. Nam châm điện của máy cẩu hàng</string>
+    <string name="LTDD_C17_2">C. Bếp từ lúc hoạt động</string>
+    <string name="LTDD_C17_3">D. Công tắc từ (công tắc điều khiển từ xa)</string>
+
+    <string name="LTDD_C18">Câu 18. Cho dây dẫn thẳng có chiều dài L vào có dòng điện không đổi I được đặt trong từ trường B như hình vẽ. Nếu tăng cường độ dòng điện lên gấp đôi và tăng độ lớn của cảm ứng từ lên gấp 3 lần thì độ lớn của lực từ sẽ …</string>
+    <string name="LTDD_C18_0">A. Không thay đổi</string>
+    <string name="LTDD_C18_1">B. Tăng lên gấp đôi</string>
+    <string name="LTDD_C18_2">C. Tăng lên gấp ba lần</string>
+    <string name="LTDD_C18_3">D. Tăng lên gấp sáu lần</string>
+</resources>
