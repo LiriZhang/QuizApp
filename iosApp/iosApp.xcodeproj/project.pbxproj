@@ -39,19 +39,19 @@
 			children = (
 				75B8B0C9282C6D1F00139988 /* iosApp */,
 				75B8B0E0282C6E8000139988 /* shared.framework */,
-				75B8B0C7282C6D1F00139988 /* Frameworks */,
-				75B8B0C8282C6D1F00139988 /* Products */,
+				75B8B0C7282C6D1F00139999 /* Frameworks */,
+				75B8B0C8282C6D1F00139999 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		75B8B0C7282C6D1F00139988 /* Frameworks */ = {
+		75B8B0C7282C6D1F00139999 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		75B8B0C8282C6D1F00139988 /* Products */ = {
+		75B8B0C8282C6D1F00139999 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				75B8B0C8282C6D1F00139988 /* iosApp.app */,
@@ -115,7 +115,7 @@
 				Base,
 			);
 			mainGroup = 75B8B0BF282C6D1F00139988;
-			productRefGroup = 75B8B0C8282C6D1F00139988 /* Products */;
+			productRefGroup = 75B8B0C8282C6D1F00139999 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
