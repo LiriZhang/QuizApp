@@ -5348,7 +5348,6 @@ fun ImageFromUrl(
     )
 }
 
-//Hàm chuẩn hóa văn bản không phân biệt chữ hoa, chữ thưởng, dấu, nhiều dấu cách
 // Hàm chuẩn hóa văn bản không phân biệt chữ hoa, chữ thưởng, dấu, nhiều dấu cách (Đa nền tảng)
 fun normalizeText(input: String): String {
     val srcM = "áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđ"
