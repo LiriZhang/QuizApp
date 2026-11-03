@@ -10,9 +10,10 @@ import com.exam.quizapp.shared.resources.allStringResources
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-class ResultViewModel(
-    private val quizDao: QuizResultDao = QuizDatabase.getDatabase().quizResultDao()
-) : ViewModel() {
+class ResultViewModel : ViewModel() {
+    private val quizDao: QuizResultDao by lazy {
+        QuizDatabase.getDatabase().quizResultDao()
+    }
 
     fun saveResult(
         quizName: String,

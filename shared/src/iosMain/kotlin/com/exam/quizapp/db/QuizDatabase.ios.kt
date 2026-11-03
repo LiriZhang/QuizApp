@@ -25,5 +25,10 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
 }
 
 actual fun initQuizDatabase(): QuizDatabase {
-    return QuizDatabase.getDatabase(getDatabaseBuilder())
+    return try {
+        QuizDatabase.getDatabase(getDatabaseBuilder())
+    } catch (e: Exception) {
+        println("Error initializing QuizDatabase on iOS: ${e.message}")
+        QuizDatabase.getDatabase()
+    }
 }
