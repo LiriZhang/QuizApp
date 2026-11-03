@@ -4,6 +4,7 @@ package com.exam.quizapp.db
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -21,14 +22,9 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
     return Room.databaseBuilder<QuizDatabase>(
         name = dbFilePath,
         factory = { QuizDatabaseConstructor.initialize() }
-    )
+    ).setDriver(BundledSQLiteDriver())
 }
 
 actual fun initQuizDatabase(): QuizDatabase {
-    return try {
-        QuizDatabase.getDatabase(getDatabaseBuilder())
-    } catch (e: Exception) {
-        println("Error initializing QuizDatabase on iOS: ${e.message}")
-        QuizDatabase.getDatabase()
-    }
+    return QuizDatabase.getDatabase(getDatabaseBuilder())
 }

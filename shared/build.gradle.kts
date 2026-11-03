@@ -60,6 +60,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.common)
+            implementation(libs.sqlite.bundled)
         }
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
