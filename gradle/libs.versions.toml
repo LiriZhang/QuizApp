@@ -37,7 +37,6 @@ media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
 # aws-s3 = { group = "aws.sdk.kotlin", name = "s3", version.ref = "aws-s3" }
 androidx-compose-material-icons = { module = "androidx.compose.material:material-icons-extended", version = "1.7.8" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "room" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
