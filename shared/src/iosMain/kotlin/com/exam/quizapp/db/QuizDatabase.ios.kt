@@ -31,5 +31,4 @@ actual fun initQuizDatabase(): QuizDatabase {
         println("Error initializing QuizDatabase on iOS: ${e.message}")
         QuizDatabase.getDatabase()
     }
-    return QuizDatabase.getDatabase(getDatabaseBuilder())
 }
