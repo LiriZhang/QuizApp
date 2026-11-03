@@ -6,13 +6,15 @@ import platform.UIKit.UIViewController
 import com.exam.quizapp.ui.screens.QuizApp
 import com.exam.quizapp.db.initQuizDatabase
 
-fun MainViewController(): UIViewController = ComposeUIViewController {
-    remember { initQuizDatabase() }
-    QuizApp(
-        onQuizCompleted = {
-            // Xử lý khi hoàn thành quiz trên iOS
-        }
-    )
+fun MainViewController(): UIViewController {
+    initQuizDatabase()
+    return ComposeUIViewController {
+        QuizApp(
+            onQuizCompleted = {
+                // Xử lý khi hoàn thành quiz trên iOS
+            }
+        )
+    }
 }
 /*
 Chúng ta chưa tạo thư mục iosApp hay project Xcode, và nguyên nhân là vì
