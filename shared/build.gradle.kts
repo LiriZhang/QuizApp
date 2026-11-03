@@ -28,6 +28,12 @@ kotlin {
     }
 
     sourceSets {
+        val iosArm64Main by getting {
+            kotlin.srcDir("build/generated/ksp/iosArm64/iosArm64Main/kotlin")
+        }
+        val iosSimulatorArm64Main by getting {
+            kotlin.srcDir("build/generated/ksp/iosSimulatorArm64/iosSimulatorArm64Main/kotlin")
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -53,7 +59,6 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.common)
-            implementation(libs.sqlite.bundled)
         }
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
