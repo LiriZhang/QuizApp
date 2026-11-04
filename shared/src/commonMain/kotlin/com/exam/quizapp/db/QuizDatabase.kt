@@ -23,13 +23,19 @@ abstract class QuizDatabase : RoomDatabase() {
          * Nơi gọi (Android / iOS) chỉ cần truyền Builder tương ứng vào.
          */
 
+        fun setInstance(database: QuizDatabase) {
+            INSTANCE = database
+        }
+
         fun getDatabase(builder: Builder<QuizDatabase>? = null): QuizDatabase {
             val current = INSTANCE
             if (current != null) return current
-            val newDb = builder?.build()
-                ?: throw IllegalStateException("QuizDatabase has not been initialized. Pass a RoomDatabase.Builder to getDatabase() first.")
-            INSTANCE = newDb
-            return newDb
+            if (builder != null) {
+                val newDb = builder.build()
+                INSTANCE = newDb
+                return newDb
+            }
+            return initQuizDatabase()
         }
     }
 }

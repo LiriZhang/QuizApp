@@ -11,8 +11,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class ResultViewModel : ViewModel() {
-    private val quizDao: QuizResultDao by lazy {
-        QuizDatabase.getDatabase().quizResultDao()
+    private val quizDao: QuizResultDao? by lazy {
+        try {
+            QuizDatabase.getDatabase().quizResultDao()
+        } catch (e: Exception) {
+            println("QuizDatabase không khả dụng: ${e.message}")
+            null
+        }
     }
 
     fun saveResult(
@@ -31,7 +36,11 @@ class ResultViewModel : ViewModel() {
             timestamp = timestamp
         )
         viewModelScope.launch {
-            quizDao.insert(quizResult)
+            try {
+                quizDao?.insert(quizResult)
+            } catch (e: Exception) {
+                println("Lỗi lưu kết quả: ${e.message}")
+            }
         }
     }
 
@@ -151,11 +160,21 @@ class ResultViewModel : ViewModel() {
     }
 
     fun getAllResults(): List<QuizResult> {
-        return runBlocking { quizDao.getAllResults() }
+        val dao = quizDao ?: return emptyList()
+        return try {
+            runBlocking { dao.getAllResults() }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     fun getResultById(id: Int): QuizResult? {
-        return runBlocking { quizDao.getResultById(id) }
+        val dao = quizDao ?: return null
+        return try {
+            runBlocking { dao.getResultById(id) }
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun getQuestionResultsForResult(resultId: Int): List<QuestionResult> {
@@ -169,7 +188,11 @@ class ResultViewModel : ViewModel() {
 
     fun deleteResultById(id: Int) {
         viewModelScope.launch {
-            quizDao.deleteResultById(id)
+            try {
+                quizDao?.deleteResultById(id)
+            } catch (e: Exception) {
+                println("Lỗi xóa kết quả: ${e.message}")
+            }
         }
     }
 }

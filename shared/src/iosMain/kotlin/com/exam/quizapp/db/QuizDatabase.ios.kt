@@ -40,6 +40,16 @@ actual fun initQuizDatabase(): QuizDatabase {
         QuizDatabase.getDatabase(getDatabaseBuilder())
     } catch (e: Exception) {
         println("Lỗi khởi tạo QuizDatabase trên iOS: ${e.message}")
-        QuizDatabase.getDatabase(null)
+        try {
+            val inMemoryBuilder = Room.inMemoryDatabaseBuilder<QuizDatabase>()
+                .setDriver(BundledSQLiteDriver())
+                .setQueryCoroutineContext(Dispatchers.IO)
+            val fallbackDb = inMemoryBuilder.build()
+            QuizDatabase.setInstance(fallbackDb)
+            fallbackDb
+        } catch (e2: Exception) {
+            println("Lỗi tạo fallback DB: ${e2.message}")
+            throw e
+        }
     }
 }
