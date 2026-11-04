@@ -79,7 +79,7 @@ import com.exam.quizapp.shared.resources.*
 @Composable
 fun QuizApp(
     viewModel: QuizViewModel = viewModel(),
-    onQuizCompleted: () -> Unit
+    //onQuizCompleted: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         try {
@@ -90,7 +90,7 @@ fun QuizApp(
     }
     val navController = rememberNavController()
     val resultViewModel: ResultViewModel = viewModel()
-    NavHost(navController = navController, startDestination = "chapter_selection") {
+    NavHost(navController = navController, startDestination = "theory_and_exercise") {
         composable("theory_and_exercise") {
             TheoryAndExerciseScreen(
                 onTheorySelected = {
@@ -208,7 +208,7 @@ fun QuizApp(
                         viewModel.selectAnswer(answerIndex)
                         if (viewModel.showResult) {
                             navController.navigate("result/${viewModel.score}/${questions.size}/${viewModel.selectedLesson}")
-                            onQuizCompleted()
+                            //onQuizCompleted()
                         }
                     },
                     onTextAnswerSubmitted = { userInput, isCorrect ->
@@ -221,7 +221,7 @@ fun QuizApp(
 
                         if (viewModel.showResult) {
                             navController.navigate("result/${viewModel.score}/${questions.size}/${viewModel.selectedLesson}")
-                            onQuizCompleted()
+                            //onQuizCompleted()
                         }
                     },
                     onBackQuestion = {
@@ -260,7 +260,7 @@ fun QuizApp(
                     viewModel.history = calculatedHistory
                     viewModel.showResult = true
                     navController.navigate("result/${viewModel.score}/${viewModel.questions.size}/${viewModel.selectedLesson}")
-                    onQuizCompleted()
+                    //onQuizCompleted()
                 },
                 onHomePage = {
                     playVoice(isCorrect = false)
@@ -357,7 +357,7 @@ fun QuizApp(
                     onBack = {
                         playVoice(isCorrect = false)
                         navController.navigate("resultList")
-                        onQuizCompleted()
+                        //onQuizCompleted()
                     },
                 )
             } else {

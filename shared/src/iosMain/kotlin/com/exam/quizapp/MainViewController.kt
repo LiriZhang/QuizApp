@@ -5,6 +5,8 @@ import androidx.compose.ui.window.ComposeUIViewController
 import platform.UIKit.UIViewController
 import com.exam.quizapp.ui.screens.QuizApp
 import com.exam.quizapp.db.initQuizDatabase
+import com.exam.quizapp.platform.playVoice
+import com.exam.quizapp.ui.screens.ChapterSelectionScreen
 import com.exam.quizapp.ui.screens.TheoryAndExerciseScreen
 
 fun MainViewController(): UIViewController {
@@ -14,18 +16,10 @@ fun MainViewController(): UIViewController {
         println("Error initializing database in MainViewController: ${e.message}")
     }
     return ComposeUIViewController {
-        TheoryAndExerciseScreen(
-            onExerciseSelected = {
-                // Xử lý khi chọn bài tập trên iOS
-            },
-            onTheorySelected = {
-                // Xử lý khi chọn lý thuyết trên iOS
-            }
-        )
-        /*QuizApp(
+        QuizApp(
             onQuizCompleted = {
                 // Xử lý khi hoàn thành quiz trên iOS
             }
-        )*/
+        )
     }
 }
