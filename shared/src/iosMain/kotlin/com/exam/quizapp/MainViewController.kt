@@ -34,6 +34,7 @@ fun MainViewController(): UIViewController {
             }
         }
 
+
         if (errorMessage != null) {
             Box(
                 modifier = Modifier
