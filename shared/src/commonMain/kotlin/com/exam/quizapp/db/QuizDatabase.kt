@@ -39,8 +39,6 @@ abstract class QuizDatabase : RoomDatabase() {
         }
     }
 }
-// Chú thích này báo cho Kotlin Compiler biết:
-// "Hãy bỏ qua việc kiểm tra file actual viết tay vì Room KSP sẽ tự sinh ra nó lúc build!"
 @Suppress("NO_ACTUAL_FOR_EXPECT")
 expect object QuizDatabaseConstructor : RoomDatabaseConstructor<QuizDatabase> {
     override fun initialize(): QuizDatabase
