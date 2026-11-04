@@ -43,7 +43,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            
+
             // JetBrains Lifecycle & ViewModel for KMP
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
             // Thay vì dùng bản androidx thuần Android, hãy dùng bản multiplatform của JetBrains:
@@ -60,6 +60,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.common)
+            implementation("androidx.sqlite:sqlite-bundled:2.7.1")
         }
         androidMain.dependencies {
             implementation(libs.androidx.core.ktx)
