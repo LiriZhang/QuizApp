@@ -17,9 +17,9 @@ fun MainViewController(): UIViewController {
     }
     return ComposeUIViewController {
         QuizApp(
-            /*onQuizCompleted = {
+            onQuizCompleted = {
                 // Xử lý khi hoàn thành quiz trên iOS
-            }*/
+            }
         )
     }
 }
