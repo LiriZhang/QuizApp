@@ -81,7 +81,13 @@ fun QuizApp(
     viewModel: QuizViewModel = viewModel(),
     onQuizCompleted: () -> Unit
 ) {
-    remember { initQuizDatabase() }
+    LaunchedEffect(Unit) {
+        try {
+            initQuizDatabase()
+        } catch (e: Exception) {
+            println("Lỗi khởi tạo DB: ${e.message}")
+        }
+    }
     val navController = rememberNavController()
     val resultViewModel: ResultViewModel = viewModel()
     NavHost(navController = navController, startDestination = "chapter_selection") {
@@ -184,52 +190,63 @@ fun QuizApp(
             val quiz = backStackEntry.arguments?.getString("quiz") ?: ""
             viewModel.selectLesson(quiz)
 
-            QuestionScreen(
-                question = viewModel.questions[viewModel.currentQuestion],
-                currentQuestionIndex = viewModel.currentQuestion,
-                totalQuestions = viewModel.questions.size,
-                onAnswerSelected = { answerIndex ->
-                    val isCorrect = viewModel.questions[viewModel.currentQuestion].correctAnswer == answerIndex
-                    playSound(isCorrect)
+            val questions = viewModel.questions
+            val currentIdx = viewModel.currentQuestion
+            if (questions.isNotEmpty() && currentIdx in questions.indices) {
+                QuestionScreen(
+                    question = questions[currentIdx],
+                    currentQuestionIndex = currentIdx,
+                    totalQuestions = questions.size,
+                    onAnswerSelected = { answerIndex ->
+                        val isCorrect = questions.getOrNull(currentIdx)?.correctAnswer == answerIndex
+                        playSound(isCorrect)
 
-                    if (!isCorrect) {
-                        triggerVibration()
-                    }
+                        if (!isCorrect) {
+                            triggerVibration()
+                        }
 
-                    viewModel.selectAnswer(answerIndex)
-                    if (viewModel.showResult) {
-                        navController.navigate("result/${viewModel.score}/${viewModel.questions.size}/${viewModel.selectedLesson}")
-                        onQuizCompleted()
-                    }
-                },
-                onTextAnswerSubmitted = { userInput, isCorrect ->
-                    viewModel.submitTextAnswer(userInput, isCorrect)
-                    playSound(isCorrect)
+                        viewModel.selectAnswer(answerIndex)
+                        if (viewModel.showResult) {
+                            navController.navigate("result/${viewModel.score}/${questions.size}/${viewModel.selectedLesson}")
+                            onQuizCompleted()
+                        }
+                    },
+                    onTextAnswerSubmitted = { userInput, isCorrect ->
+                        viewModel.submitTextAnswer(userInput, isCorrect)
+                        playSound(isCorrect)
 
-                    if (!isCorrect) {
-                        triggerVibration()
-                    }
+                        if (!isCorrect) {
+                            triggerVibration()
+                        }
 
-                    if (viewModel.showResult) {
-                        navController.navigate("result/${viewModel.score}/${viewModel.questions.size}/${viewModel.selectedLesson}")
-                        onQuizCompleted()
+                        if (viewModel.showResult) {
+                            navController.navigate("result/${viewModel.score}/${questions.size}/${viewModel.selectedLesson}")
+                            onQuizCompleted()
+                        }
+                    },
+                    onBackQuestion = {
+                        playVoice(isCorrect = false)
+                        viewModel.onBackQuestion()
+                    },
+                    onHomePage = {
+                        playVoice(isCorrect = false)
+                        viewModel.resetChapter()
+                        navController.navigate("chapter_selection")
+                    },
+                    onBackQuiz = {
+                        playVoice(isCorrect = false)
+                        viewModel.resetLesson()
+                        navController.navigate("quiz_selection/${viewModel.selectedChapter}")
                     }
-                },
-                onBackQuestion = {
-                    playVoice(isCorrect = false)
-                    viewModel.onBackQuestion()
-                },
-                onHomePage = {
-                    playVoice(isCorrect = false)
-                    viewModel.resetChapter()
-                    navController.navigate("chapter_selection")
-                },
-                onBackQuiz = {
-                    playVoice(isCorrect = false)
-                    viewModel.resetLesson()
-                    navController.navigate("quiz_selection/${viewModel.selectedChapter}")
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Chưa có dữ liệu câu hỏi cho bài học này.")
                 }
-            )
+            }
         }
         composable("all_questions/{quiz}") { backStackEntry ->
             val quiz = backStackEntry.arguments?.getString("quiz") ?: ""
