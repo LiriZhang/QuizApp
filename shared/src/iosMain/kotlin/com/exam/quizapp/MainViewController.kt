@@ -7,7 +7,11 @@ import com.exam.quizapp.ui.screens.QuizApp
 import com.exam.quizapp.db.initQuizDatabase
 
 fun MainViewController(): UIViewController {
-    initQuizDatabase()
+    try {
+        initQuizDatabase()
+    } catch (e: Exception) {
+        println("Error initializing database in MainViewController: ${e.message}")
+    }
     return ComposeUIViewController {
         QuizApp(
             onQuizCompleted = {

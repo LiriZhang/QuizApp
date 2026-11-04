@@ -11,6 +11,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
+import platform.Foundation.NSTemporaryDirectory
 
 fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
     val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
@@ -20,7 +21,8 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
         create = true,
         error = null
     )
-    val dbFilePath = requireNotNull(documentDirectory?.path) + "/quiz_database"
+    val docPath = documentDirectory?.path ?: NSTemporaryDirectory()
+    val dbFilePath = "$docPath/quiz_database.db"
     return Room.databaseBuilder<QuizDatabase>(
         name = dbFilePath,
         factory = { QuizDatabaseConstructor.initialize() }
@@ -30,10 +32,5 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
 }
 
 actual fun initQuizDatabase(): QuizDatabase {
-    return try {
-        QuizDatabase.getDatabase(getDatabaseBuilder())
-    } catch (e: Exception) {
-        println("Error initializing QuizDatabase on iOS: ${e.message}")
-        QuizDatabase.getDatabase()
-    }
+    return QuizDatabase.getDatabase(getDatabaseBuilder())
 }
