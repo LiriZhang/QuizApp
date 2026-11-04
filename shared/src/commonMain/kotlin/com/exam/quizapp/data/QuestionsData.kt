@@ -8,8 +8,6 @@ import com.exam.quizapp.shared.resources.*
 
 expect val quizQuestions1: Map<String, List<Question>>
 expect val quizQuestions2: Map<String, List<Question>>
-
-
 val quizQuestions3: Map<String, List<Question>> by lazy {
     mapOf(
         "Thử nghiệm 01" to listOf(
