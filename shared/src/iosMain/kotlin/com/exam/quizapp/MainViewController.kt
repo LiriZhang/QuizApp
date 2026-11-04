@@ -1,13 +1,9 @@
 package com.exam.quizapp
 
-//import androidx.compose.runtime.*
 import androidx.compose.ui.window.ComposeUIViewController
 import platform.UIKit.UIViewController
-import com.exam.quizapp.ui.screens.QuizApp
 import com.exam.quizapp.db.initQuizDatabase
-import com.exam.quizapp.platform.playVoice
-import com.exam.quizapp.ui.screens.ChapterSelectionScreen
-import com.exam.quizapp.ui.screens.TheoryAndExerciseScreen
+import com.exam.quizapp.ui.screens.LessonSelectionScreen
 
 fun MainViewController(): UIViewController {
     try {
@@ -16,16 +12,19 @@ fun MainViewController(): UIViewController {
         println("Error initializing database in MainViewController: ${e.message}")
     }
     return ComposeUIViewController {
-        ChapterSelectionScreen(
-            onChapterSelected = { chapter ->
-                // Xử lý khi người dùng chọn chương (ví dụ: chuyển màn hình hoặc log)
-                println("Đã chọn chương: $chapter")
+        LessonSelectionScreen(
+            chapter = "VẬT LÍ NHIỆT",
+            onQuizSelected = { quiz ->
+                println("Đã chọn bài: $quiz")
             },
-            onList = {
-                // Xử lý khi nhấn nút xem danh sách
+            onQuizSelectedAllQuestions = { quiz ->
+                println("Đã chọn tất cả câu hỏi: $quiz")
             },
-            onBackApp = {
-                // Xử lý khi nhấn nút Back
+            onQuizReviewSelected = { quiz ->
+                println("Đã chọn ôn tập: $quiz")
+            },
+            onBack = {
+                println("Nhấn nút quay lại")
             }
         )
     }
