@@ -40,9 +40,9 @@ class MainActivity : ComponentActivity() {
                     ) {
                         BannerAdView()
                         QuizApp(
-                            onQuizCompleted = {
+                            /*onQuizCompleted = {
                                 showInterstitialAd()
-                            }
+                            }*/
                         )
                     }
                 }
