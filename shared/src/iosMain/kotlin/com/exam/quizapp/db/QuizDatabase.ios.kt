@@ -24,8 +24,7 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
     val docPath = documentDirectory?.path ?: NSTemporaryDirectory()
     val dbFilePath = "$docPath/quiz_database.db"
     return Room.databaseBuilder<QuizDatabase>(
-        name = dbFilePath,
-        factory = { QuizDatabaseConstructor.initialize() }
+        name = dbFilePath
     )
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
