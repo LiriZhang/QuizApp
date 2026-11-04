@@ -12,7 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.interop.UIKitView
+import androidx.compose.ui.interop.UIKitViewController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktor.client.HttpClient
@@ -49,13 +49,12 @@ actual fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier) {
         }
     }
 
-    UIKitView(
+    UIKitViewController(
         factory = {
-            val playerViewController = AVPlayerViewController().apply {
+            AVPlayerViewController().apply {
                 this.player = player
                 this.showsPlaybackControls = true
             }
-            playerViewController.view
         },
         modifier = modifier
     )
