@@ -442,13 +442,16 @@ fun ChapterSelectionScreen(
     onList: () -> Unit,
     onBackApp: () -> Unit,
 ) {
-    val topPadding = getBannerAdHeight()
-    val bottomPadding = getNavigationBarHeight()
+    //val topPadding = getBannerAdHeight()
+
+    //val bottomPadding = getNavigationBarHeight()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = topPadding, bottom = bottomPadding)
+            .padding(//top = topPadding,
+                //bottom = bottomPadding
+            )
     ) {
         Column(
             modifier = Modifier
