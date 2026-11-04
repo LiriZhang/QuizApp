@@ -16,9 +16,16 @@ fun MainViewController(): UIViewController {
         println("Error initializing database in MainViewController: ${e.message}")
     }
     return ComposeUIViewController {
-        QuizApp(
-            onQuizCompleted = {
-                // Xử lý khi hoàn thành quiz trên iOS
+        ChapterSelectionScreen(
+            onChapterSelected = { chapter ->
+                // Xử lý khi người dùng chọn chương (ví dụ: chuyển màn hình hoặc log)
+                println("Đã chọn chương: $chapter")
+            },
+            onList = {
+                // Xử lý khi nhấn nút xem danh sách
+            },
+            onBackApp = {
+                // Xử lý khi nhấn nút Back
             }
         )
     }
