@@ -129,6 +129,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 answers = listOf(
                     AnswerOption.Text("Nhiệt kế y tế"),
                     AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.ImageUrl("https://lirizhang.github.io/C17.jpg"),
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),
@@ -154,6 +155,82 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                     AnswerOption.ImageUrl("https://lirizhang.github.io/C17.jpg")
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
+            ),
+        ),
+        "Thử nghiệm 02" to listOf(
+            Question( // câu 4
+                mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
+                answers = listOf(
+                    AnswerOption.Text("Xuân trên là texturl nhé"),
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.Text("Đông")
+                ),
+                correctAnswer = 1,
+                detailedCorrectAnswers = listOf(
+                    AnswerOption.Text("Xuân hè thu"),
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    )// Đáp án đúng là B
+            )
+        ),
+        "Thử nghiệm 03" to listOf(
+            Question( // câu 4
+                mainContent = QuestionContent.AudioUrl("https://drive.google.com/uc?export=download&id=1fhUf0joDFAiGtg2ou3Mks0aD_6YQiHm4"),
+                answers = listOf(
+                    AnswerOption.Text("Xuân trên là texturl nhé"),
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.Text("Đông")
+                ),
+                correctAnswer = 1,
+                detailedCorrectAnswers = listOf(
+                    AnswerOption.Text("Xuân hè thu"),
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                )// Đáp án đúng là B
+            )
+        ),
+        "Thử nghiệm 04" to listOf(
+            Question( // câu 4
+                mainContent = QuestionContent.ImageUrl("https://lirizhang.github.io/C17.jpg"),
+                answers = listOf(
+                    AnswerOption.Text("Xuân trên là texturl nhé"),
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.Text("Đông")
+                ),
+                correctAnswer = 1,
+                detailedCorrectAnswers = listOf(
+                    AnswerOption.Text("Xuân hè thu"),
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                )// Đáp án đúng là B
+            )
+        ),
+        "Thử nghiệm 05" to listOf(
+            Question( // câu 4
+                mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
+                //correctAnswer = 3 // Đáp án đúng là D
+                extraContents = listOf(
+                    QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
+                    QuestionContent.Text("Xuân trên là texturl nhé"),
+
+                    QuestionContent.TextRes(Res.string.mau_1),
+                    QuestionContent.ImageRes(Res.drawable.anhmau),
+                ),
+                correctTextAnswers = listOf(
+                    AnswerOption.Text("Thu"),
+                    AnswerOption.TextRes(Res.string.mau_2),
+
+                    ),
+                detailedCorrectAnswers = listOf(
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.Text("Thu"),
+                    AnswerOption.Text("Đông"),
+                    AnswerOption.Text("Xuân"),
+                )
             ),
         ),
     )

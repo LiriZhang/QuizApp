@@ -344,6 +344,10 @@ fun LessonSelectionScreen(
     val quizzes = when (chapter) {
         "VẬT LÍ NHIỆT" -> listOf(
             "Thử nghiệm 01",
+            "Thử nghiệm 02",
+            "Thử nghiệm 03",
+            "Thử nghiệm 04",
+            "Thử nghiệm 05",
             "Ôn lại Nhiệt học 8 (1)","Ôn lại Nhiệt học 8 (2)",
             "Nhiệt kế","Thang nhiệt độ",
             "Cấu tạo vật chất","Mô hình động học phân tử",
