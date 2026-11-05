@@ -2091,7 +2091,6 @@ fun QuestionScreen(
                             )
                         }
 
-
                         is QuestionContent.TextRes -> Text(
                             text = org.jetbrains.compose.resources.stringResource(content.textRes),
                             color = questionTextColor,
@@ -2162,7 +2161,7 @@ fun QuestionScreen(
                                     println("COMPOSE_TEST_B: FETCH HOAN TAT")
                                     println("COMPOSE_TEST_B_LENGTH: ${result.length}")
 
-                                    textContent = result
+                                    textContent = "TAI THANH CONG"//result
                                     isError = false
 
                                     println("COMPOSE_TEST_C: CAP NHAT GIAO DIEN")
