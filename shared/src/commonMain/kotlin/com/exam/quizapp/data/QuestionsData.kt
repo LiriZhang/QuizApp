@@ -79,7 +79,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                     AnswerOption.Text("Xuân"),
                 )
             ),
-            Question( // câu 4
+            Question( // câu 5
                 mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
                 answers = listOf(
                     AnswerOption.Text("Xuân trên là texturl nhé"),
@@ -95,7 +95,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
 
                     )// Đáp án đúng là B
             ),
-            Question(
+            Question(// câu 6
                 mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 extraContents = listOf(
@@ -113,8 +113,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                     AnswerOption.ImageRes(Res.drawable.anhmau),
                 )
             ),
-
-            Question(
+            Question( // câu 7
                 mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C2.txt"),
                 answers = listOf(
                     AnswerOption.Text("Xuân"),
@@ -124,27 +123,18 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),
-            Question(
-                mainContent = QuestionContent.TextRes(Res.string.mau_1),
-                answers = listOf(
-                    AnswerOption.Text("Nhiệt kế y tế"),
-                    AnswerOption.ImageRes(Res.drawable.anhmau),
-                    AnswerOption.ImageUrl("https://lirizhang.github.io/C17.jpg"),
-                ),
-                correctAnswer = 1 // Đáp án đúng là B
-            ),
-            Question(
+            Question(//câu 9
                 mainContent = QuestionContent.ClipUrl("https://drive.google.com/uc?export=download&id=1NV5HHPo4MYMiGf7fXcICKTuWSBX-msw7"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 answers = listOf(
                     AnswerOption.Text("Nhiệt kế y tế"),
-                    AnswerOption.Text("Nhiệt | kế, lưỡng; kim"),
+                    AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
                     AnswerOption.Text("Nhiệt kế thủy ngân"),
                     AnswerOption.Text("Nhiệt kế rượu")
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),
-            Question(
+            Question(//câu10
                 mainContent = QuestionContent.AudioUrl("https://drive.google.com/uc?export=download&id=1fhUf0joDFAiGtg2ou3Mks0aD_6YQiHm4"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 answers = listOf(
@@ -153,6 +143,15 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                     AnswerOption.Text("Nhiệt kế thủy ngân"),
                     AnswerOption.Text("Nhiệt kế rượu"),
                     AnswerOption.ImageUrl("https://lirizhang.github.io/C17.jpg")
+                ),
+                correctAnswer = 1 // Đáp án đúng là B
+            ),
+            Question( //câu 8
+                mainContent = QuestionContent.TextRes(Res.string.mau_1),
+                answers = listOf(
+                    AnswerOption.Text("Nhiệt kế y tế"),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.ImageUrl("https://lirizhang.github.io/C17.jpg"),
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),

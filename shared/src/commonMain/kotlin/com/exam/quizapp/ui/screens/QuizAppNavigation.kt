@@ -49,7 +49,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import coil3.compose.AsyncImage
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -907,14 +906,10 @@ fun ReviewQuizScreen(
                                         //modifier = Modifier.padding(horizontal = 4.dp).fillMaxWidth()
                                     )
 
-                                    is AnswerOption.ImageUrl -> AsyncImage(
-                                        model = answer.imageUrl,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .fillMaxWidth(),//.background(Color.Unspecified.copy(alpha = 1.0f)),
-                                        placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1),
-                                        error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image),
-                                        contentScale = ContentScale.FillWidth
+                                    is AnswerOption.ImageUrl -> ImageFromUrl(
+                                        imageUrl = answer.imageUrl,
+                                        contentDescription = "Đáp án dạng ảnh",
+                                        modifier = Modifier.fillMaxWidth()
                                     )
                                     is AnswerOption.TextUrl -> {
                                         var textContent by remember { mutableStateOf("Đang tải...") }
@@ -1171,13 +1166,10 @@ fun RenderAnswerOptionContent(
             color = textColor,
             textAlign = TextAlign.Justify
         )
-        is AnswerOption.ImageUrl -> AsyncImage(
-            model = answer.imageUrl,
-            contentDescription = null,
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1),
-            error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image),
-            contentScale = ContentScale.FillWidth
+        is AnswerOption.ImageUrl -> ImageFromUrl(
+            imageUrl = answer.imageUrl,
+            contentDescription = "Đáp án dạng ảnh",
+            modifier = Modifier.fillMaxWidth()
         )
         is AnswerOption.TextUrl -> {
             var textContent by remember { mutableStateOf("Đang tải...") }
@@ -2428,15 +2420,22 @@ fun QuestionScreen(
                                 horizontalArrangement = Arrangement.Start
                             ) {
                                 when (answer) {
-                                    is AnswerOption.ImageUrl -> AsyncImage(
-                                        model = answer.imageUrl,
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .fillMaxWidth(),//.background(Color.Unspecified.copy(alpha = 1.0f)),
-                                        placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1),
-                                        error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image),
-                                        contentScale = ContentScale.FillWidth
-                                    )
+                                    is AnswerOption.ImageUrl -> {
+                                        if (answer.imageUrl.contains("long") || answer.imageUrl.contains("big")) {
+                                            // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
+                                            ImageFromUrl(
+                                                imageUrl = answer.imageUrl,
+                                                contentDescription = "Hình ảnh câu hỏi"
+                                            )
+                                        } else
+                                        {
+                                            // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
+                                            ZoomableImageFromUrl(
+                                                imageUrl = answer.imageUrl,
+                                                contentDescription = "Hình ảnh câu hỏi"
+                                            )
+                                        }
+                                    }
                                     is AnswerOption.TextRes -> Text(
                                         text = org.jetbrains.compose.resources.stringResource(answer.textRes),
                                         //style = MaterialTheme.typography.titleLarge,
@@ -2854,15 +2853,10 @@ fun ResultScreen(
                         }
 
                         is QuestionContent.ImageUrl -> {
-                            AsyncImage(
-                                model = question.imageUrl,
-                                contentDescription = null,
-                                modifier = Modifier.fillMaxWidth(),
-                                placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1
-                                ),
-                                error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image
-                                ),
-                                contentScale = ContentScale.FillWidth
+                            ImageFromUrl(
+                                imageUrl = question.imageUrl,
+                                contentDescription = "Hình ảnh câu hỏi",
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
 
@@ -3175,16 +3169,22 @@ fun ResultScreen(
                                         textAlign = TextAlign.Justify
                                     )
 
-                                    is AnswerOption.ImageUrl -> AsyncImage(
-                                        model = answer.imageUrl,
-                                        contentDescription = null,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1
-                                        ),
-                                        error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image
-                                        ),
-                                        contentScale = ContentScale.FillWidth
-                                    )
+                                    is AnswerOption.ImageUrl -> {
+                                        if (answer.imageUrl.contains("long") || answer.imageUrl.contains("big")) {
+                                            // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
+                                            ImageFromUrl(
+                                                imageUrl = answer.imageUrl,
+                                                contentDescription = "Hình ảnh câu hỏi"
+                                            )
+                                        } else
+                                        {
+                                            // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
+                                            ZoomableImageFromUrl(
+                                                imageUrl = answer.imageUrl,
+                                                contentDescription = "Hình ảnh câu hỏi"
+                                            )
+                                        }
+                                    }
 
                                     is AnswerOption.TextUrl -> {
                                         var textContent by remember {
@@ -3509,16 +3509,20 @@ fun ResultScreen(
                                                 // IMAGE URL
                                                 // ==============================
                                                 is AnswerOption.ImageUrl -> {
-                                                    AsyncImage(
-                                                        model = detailedCorrectAnswer.imageUrl,
-                                                        contentDescription = null,
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1
-                                                        ),
-                                                        error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image
-                                                        ),
-                                                        contentScale = ContentScale.FillWidth
-                                                    )
+                                                    if (detailedCorrectAnswer.imageUrl.contains("long") || detailedCorrectAnswer.imageUrl.contains("big")) {
+                                                        // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
+                                                        ImageFromUrl(
+                                                            imageUrl = detailedCorrectAnswer.imageUrl,
+                                                            contentDescription = "Hình ảnh câu hỏi"
+                                                        )
+                                                    } else
+                                                    {
+                                                        // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
+                                                        ZoomableImageFromUrl(
+                                                            imageUrl = detailedCorrectAnswer.imageUrl,
+                                                            contentDescription = "Hình ảnh câu hỏi"
+                                                        )
+                                                    }
                                                 }
 
                                                 // ==============================
@@ -4104,15 +4108,10 @@ fun ResultDetailScreen(
                                     val imageUrl = question.text
                                         .removePrefix("URLIMA")
 
-                                    AsyncImage(
-                                        model = imageUrl,
+                                    ImageFromUrl(
+                                        imageUrl = imageUrl,
                                         contentDescription = "Hình ảnh từ URL",
-                                        modifier = Modifier.fillMaxWidth(),
-                                        contentScale = ContentScale.FillWidth,
-                                        placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1
-                                        ),
-                                        error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image
-                                        )
+                                        modifier = Modifier.fillMaxWidth()
                                     )
                                 }
 
@@ -4313,15 +4312,10 @@ fun ResultDetailScreen(
                                             val imageUrl = extraText.text
                                                 .removePrefix("URLIMA")
 
-                                            AsyncImage(
-                                                model = imageUrl,
+                                            ImageFromUrl(
+                                                imageUrl = imageUrl,
                                                 contentDescription = "Hình ảnh từ URL",
-                                                modifier = Modifier.fillMaxWidth(),
-                                                contentScale = ContentScale.FillWidth,
-                                                placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1
-                                                ),
-                                                error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image
-                                                )
+                                                modifier = Modifier.fillMaxWidth()
                                             )
                                         }
 
@@ -4594,17 +4588,12 @@ fun ResultDetailScreen(
                                                 val imageUrl = answer.text
                                                     .removePrefix("URLIMA")
 
-                                                AsyncImage(
-                                                    model = imageUrl,
+                                                ImageFromUrl(
+                                                    imageUrl = imageUrl,
                                                     contentDescription = "Hình ảnh từ URL",
                                                     modifier = Modifier
                                                         .background(backgroundColor)
-                                                        .fillMaxWidth(),
-                                                    contentScale = ContentScale.FillWidth,
-                                                    placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1
-                                                    ),
-                                                    error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image
-                                                    )
+                                                        .fillMaxWidth()
                                                 )
                                             }
 
@@ -4962,13 +4951,10 @@ fun ResultDetailScreen(
                                                         val imageUrl = detailedCorrectAnswer.text
                                                             .removePrefix("URLIMA")
 
-                                                        AsyncImage(
-                                                            model = imageUrl,
+                                                        ImageFromUrl(
+                                                            imageUrl = imageUrl,
                                                             contentDescription = "Hình ảnh từ URL",
-                                                            modifier = Modifier.fillMaxWidth(),
-                                                            contentScale = ContentScale.FillWidth,
-                                                            placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1),
-                                                            error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image)
+                                                            modifier = Modifier.fillMaxWidth()
                                                         )
                                                     }
 
