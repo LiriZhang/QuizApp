@@ -57,6 +57,29 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 )
             ),
             Question( // câu 4
+                mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
+                //correctAnswer = 3 // Đáp án đúng là D
+                extraContents = listOf(
+                    QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
+                    QuestionContent.Text("Xuân trên là texturl nhé"),
+
+                    QuestionContent.TextRes(Res.string.mau_1),
+                    QuestionContent.ImageRes(Res.drawable.anhmau),
+                ),
+                correctTextAnswers = listOf(
+                    AnswerOption.Text("Thu"),
+                    AnswerOption.TextRes(Res.string.mau_2),
+
+                    ),
+                detailedCorrectAnswers = listOf(
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.Text("Thu"),
+                    AnswerOption.Text("Đông"),
+                    AnswerOption.Text("Xuân"),
+                )
+            ),
+            Question( // câu 4
                 mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
                 answers = listOf(
                     AnswerOption.Text("Xuân trên là texturl nhé"),
@@ -127,7 +150,8 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                     AnswerOption.Text("Nhiệt kế y tế"),
                     AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
                     AnswerOption.Text("Nhiệt kế thủy ngân"),
-                    AnswerOption.Text("Nhiệt kế rượu")
+                    AnswerOption.Text("Nhiệt kế rượu"),
+                    AnswerOption.ImageUrl("https://lirizhang.github.io/C17.jpg")
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),

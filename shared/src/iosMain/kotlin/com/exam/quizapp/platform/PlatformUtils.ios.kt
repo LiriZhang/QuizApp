@@ -327,12 +327,11 @@ actual fun triggerVibration() {
 private val ktorClient by lazy { HttpClient(Darwin) }
 
 actual suspend fun fetchTextFromUrl(url: String): String {
-    return withContext(Dispatchers.Main) {
-        try {
-            ktorClient.get(url).bodyAsText()
-        } catch (e: Exception) {
-            ""
-        }
+    return try {
+        val text = ktorClient.get(url).bodyAsText()
+        text.trim()
+    } catch (e: Exception) {
+        ""
     }
 }
 
