@@ -54,6 +54,11 @@ import android.os.Vibrator
 import androidx.core.content.ContextCompat
 import androidx.media3.common.util.UnstableApi
 import com.exam.quizapp.shared.resources.Res
+import com.exam.quizapp.shared.resources.placeholder1
+import com.exam.quizapp.shared.resources.error_image
+import org.jetbrains.compose.resources.painterResource
+import coil3.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -452,4 +457,36 @@ actual suspend fun fetchTextFromUrl(url: String): String {
     } catch (e: Exception) {
         ""
     }
+}
+
+@Composable
+actual fun ImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier
+) {
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = contentDescription,
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.dp)
+            .background(Color.LightGray.copy(alpha = 0.2f)),
+        contentScale = ContentScale.FillWidth,
+        placeholder = painterResource(Res.drawable.placeholder1),
+        error = painterResource(Res.drawable.error_image)
+    )
+}
+
+@Composable
+actual fun ZoomableImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier
+) {
+    ImageFromUrl(
+        imageUrl = imageUrl,
+        contentDescription = contentDescription,
+        modifier = modifier
+    )
 }

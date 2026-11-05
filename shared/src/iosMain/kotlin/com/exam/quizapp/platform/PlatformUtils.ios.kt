@@ -2,7 +2,12 @@
 
 package com.exam.quizapp.platform
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
@@ -15,6 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitViewController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.ContentScale
+import org.jetbrains.compose.resources.painterResource
+import com.exam.quizapp.shared.resources.Res
+import com.exam.quizapp.shared.resources.placeholder1
+import com.exam.quizapp.shared.resources.error_image
+import platform.posix.memcpy
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
+import org.jetbrains.skia.Image as SkiaImage
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.plugins.HttpTimeout
@@ -339,18 +353,6 @@ actual fun triggerVibration() {
         e.printStackTrace()
     }
 }
-private val ktorClient by lazy {
-    HttpClient(Darwin) {
-        expectSuccess = false
-
-        install(HttpTimeout) {
-            requestTimeoutMillis = 30_000
-            connectTimeoutMillis = 15_000
-            socketTimeoutMillis = 30_000
-        }
-    }
-}
-
 
 actual suspend fun fetchTextFromUrl(url: String): String {
 
@@ -546,3 +548,126 @@ actual suspend fun fetchTextFromUrl(url: String): String {
 
 @Composable
 actual fun getBannerAdHeight(): Dp = 0.dp
+
+private suspend fun fetchImageBytesFromUrl(url: String): ByteArray {
+    val nsUrl = NSURL.URLWithString(url)
+        ?: throw IllegalArgumentException("URL không hợp lệ")
+
+    val request = NSMutableURLRequest.requestWithURL(nsUrl).apply {
+        setHTTPMethod("GET")
+        setTimeoutInterval(30.0)
+    }
+
+    return suspendCancellableCoroutine { continuation ->
+        val task = NSURLSession.sharedSession.dataTaskWithRequest(request) { data, response, error ->
+            try {
+                if (error != null) {
+                    throw IllegalStateException("Lỗi tải ảnh: ${error.localizedDescription}")
+                }
+                val httpResponse = response as? NSHTTPURLResponse
+                    ?: throw IllegalStateException("Không nhận được HTTP response")
+
+                if (httpResponse.statusCode < 200L || httpResponse.statusCode >= 300L) {
+                    throw IllegalStateException("HTTP ERROR: ${httpResponse.statusCode}")
+                }
+                val responseData = data
+                    ?: throw IllegalStateException("Không có dữ liệu ảnh")
+
+                @OptIn(ExperimentalForeignApi::class)
+                val bytes = ByteArray(responseData.length.toInt()).apply {
+                    if (isNotEmpty()) {
+                        usePinned { pinned ->
+                            memcpy(pinned.addressOf(0), responseData.bytes, responseData.length)
+                        }
+                    }
+                }
+                if (continuation.isActive) {
+                    continuation.resume(bytes)
+                }
+            } catch (e: Exception) {
+                if (continuation.isActive) {
+                    continuation.resumeWithException(e)
+                }
+            }
+        }
+        continuation.invokeOnCancellation {
+            task.cancel()
+        }
+        task.resume()
+    }
+}
+
+@Composable
+actual fun ImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier
+) {
+    var imageBitmap by remember(imageUrl) { mutableStateOf<ImageBitmap?>(null) }
+    var isError by remember(imageUrl) { mutableStateOf(false) }
+
+    LaunchedEffect(imageUrl) {
+        imageBitmap = null
+        isError = false
+        if (imageUrl.isBlank()) {
+            isError = true
+            return@LaunchedEffect
+        }
+        try {
+            val bytes = fetchImageBytesFromUrl(imageUrl)
+            val bitmap = SkiaImage.makeFromEncoded(bytes).toComposeImageBitmap()
+            imageBitmap = bitmap
+        } catch (e: Exception) {
+            e.printStackTrace()
+            isError = true
+        }
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.dp)
+            .background(Color.LightGray.copy(alpha = 0.2f)),
+        contentAlignment = Alignment.Center
+    ) {
+        when {
+            imageBitmap != null -> {
+                Image(
+                    bitmap = imageBitmap!!,
+                    contentDescription = contentDescription,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+            isError -> {
+                Image(
+                    painter = painterResource(Res.drawable.error_image),
+                    contentDescription = contentDescription,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+            else -> {
+                Image(
+                    painter = painterResource(Res.drawable.placeholder1),
+                    contentDescription = contentDescription,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.FillWidth
+                )
+            }
+        }
+    }
+}
+
+@Composable
+actual fun ZoomableImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier
+) {
+    ImageFromUrl(
+        imageUrl = imageUrl,
+        contentDescription = contentDescription,
+        modifier = modifier
+    )
+}

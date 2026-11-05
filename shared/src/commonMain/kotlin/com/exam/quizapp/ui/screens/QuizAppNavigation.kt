@@ -2121,7 +2121,7 @@ fun QuestionScreen(
                             contentScale = ContentScale.FillWidth
                             //.background(Color.Unspecified.copy(alpha = 1.0f))
                         )
-                        is QuestionContent.ImageUrl -> {
+                        is QuestionContent.ImageUrl -> {//đoạn code này khác các đoạn kia nhưng không sao nhé
                             if (content.imageUrl.contains("long") || content.imageUrl.contains("big")) {
                                 // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
                                 ImageFromUrl(
@@ -2161,7 +2161,7 @@ fun QuestionScreen(
                                     println("COMPOSE_TEST_B: FETCH HOAN TAT")
                                     println("COMPOSE_TEST_B_LENGTH: ${result.length}")
 
-                                    textContent = "TAI THANH CONG"//result
+                                    textContent = result
                                     isError = false
 
                                     println("COMPOSE_TEST_C: CAP NHAT GIAO DIEN")
@@ -5069,47 +5069,6 @@ fun ResultDetailScreen(
 @Composable
 fun VideoPlayerFromUrl(videoUrl: String, modifier: Modifier = Modifier) {
     PlatformVideoPlayer(videoUrl = videoUrl, modifier = modifier)
-}
-
-// Hàm tải và phóng to ảnh từ URL
-@Composable
-fun ZoomableImageFromUrl(
-    imageUrl: String,
-    contentDescription: String, // Thêm tham số mô tả
-    modifier: Modifier = Modifier
-) {
-    // Hiển thị ảnh tải từ URL
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = contentDescription,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 200.dp) // Cố định chiều cao tối thiểu tránh UIKit layout shift trên iOS
-            .background(Color.LightGray.copy(alpha = 0.2f)),
-        contentScale = ContentScale.FillWidth,
-        placeholder = painterResource(Res.drawable.placeholder1), // Placeholder image
-        error = painterResource(Res.drawable.error_image) // Hình ảnh lỗi
-    )
-}
-//Hàm tải và hiển thị ảnh đơn thuần không phóng to hay di chuyển nhé
-@Composable
-fun ImageFromUrl(
-    imageUrl: String,
-    contentDescription: String, // Thêm tham số mô tả
-    modifier: Modifier = Modifier
-) {
-    // Hiển thị ảnh tải từ URL
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = contentDescription,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 200.dp) // Cố định chiều cao tối thiểu tránh UIKit layout shift trên iOS
-            .background(Color.LightGray.copy(alpha = 0.2f)),
-        contentScale = ContentScale.FillWidth,
-        placeholder = painterResource(Res.drawable.placeholder1), // Placeholder image
-        error = painterResource(Res.drawable.error_image) // Hình ảnh lỗi
-    )
 }
 
 // Hàm chuẩn hóa văn bản không phân biệt chữ hoa, chữ thưởng

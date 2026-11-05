@@ -16,6 +16,21 @@ expect fun PlatformAudioPlayer(audioUrl: String, modifier: Modifier = Modifier)
 
 @Composable
 expect fun PlatformBannerAd(modifier: Modifier = Modifier)
+
+@Composable
+expect fun ImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+)
+
+@Composable
+expect fun ZoomableImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+)
+
 expect fun playSound(isCorrect: Boolean)
 
 expect fun playPlatformSound(isCorrect: Boolean)
