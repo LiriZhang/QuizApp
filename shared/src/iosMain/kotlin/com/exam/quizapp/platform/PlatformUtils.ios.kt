@@ -29,13 +29,7 @@ import platform.posix.memcpy
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
 import org.jetbrains.skia.Image as SkiaImage
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.darwin.Darwin
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsBytes
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpHeaders
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
@@ -353,14 +347,8 @@ actual fun triggerVibration() {
         e.printStackTrace()
     }
 }
-
 actual suspend fun fetchTextFromUrl(url: String): String {
-
-    println("NATIVE_TEST_0: START")
-
-    require(url.startsWith("https://")) {
-        "URL không hợp lệ"
-    }
+    require(url.startsWith("https://")) { "URL không hợp lệ" }
 
     val nsUrl = NSURL.URLWithString(url)
         ?: throw IllegalArgumentException("Không tạo được URL")
@@ -370,181 +358,42 @@ actual suspend fun fetchTextFromUrl(url: String): String {
         setTimeoutInterval(30.0)
     }
 
-    println("NATIVE_TEST_1: REQUEST CREATED")
-
     return suspendCancellableCoroutine { continuation ->
-
-        val task = NSURLSession.sharedSession.dataTaskWithRequest(request) {
-                data, response, error ->
-
+        val task = NSURLSession.sharedSession.dataTaskWithRequest(request) { data, response, error ->
             try {
-                println("NATIVE_TEST_2: CALLBACK RECEIVED")
-
-                // Kiểm tra lỗi kết nối
                 if (error != null) {
-                    throw IllegalStateException(
-                        "NETWORK ERROR: ${error.localizedDescription}"
-                    )
+                    throw IllegalStateException("NETWORK ERROR: ${error.localizedDescription}")
                 }
-
-                // Kiểm tra HTTP response
                 val httpResponse = response as? NSHTTPURLResponse
-                    ?: throw IllegalStateException(
-                        "Không nhận được HTTP response"
-                    )
+                    ?: throw IllegalStateException("Không nhận được HTTP response")
 
-                println("NATIVE_TEST_3: HTTP ${httpResponse.statusCode}")
-
-                if (httpResponse.statusCode < 200L ||
-                    httpResponse.statusCode >= 300L
-                ) {
-                    throw IllegalStateException(
-                        "HTTP ERROR: ${httpResponse.statusCode}"
-                    )
+                if (httpResponse.statusCode !in 200L..299L) {
+                    throw IllegalStateException("HTTP ERROR: ${httpResponse.statusCode}")
                 }
+                val responseData = data ?: throw IllegalStateException("Không có dữ liệu TXT")
 
-                // Kiểm tra dữ liệu
-                val responseData = data
-                    ?: throw IllegalStateException("Không có dữ liệu TXT")
+                @OptIn(BetaInteropApi::class)
+                val nsText = NSString.create(data = responseData, encoding = NSUTF8StringEncoding)
+                    ?: throw IllegalStateException("Không thể giải mã nội dung UTF-8")
 
-                println("NATIVE_TEST_4: DATA RECEIVED")
-
-                // Giải mã UTF-8 bằng Foundation của Apple
-                val nsText = NSString.create(
-                    data = responseData,
-                    encoding = NSUTF8StringEncoding
-                ) ?: throw IllegalStateException(
-                    "Không thể giải mã nội dung UTF-8"
-                )
-
-                val result = nsText.toString()
-                    .removePrefix("\uFEFF")
-                    .trim()
-
+                val result = nsText.toString().removePrefix("\uFEFF").trim()
                 if (result.isBlank()) {
                     throw IllegalStateException("Nội dung TXT trống")
                 }
 
-                println("NATIVE_TEST_5: DECODE SUCCESS")
-                println("NATIVE_TEST_LENGTH: ${result.length}")
-
                 if (continuation.isActive) {
                     continuation.resume(result)
                 }
-
             } catch (e: Exception) {
-
-                println("NATIVE_TEST_ERROR: ${e.message}")
-                e.printStackTrace()
-
                 if (continuation.isActive) {
                     continuation.resumeWithException(e)
                 }
             }
         }
-
-        // Nếu màn hình bị hủy hoặc coroutine bị hủy,
-        // hủy luôn yêu cầu mạng.
-        continuation.invokeOnCancellation {
-            task.cancel()
-        }
-
-        println("NATIVE_TEST_6: TASK RESUME")
-
+        continuation.invokeOnCancellation { task.cancel() }
         task.resume()
     }
 }
-/*actual suspend fun fetchTextFromUrl(url: String): String {
-    println("IOS_TEST_0: START")
-
-    try {
-        // 1. Kiểm tra URL
-        require(url.startsWith("https://")) {
-            "URL không hợp lệ"
-        }
-
-        // 2. Gửi yêu cầu đến máy chủ
-        println("IOS_TEST_1: SENDING REQUEST")
-
-        val response = ktorClient.get(url)
-
-        // 3. Nhận phản hồi HTTP
-        println("IOS_TEST_2: RESPONSE RECEIVED")
-        println("HTTP STATUS: ${response.status.value}")
-        println("CONTENT TYPE: ${response.headers[HttpHeaders.ContentType]}")
-        println("CONTENT LENGTH: ${response.headers[HttpHeaders.ContentLength]}")
-
-        if (response.status.value !in 200..299) {
-            throw IllegalStateException(
-                "HTTP ERROR: ${response.status.value}"
-            )
-        }
-
-        // 4. Đọc dữ liệu dạng byte
-        println("IOS_TEST_3: READING BYTES")
-
-        val bytes = response.bodyAsBytes()
-
-        println("IOS_TEST_4: BYTES RECEIVED")
-        println("BYTE COUNT: ${bytes.size}")
-
-        if (bytes.isEmpty()) {
-            throw IllegalStateException("File TXT rỗng")
-        }
-
-        // 5. Giải mã UTF-8
-        println("IOS_TEST_5: DECODING UTF-8")
-
-        val text = bytes.decodeToString(
-            throwOnInvalidSequence = true
-        ).removePrefix("\uFEFF").trim()
-
-        println("IOS_TEST_6: DECODE SUCCESS")
-        println("TEXT LENGTH: ${text.length}")
-
-        if (text.isBlank()) {
-            throw IllegalStateException("Nội dung TXT trống")
-        }
-
-        println("IOS_TEST_7: COMPLETE")
-
-        return text
-
-    } catch (e: CancellationException) {
-        println("IOS_TEST_CANCELLED")
-        throw e
-
-    } catch (e: Exception) {
-        println("IOS_TEST_ERROR: ${e.message}")
-        e.printStackTrace()
-        throw e
-    }
-}
-private val ktorClient by lazy {
-    HttpClient(Darwin) {
-        install(HttpTimeout) {
-            requestTimeoutMillis = 15_000
-            connectTimeoutMillis = 15_000
-            socketTimeoutMillis = 15_000
-        }
-    }
-}
-
-actual suspend fun fetchTextFromUrl(url: String): String {
-    return try {
-        val response = ktorClient.get(url)
-        if (response.status.value in 200..299) {
-            val text = response.bodyAsText()
-            text.trim()
-        } else {
-            ""
-        }
-    } catch (e: Throwable) {
-        // Bắt mọi Throwable (bao gồm cả NSException hoặc Native crash từ CFNetwork)
-        e.printStackTrace()
-        ""
-    }
-}*/
 
 @Composable
 actual fun getBannerAdHeight(): Dp = 0.dp
