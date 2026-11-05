@@ -34,7 +34,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 correctAnswer = 1 // Đáp án đúng là B
             ),
             Question( // câu 3
-                mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
+                mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 extraContents = listOf(
                     QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
@@ -57,7 +57,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 )
             ),
             Question( // câu 4
-                mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C2.txt"),
+                mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
                 answers = listOf(
                     AnswerOption.Text("Xuân trên là texturl nhé"),
                     AnswerOption.TextRes(Res.string.mau_1),
