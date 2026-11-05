@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.delay
@@ -324,13 +325,28 @@ actual fun triggerVibration() {
     }
 }
 
-private val ktorClient by lazy { HttpClient(Darwin) }
+private val ktorClient by lazy {
+    HttpClient(Darwin) {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 15_000
+            connectTimeoutMillis = 15_000
+            socketTimeoutMillis = 15_000
+        }
+    }
+}
 
 actual suspend fun fetchTextFromUrl(url: String): String {
     return try {
-        val text = ktorClient.get(url).bodyAsText()
-        text.trim()
-    } catch (e: Exception) {
+        val response = ktorClient.get(url)
+        if (response.status.value in 200..299) {
+            val text = response.bodyAsText()
+            text.trim()
+        } else {
+            ""
+        }
+    } catch (e: Throwable) {
+        // Bắt mọi Throwable (bao gồm cả NSException hoặc Native crash từ CFNetwork)
+        e.printStackTrace()
         ""
     }
 }

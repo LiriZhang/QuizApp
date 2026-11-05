@@ -158,7 +158,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
             ),
         ),
         "Thử nghiệm 02" to listOf(
-            Question( // câu 4
+            Question( // video ok nhé
                 mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
                 answers = listOf(
                     AnswerOption.Text("Xuân trên là texturl nhé"),
@@ -174,7 +174,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                     )// Đáp án đúng là B
             )
         ),
-        "Thử nghiệm 03" to listOf(
+        "Thử nghiệm 03" to listOf( //audio ok nhé
             Question( // câu 4
                 mainContent = QuestionContent.AudioUrl("https://drive.google.com/uc?export=download&id=1fhUf0joDFAiGtg2ou3Mks0aD_6YQiHm4"),
                 answers = listOf(
@@ -191,7 +191,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 )// Đáp án đúng là B
             )
         ),
-        "Thử nghiệm 04" to listOf(
+        "Thử nghiệm 04" to listOf(  // hình ảnh từ url gây ra lỗi nhé
             Question( // câu 4
                 mainContent = QuestionContent.ImageUrl("https://lirizhang.github.io/C17.jpg"),
                 answers = listOf(
@@ -209,7 +209,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
             )
         ),
         "Thử nghiệm 05" to listOf(
-            Question( // câu 4
+            Question( // văn bản từ url gây ra lỗi nhé
                 mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 extraContents = listOf(

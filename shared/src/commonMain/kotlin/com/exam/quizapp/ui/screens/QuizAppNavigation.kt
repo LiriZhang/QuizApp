@@ -74,6 +74,7 @@ import com.exam.quizapp.shared.resources.Res
 import com.exam.quizapp.shared.resources.allStringResources
 import com.exam.quizapp.shared.resources.allDrawableResources
 import com.exam.quizapp.shared.resources.*
+import org.jetbrains.compose.resources.painterResource
 
 // Multiplatform QuizApp Composable
 // Hàm điều phối màn hình dùng riêng cho từng nền tảng
@@ -5050,28 +5051,17 @@ fun ZoomableImageFromUrl(
     contentDescription: String, // Thêm tham số mô tả
     modifier: Modifier = Modifier
 ) {
-    //var scale by remember { mutableFloatStateOf(1f) }
-
-    // Cấu hình trạng thái phóng to
-    /*val state = rememberTransformableState { zoomChange, _, _ ->
-        scale *= zoomChange
-    }*/
-
     // Hiển thị ảnh tải từ URL
     AsyncImage(
         model = imageUrl,
         contentDescription = contentDescription,
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Unspecified.copy(alpha = 1.0f)), //(lưu ý dấu ,)
-        /*.graphicsLayer(
-            scaleX = maxOf(1f, minOf(2f, scale)),
-            scaleY = maxOf(1f, minOf(2f, scale))
-        )
-        .transformable(state = state), */// Thêm khả năng phóng to
+            .heightIn(min = 200.dp) // Cố định chiều cao tối thiểu tránh UIKit layout shift trên iOS
+            .background(Color.LightGray.copy(alpha = 0.2f)),
         contentScale = ContentScale.FillWidth,
-        placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1), // Placeholder image (nếu cần)
-        error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image) // Hình ảnh lỗi (nếu tải thất bại)
+        placeholder = painterResource(Res.drawable.placeholder1), // Placeholder image
+        error = painterResource(Res.drawable.error_image) // Hình ảnh lỗi
     )
 }
 //Hàm tải và hiển thị ảnh đơn thuần không phóng to hay di chuyển nhé
@@ -5087,10 +5077,11 @@ fun ImageFromUrl(
         contentDescription = contentDescription,
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.Unspecified.copy(alpha = 1.0f)),
+            .heightIn(min = 200.dp) // Cố định chiều cao tối thiểu tránh UIKit layout shift trên iOS
+            .background(Color.LightGray.copy(alpha = 0.2f)),
         contentScale = ContentScale.FillWidth,
-        placeholder = org.jetbrains.compose.resources.painterResource(Res.drawable.placeholder1), // Placeholder image (nếu cần)
-        error = org.jetbrains.compose.resources.painterResource(Res.drawable.error_image) // Hình ảnh lỗi (nếu tải thất bại)
+        placeholder = painterResource(Res.drawable.placeholder1), // Placeholder image
+        error = painterResource(Res.drawable.error_image) // Hình ảnh lỗi
     )
 }
 
