@@ -2138,46 +2138,74 @@ fun QuestionScreen(
                                 )
                             }
                         }
+
                         is QuestionContent.TextUrl -> {
-                            var textContent by remember { mutableStateOf("Đang tải...") }
-                            var isError by remember { mutableStateOf(false) }
+
+                            var textContent by remember(content.textUrl) {
+                                mutableStateOf("Đang tải...")
+                            }
+
+                            var isError by remember(content.textUrl) {
+                                mutableStateOf(false)
+                            }
 
                             LaunchedEffect(content.textUrl) {
+
+                                textContent = "Đang tải..."
+                                isError = false
+
                                 try {
-                                    textContent = fetchTextFromUrl(content.textUrl)
+                                    println("COMPOSE_TEST_A: BAT DAU FETCH")
+
+                                    val result = fetchTextFromUrl(content.textUrl)
+
+                                    println("COMPOSE_TEST_B: FETCH HOAN TAT")
+                                    println("COMPOSE_TEST_B_LENGTH: ${result.length}")
+
+                                    textContent = result
                                     isError = false
+
+                                    println("COMPOSE_TEST_C: CAP NHAT GIAO DIEN")
+
+                                } catch (e: kotlinx.coroutines.CancellationException) {
+
+                                    // Không xử lý như lỗi tải dữ liệu
+                                    throw e
+
                                 } catch (e: Exception) {
-                                    textContent = "Không thể tải nội dung, chưa được kết nối mạng hoặc " +
-                                            "nội dung bị lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục"
+
+                                    println("COMPOSE_TEST_ERROR: ${e.message}")
+                                    e.printStackTrace()
+
+                                    textContent =
+                                        "Không thể tải nội dung, vui lòng kiểm tra kết nối mạng. " +
+                                                "Nếu nội dung bị lỗi, phản hồi qua Zalo: 0972712415."
+
                                     isError = true
                                 }
                             }
 
-                            if (!isError) {
-                                Text(
-                                    text = textContent,
-                                    color = questionTextColor,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    textAlign = TextAlign.Justify,
-                                    //color = Color.Black, // Màu chữ đen
-                                    modifier = Modifier
-                                        .background(questionBackground)
-                                        .padding(horizontal = 4.dp)
-                                        .fillMaxWidth()
-                                )
-                            } else {
-                                Text(
-                                    text = "Lỗi khi tải nội dung, chưa được kết nối mạng hoặc nội dung bị " +
-                                            "lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục",
-                                    style = MaterialTheme.typography.bodyLarge.copy(color = questionErrorColor),
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .background(Color.LightGray) // Nền chữ màu LightGray
-                                        .padding(horizontal = 4.dp)
-                                        .fillMaxWidth()
-                                )
-                            }
+                            Text(
+                                text = textContent,
+                                color = if (isError) questionErrorColor else questionTextColor,
+                                style = if (isError)
+                                    MaterialTheme.typography.bodyLarge
+                                else
+                                    MaterialTheme.typography.titleLarge,
+                                textAlign = if (isError)
+                                    TextAlign.Center
+                                else
+                                    TextAlign.Justify,
+                                modifier = Modifier
+                                    .background(
+                                        if (isError) Color.LightGray
+                                        else questionBackground
+                                    )
+                                    .padding(horizontal = 4.dp)
+                                    .fillMaxWidth()
+                            )
                         }
+
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                 }

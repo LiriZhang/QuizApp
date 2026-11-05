@@ -19,7 +19,9 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsBytes
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +47,7 @@ import platform.Foundation.NSBundle
 import platform.Foundation.NSURL
 import platform.UIKit.UIImpactFeedbackGenerator
 import platform.UIKit.UIImpactFeedbackStyle
+import kotlinx.coroutines.CancellationException
 
 @Composable
 actual fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier) {
@@ -324,8 +327,85 @@ actual fun triggerVibration() {
         e.printStackTrace()
     }
 }
-
 private val ktorClient by lazy {
+    HttpClient(Darwin) {
+        expectSuccess = false
+
+        install(HttpTimeout) {
+            requestTimeoutMillis = 30_000
+            connectTimeoutMillis = 15_000
+            socketTimeoutMillis = 30_000
+        }
+    }
+}
+
+actual suspend fun fetchTextFromUrl(url: String): String {
+    println("IOS_TEST_0: START")
+
+    try {
+        // 1. Kiểm tra URL
+        require(url.startsWith("https://")) {
+            "URL không hợp lệ"
+        }
+
+        // 2. Gửi yêu cầu đến máy chủ
+        println("IOS_TEST_1: SENDING REQUEST")
+
+        val response = ktorClient.get(url)
+
+        // 3. Nhận phản hồi HTTP
+        println("IOS_TEST_2: RESPONSE RECEIVED")
+        println("HTTP STATUS: ${response.status.value}")
+        println("CONTENT TYPE: ${response.headers[HttpHeaders.ContentType]}")
+        println("CONTENT LENGTH: ${response.headers[HttpHeaders.ContentLength]}")
+
+        if (response.status.value !in 200..299) {
+            throw IllegalStateException(
+                "HTTP ERROR: ${response.status.value}"
+            )
+        }
+
+        // 4. Đọc dữ liệu dạng byte
+        println("IOS_TEST_3: READING BYTES")
+
+        val bytes = response.bodyAsBytes()
+
+        println("IOS_TEST_4: BYTES RECEIVED")
+        println("BYTE COUNT: ${bytes.size}")
+
+        if (bytes.isEmpty()) {
+            throw IllegalStateException("File TXT rỗng")
+        }
+
+        // 5. Giải mã UTF-8
+        println("IOS_TEST_5: DECODING UTF-8")
+
+        val text = bytes.decodeToString(
+            throwOnInvalidSequence = true
+        ).removePrefix("\uFEFF").trim()
+
+        println("IOS_TEST_6: DECODE SUCCESS")
+        println("TEXT LENGTH: ${text.length}")
+
+        if (text.isBlank()) {
+            throw IllegalStateException("Nội dung TXT trống")
+        }
+
+        println("IOS_TEST_7: COMPLETE")
+
+        return text
+
+    } catch (e: CancellationException) {
+        println("IOS_TEST_CANCELLED")
+        throw e
+
+    } catch (e: Exception) {
+        println("IOS_TEST_ERROR: ${e.message}")
+        e.printStackTrace()
+        throw e
+    }
+}
+/*private val ktorClient by lazy {
     HttpClient(Darwin) {
         install(HttpTimeout) {
             requestTimeoutMillis = 15_000
@@ -349,7 +429,7 @@ actual suspend fun fetchTextFromUrl(url: String): String {
         e.printStackTrace()
         ""
     }
-}
+}*/
 
 @Composable
 actual fun getBannerAdHeight(): Dp = 0.dp
