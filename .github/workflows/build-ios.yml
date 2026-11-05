@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-ios:
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Checkout repository
@@ -24,7 +24,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Select Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app
 
       - name: Pre-build KMP Shared Module
         run: ./gradlew :shared:assemble
