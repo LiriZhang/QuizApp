@@ -1,6 +1,4 @@
 [versions]
-# aws-s3 = "0.27.0-beta"
-# exoplayer = "2.19.1"
 media3 = "1.11.1" #1.7.1
 agp = "9.4.1"
 kotlin = "2.4.20"
@@ -23,7 +21,6 @@ room = "2.8.5" #2.7.2
 composeMultiplatform = "1.12.1"
 ktor = "3.0.3"
 kotlinxSerialization = "1.11.0"
-#media3Exoplayer = "1.7.1" # 1.6.0
 
 [libraries]
 
