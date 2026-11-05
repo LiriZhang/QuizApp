@@ -12,6 +12,28 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
     mapOf(
         "Thử nghiệm 01" to listOf(
             Question(
+                mainContent = QuestionContent.Text(" câu hỏi thuần văn bản Nhiệt kế y tế"),
+                //correctAnswer = 3 // Đáp án đúng là D
+                answers = listOf(
+                    AnswerOption.Text("Nhiệt kế y tế"),
+                    AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
+                    AnswerOption.Text("Nhiệt kế thủy ngân"),
+                    AnswerOption.Text("Nhiệt kế rượu")
+                ),
+                correctAnswer = 1 // Đáp án đúng là B
+            ),
+            Question(
+                mainContent = QuestionContent.TextRes(Res.string.mau_1),
+                //correctAnswer = 3 // Đáp án đúng là D
+                answers = listOf(
+                    AnswerOption.Text("câu này có câu hỏi là tài nguyên chuỗi, cầu trả lời có hình ảnh và cả chuỗi"),
+                    AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
+                    AnswerOption.TextRes(Res.string.mau_1),
+                    AnswerOption.ImageRes(Res.drawable.anhmau)
+                ),
+                correctAnswer = 1 // Đáp án đúng là B
+            ),
+            Question(
                 mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 extraContents = listOf(
@@ -20,9 +42,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 ),
                 correctTextAnswers = listOf(
                     AnswerOption.Text("Hè"),
-                    AnswerOption.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                     AnswerOption.TextRes(Res.string.mau_1),
-                    AnswerOption.ImageRes(Res.drawable.anhmau)
                 ),
                 detailedCorrectAnswers = listOf(
                     AnswerOption.TextRes(Res.string.mau_1),
@@ -56,7 +76,6 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                     QuestionContent.ImageRes(Res.drawable.anhmau),
                 ),
                 correctTextAnswers = listOf(
-                    AnswerOption.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                     AnswerOption.Text("Hè"),
                 ),
                 detailedCorrectAnswers = listOf(
