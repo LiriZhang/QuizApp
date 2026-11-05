@@ -68,7 +68,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 detailedCorrectAnswers = listOf(
                     AnswerOption.Text("Xuân hè thu"),
                     AnswerOption.TextRes(Res.string.mau_1),
-                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    //AnswerOption.ImageRes(Res.drawable.anhmau),
 
                     )// Đáp án đúng là B
             ),
