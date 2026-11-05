@@ -48,6 +48,18 @@ import platform.Foundation.NSURL
 import platform.UIKit.UIImpactFeedbackGenerator
 import platform.UIKit.UIImpactFeedbackStyle
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+
+import platform.Foundation.NSURLSession
+import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSHTTPURLResponse
+import platform.Foundation.NSString
+import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.create
+import platform.Foundation.dataTaskWithRequest
+import platform.Foundation.setHTTPMethod
 
 @Composable
 actual fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier) {
@@ -339,7 +351,108 @@ private val ktorClient by lazy {
     }
 }
 
+
 actual suspend fun fetchTextFromUrl(url: String): String {
+
+    println("NATIVE_TEST_0: START")
+
+    require(url.startsWith("https://")) {
+        "URL không hợp lệ"
+    }
+
+    val nsUrl = NSURL.URLWithString(url)
+        ?: throw IllegalArgumentException("Không tạo được URL")
+
+    val request = NSMutableURLRequest.requestWithURL(nsUrl).apply {
+        setHTTPMethod("GET")
+        setTimeoutInterval(30.0)
+    }
+
+    println("NATIVE_TEST_1: REQUEST CREATED")
+
+    return suspendCancellableCoroutine { continuation ->
+
+        val task = NSURLSession.sharedSession.dataTaskWithRequest(request) {
+                data, response, error ->
+
+            try {
+                println("NATIVE_TEST_2: CALLBACK RECEIVED")
+
+                // Kiểm tra lỗi kết nối
+                if (error != null) {
+                    throw IllegalStateException(
+                        "NETWORK ERROR: ${error.localizedDescription}"
+                    )
+                }
+
+                // Kiểm tra HTTP response
+                val httpResponse = response as? NSHTTPURLResponse
+                    ?: throw IllegalStateException(
+                        "Không nhận được HTTP response"
+                    )
+
+                println("NATIVE_TEST_3: HTTP ${httpResponse.statusCode}")
+
+                if (httpResponse.statusCode < 200L ||
+                    httpResponse.statusCode >= 300L
+                ) {
+                    throw IllegalStateException(
+                        "HTTP ERROR: ${httpResponse.statusCode}"
+                    )
+                }
+
+                // Kiểm tra dữ liệu
+                val responseData = data
+                    ?: throw IllegalStateException("Không có dữ liệu TXT")
+
+                println("NATIVE_TEST_4: DATA RECEIVED")
+
+                // Giải mã UTF-8 bằng Foundation của Apple
+                val nsText = NSString.create(
+                    data = responseData,
+                    encoding = NSUTF8StringEncoding
+                ) ?: throw IllegalStateException(
+                    "Không thể giải mã nội dung UTF-8"
+                )
+
+                val result = nsText.toString()
+                    .removePrefix("\uFEFF")
+                    .trim()
+
+                if (result.isBlank()) {
+                    throw IllegalStateException("Nội dung TXT trống")
+                }
+
+                println("NATIVE_TEST_5: DECODE SUCCESS")
+                println("NATIVE_TEST_LENGTH: ${result.length}")
+
+                if (continuation.isActive) {
+                    continuation.resume(result)
+                }
+
+            } catch (e: Exception) {
+
+                println("NATIVE_TEST_ERROR: ${e.message}")
+                e.printStackTrace()
+
+                if (continuation.isActive) {
+                    continuation.resumeWithException(e)
+                }
+            }
+        }
+
+        // Nếu màn hình bị hủy hoặc coroutine bị hủy,
+        // hủy luôn yêu cầu mạng.
+        continuation.invokeOnCancellation {
+            task.cancel()
+        }
+
+        println("NATIVE_TEST_6: TASK RESUME")
+
+        task.resume()
+    }
+}
+/*actual suspend fun fetchTextFromUrl(url: String): String {
     println("IOS_TEST_0: START")
 
     try {
@@ -405,7 +518,7 @@ actual suspend fun fetchTextFromUrl(url: String): String {
         throw e
     }
 }
-/*private val ktorClient by lazy {
+private val ktorClient by lazy {
     HttpClient(Darwin) {
         install(HttpTimeout) {
             requestTimeoutMillis = 15_000

@@ -213,6 +213,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 extraContents = listOf(
+                    QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                     QuestionContent.Text("Xuân trên là texturl nhé"),
 
                     QuestionContent.TextRes(Res.string.mau_1),
