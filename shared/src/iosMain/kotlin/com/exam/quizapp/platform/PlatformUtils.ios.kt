@@ -16,9 +16,12 @@ import androidx.compose.ui.interop.UIKitViewController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.AVFAudio.AVAudioPlayer
@@ -321,13 +324,15 @@ actual fun triggerVibration() {
     }
 }
 
-private val ktorClient by lazy { HttpClient() }
+private val ktorClient by lazy { HttpClient(Darwin) }
 
 actual suspend fun fetchTextFromUrl(url: String): String {
-    return try {
-        ktorClient.get(url).bodyAsText()
-    } catch (e: Exception) {
-        ""
+    return withContext(Dispatchers.Main) {
+        try {
+            ktorClient.get(url).bodyAsText()
+        } catch (e: Exception) {
+            ""
+        }
     }
 }
 
