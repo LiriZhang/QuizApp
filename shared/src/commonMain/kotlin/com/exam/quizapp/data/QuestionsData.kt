@@ -76,7 +76,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 extraContents = listOf(
-                    QuestionContent.Text("Các chất rắn khác nhau nở vì nhiệt khác nhau được ứng dụng, để tạo ra"),
+                    QuestionContent.AudioUrl("https://drive.google.com/uc?export=download&id=1fhUf0joDFAiGtg2ou3Mks0aD_6YQiHm4"),
                     QuestionContent.ImageRes(Res.drawable.anhmau),
                 ),
                 correctTextAnswers = listOf(
