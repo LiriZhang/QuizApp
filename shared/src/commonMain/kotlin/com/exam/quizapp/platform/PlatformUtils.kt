@@ -26,16 +26,6 @@ expect fun triggerVibration()
 
 expect suspend fun fetchTextFromUrl(url: String): String
 
-/*fun normalizeText(input: String): String {
-    val srcM = "áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđ"
-    val desM = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyyd"
-    var result = input.lowercase()
-    for (i in srcM.indices) {
-        result = result.replace(srcM[i], desM[i])
-        result = result.replace(srcM[i].uppercaseChar(), desM[i])
-    }
-    return result.replace(Regex("\\s+"), " ").trim()
-}*/
 
 @Composable
 fun getStatusBarHeight(): Dp {

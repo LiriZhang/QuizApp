@@ -20,7 +20,12 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.delay
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.useContents
 import platform.AVFAudio.AVAudioPlayer
+import platform.AVFAudio.AVAudioSession
+import platform.AVFAudio.AVAudioSessionCategoryPlayback
+import platform.AVFoundation.AVAssetTrack
+import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.AVPlayer
 import platform.AVFoundation.asset
 import platform.AVFoundation.currentItem
@@ -42,6 +47,28 @@ actual fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier) {
     val url = remember(videoUrl) { NSURL.URLWithString(videoUrl) }
     val player: AVPlayer? = remember(url) { url?.let { AVPlayer(uRL = it) } }
 
+    var aspectRatio by remember(videoUrl) { mutableFloatStateOf(16f / 9f) }
+
+    LaunchedEffect(player) {
+        while (player != null) {
+            val asset = player.currentItem?.asset
+            if (asset != null) {
+                val size = asset.naturalSize()
+                val w = size.useContents { width }
+                val h = size.useContents { height }
+                if (w > 0.0 && h > 0.0) {
+                    aspectRatio = when {
+                        w > h -> 16f / 9f
+                        w == h -> 1f
+                        else -> 9f / 16f
+                    }
+                    break
+                }
+            }
+            delay(300)
+        }
+    }
+
     DisposableEffect(player) {
         player?.play()
         onDispose {
@@ -49,15 +76,25 @@ actual fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier) {
         }
     }
 
-    UIKitViewController(
-        factory = {
-            AVPlayerViewController().apply {
-                this.player = player
-                this.showsPlaybackControls = true
-            }
-        },
-        modifier = modifier
-    )
+    Box(
+        modifier = modifier.aspectRatio(aspectRatio),
+        contentAlignment = Alignment.Center
+    ) {
+        UIKitViewController(
+            factory = {
+                AVPlayerViewController().apply {
+                    this.player = player
+                    this.showsPlaybackControls = true
+                }
+            },
+            update = { controller ->
+                if (controller.player != player) {
+                    controller.player = player
+                }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
 
 @Composable
@@ -227,12 +264,26 @@ private val activeAudioPlayers = mutableListOf<AVAudioPlayer>()
 
 private fun playSoundFile(filename: String) {
     try {
+        // Cấu hình AVAudioSession để iOS cho phép phát âm thanh ngay cả ở chế độ silent
+        try {
+            val audioSession = AVAudioSession.sharedInstance()
+            audioSession.setCategory(
+                AVAudioSessionCategoryPlayback,
+                error = null
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         val lastSlash = filename.lastIndexOf('/')
         val name = if (lastSlash >= 0) filename.substring(lastSlash + 1, filename.lastIndexOf('.')) else filename.substringBefore('.')
         val ext = if (filename.contains('.')) filename.substringAfterLast('.') else "mp3"
 
+        // Tìm kiếm file resource trong các thư mục bundle của iOS
         val path = NSBundle.mainBundle.pathForResource(name, ext, inDirectory = "compose-resources/files")
+            ?: NSBundle.mainBundle.pathForResource(name, ext, inDirectory = "compose-resources")
             ?: NSBundle.mainBundle.pathForResource(name, ext)
+
         if (path != null) {
             val url = NSURL.fileURLWithPath(path)
             val player = AVAudioPlayer(contentsOfURL = url, error = null).apply {
@@ -240,7 +291,10 @@ private fun playSoundFile(filename: String) {
                 play()
             }
             activeAudioPlayers.add(player)
-            activeAudioPlayers.removeAll { !it.isPlaying() }
+            // Giới hạn danh sách player để tránh rò rỉ bộ nhớ nhưng vẫn giữ lại các player đang phát
+            if (activeAudioPlayers.size > 10) {
+                activeAudioPlayers.removeAt(0)
+            }
         }
     } catch (e: Exception) {
         e.printStackTrace()
@@ -258,9 +312,13 @@ actual fun playVoice(isCorrect: Boolean) {
 }
 
 actual fun triggerVibration() {
-    val generator = UIImpactFeedbackGenerator(style = UIImpactFeedbackStyle.UIImpactFeedbackStyleMedium)
-    generator.prepare()
-    generator.impactOccurred()
+    try {
+        val generator = UIImpactFeedbackGenerator(style = UIImpactFeedbackStyle.UIImpactFeedbackStyleMedium)
+        generator.prepare()
+        generator.impactOccurred()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
 
 private val ktorClient by lazy { HttpClient() }
