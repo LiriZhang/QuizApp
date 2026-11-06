@@ -3711,15 +3711,16 @@ fun ResultScreen(
 }
 // MÀN HÌNH DANH SÁCH KẾT QUẢ LÀM BÀI ĐÃ ĐƯỢC LƯU LẠI THEO DẠNG MỤC LỤC
 @Composable
-fun ResultListScreen(onResultClick: (Int) -> Unit,
-                     onBack: () -> Unit,
-                     onHomePage: () -> Unit
+fun ResultListScreen(
+    onResultClick: (Int) -> Unit,
+    onBack: () -> Unit,
+    onHomePage: () -> Unit,
+    resultViewModel: ResultViewModel = viewModel()
 ) {
     var iconWidth by remember { mutableIntStateOf(0) } // Kiểm tra thử có thế thay đổi Biến lưu độ rộng của icon
     // Lấy khoảng đệm theo chiều cao thành trạng thái và thanh điều khiển
     val bottomPadding = getNavigationBarHeight()
     val topPadding = getBannerAdHeight()
-    val resultViewModel: ResultViewModel = viewModel()
     var results by remember { mutableStateOf(resultViewModel.getAllResults()) }
     // Biến trạng thái để kiểm soát hiển thị tiêu đề và nút
     val isToolbarVisible = remember { mutableStateOf(true) }

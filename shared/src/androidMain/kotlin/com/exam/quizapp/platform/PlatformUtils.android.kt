@@ -452,8 +452,13 @@ object AudioCacheManager {
 private val ktorClient by lazy { HttpClient() }
 
 actual suspend fun fetchTextFromUrl(url: String): String {
+    TextCacheManager.get(url)?.let { return it }
     return try {
-        ktorClient.get(url).bodyAsText().trim()
+        val result = ktorClient.get(url).bodyAsText().trim()
+        if (result.isNotBlank()) {
+            TextCacheManager.put(url, result)
+        }
+        result
     } catch (e: Exception) {
         ""
     }

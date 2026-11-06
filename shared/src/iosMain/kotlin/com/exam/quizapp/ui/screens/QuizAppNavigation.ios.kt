@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.exam.quizapp.viewmodel.QuizViewModel
 import com.exam.quizapp.viewmodel.ResultViewModel
+import com.exam.quizapp.db.initQuizDatabase
 import com.exam.quizapp.platform.*
 
 sealed interface IosScreen {
@@ -27,6 +28,13 @@ actual fun QuizApp(
     viewModel: QuizViewModel,
     onQuizCompleted: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        try {
+            initQuizDatabase()
+        } catch (e: Throwable) {
+            println("Lỗi khởi tạo DB: ${e.message}")
+        }
+    }
     var currentScreen by remember { mutableStateOf<IosScreen>(IosScreen.TheoryAndExercise) }
     val resultViewModel = remember { ResultViewModel() }
 
@@ -259,6 +267,7 @@ actual fun QuizApp(
             }
             is IosScreen.ResultList -> {
                 ResultListScreen(
+                    resultViewModel = resultViewModel,
                     onResultClick = { resultId ->
                         playVoice(isCorrect = true)
                         currentScreen = IosScreen.ResultDetail(resultId)
@@ -277,6 +286,7 @@ actual fun QuizApp(
             is IosScreen.ResultDetail -> {
                 ResultDetailScreen(
                     resultId = screen.resultId,
+                    viewModel = resultViewModel,
                     onBackTest = { quizName ->
                         playVoice(isCorrect = true)
                         viewModel.startQuiz(quizName)

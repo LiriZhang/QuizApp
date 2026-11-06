@@ -57,13 +57,17 @@ import platform.UIKit.UIImpactFeedbackGenerator
 import platform.UIKit.UIImpactFeedbackStyle
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
+import platform.Foundation.NSData
+import platform.Foundation.NSFileManager
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 import platform.Foundation.NSURLSession
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSHTTPURLResponse
+import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSString
+import platform.Foundation.NSURLCache
 import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.create
 import platform.Foundation.dataTaskWithRequest
@@ -347,7 +351,24 @@ actual fun triggerVibration() {
         e.printStackTrace()
     }
 }
+fun setupIosMediaCache() {
+    try {
+        val memoryCapacity = (50 * 1024 * 1024).toULong()
+        val diskCapacity = (250 * 1024 * 1024).toULong()
+        val cache = NSURLCache(
+            memoryCapacity = memoryCapacity,
+            diskCapacity = diskCapacity,
+            diskPath = "ios_quiz_media_cache"
+        )
+        NSURLCache.setSharedURLCache(cache)
+    } catch (e: Exception) {
+        println("Lỗi cấu hình NSURLCache: ${e.message}")
+    }
+}
+
 actual suspend fun fetchTextFromUrl(url: String): String {
+    TextCacheManager.get(url)?.let { return it }
+
     require(url.startsWith("https://")) { "URL không hợp lệ" }
 
     val nsUrl = NSURL.URLWithString(url)
@@ -381,6 +402,8 @@ actual suspend fun fetchTextFromUrl(url: String): String {
                     throw IllegalStateException("Nội dung TXT trống")
                 }
 
+                TextCacheManager.put(url, result)
+
                 if (continuation.isActive) {
                     continuation.resume(result)
                 }
@@ -398,7 +421,59 @@ actual suspend fun fetchTextFromUrl(url: String): String {
 @Composable
 actual fun getBannerAdHeight(): Dp = 0.dp
 
+private object ImageCacheManager {
+    private val memoryCache = mutableMapOf<String, ByteArray>()
+
+    fun getMemory(url: String): ByteArray? = memoryCache[url]
+
+    fun putMemory(url: String, bytes: ByteArray) {
+        if (bytes.isNotEmpty()) {
+            memoryCache[url] = bytes
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
+    fun getDiskBytes(url: String): ByteArray? {
+        val safeName = url.hashCode().toString()
+        val cacheDir = NSHomeDirectory() + "/Library/Caches/image_cache"
+        val filePath = "$cacheDir/$safeName"
+        val fileManager = NSFileManager.defaultManager
+        if (!fileManager.fileExistsAtPath(filePath)) return null
+
+        val nsData = NSData.create(contentsOfFile = filePath) ?: return null
+        if (nsData.length == 0UL) return null
+
+        val byteArray = ByteArray(nsData.length.toInt())
+        byteArray.usePinned { pinned ->
+            memcpy(pinned.addressOf(0), nsData.bytes, nsData.length)
+        }
+        return byteArray
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    fun saveToDisk(url: String, data: NSData) {
+        try {
+            val safeName = url.hashCode().toString()
+            val cacheDir = NSHomeDirectory() + "/Library/Caches/image_cache"
+            val fileManager = NSFileManager.defaultManager
+            if (!fileManager.fileExistsAtPath(cacheDir)) {
+                fileManager.createDirectoryAtPath(cacheDir, true, null, null)
+            }
+            val filePath = "$cacheDir/$safeName"
+            fileManager.createFileAtPath(filePath, contents = data, attributes = null)
+        } catch (e: Exception) {
+            println("Lỗi lưu cache ảnh: ${e.message}")
+        }
+    }
+}
+
 private suspend fun fetchImageBytesFromUrl(url: String): ByteArray {
+    ImageCacheManager.getMemory(url)?.let { return it }
+    ImageCacheManager.getDiskBytes(url)?.let {
+        ImageCacheManager.putMemory(url, it)
+        return it
+    }
+
     val nsUrl = NSURL.URLWithString(url)
         ?: throw IllegalArgumentException("URL không hợp lệ")
 
@@ -416,7 +491,7 @@ private suspend fun fetchImageBytesFromUrl(url: String): ByteArray {
                 val httpResponse = response as? NSHTTPURLResponse
                     ?: throw IllegalStateException("Không nhận được HTTP response")
 
-                if (httpResponse.statusCode < 200L || httpResponse.statusCode >= 300L) {
+                if (httpResponse.statusCode !in 200L..299L) {
                     throw IllegalStateException("HTTP ERROR: ${httpResponse.statusCode}")
                 }
                 val responseData = data
@@ -430,6 +505,12 @@ private suspend fun fetchImageBytesFromUrl(url: String): ByteArray {
                         }
                     }
                 }
+
+                if (bytes.isNotEmpty()) {
+                    ImageCacheManager.putMemory(url, bytes)
+                    ImageCacheManager.saveToDisk(url, responseData)
+                }
+
                 if (continuation.isActive) {
                     continuation.resume(bytes)
                 }

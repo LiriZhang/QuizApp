@@ -8,6 +8,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
+object TextCacheManager {
+    private val memoryCache = mutableMapOf<String, String>()
+
+    fun get(url: String): String? = memoryCache[url]
+
+    fun put(url: String, text: String) {
+        if (text.isNotBlank()) {
+            memoryCache[url] = text
+        }
+    }
+
+    fun clear() {
+        memoryCache.clear()
+    }
+}
+
 @Composable
 expect fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier = Modifier)
 
