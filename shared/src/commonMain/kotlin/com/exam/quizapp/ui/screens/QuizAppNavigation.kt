@@ -14,9 +14,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +30,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.geometry.Offset
 import kotlinx.coroutines.launch
 import com.exam.quizapp.model.*
-import com.exam.quizapp.db.*
 import com.exam.quizapp.viewmodel.*
 import com.exam.quizapp.platform.*
 import androidx.compose.runtime.remember
@@ -72,7 +68,6 @@ import androidx.compose.ui.unit.sp
 import com.exam.quizapp.shared.resources.Res
 import com.exam.quizapp.shared.resources.allStringResources
 import com.exam.quizapp.shared.resources.allDrawableResources
-import com.exam.quizapp.shared.resources.*
 import org.jetbrains.compose.resources.painterResource
 
 // Multiplatform QuizApp Composable
@@ -695,7 +690,7 @@ fun ReviewQuizScreen(
                             )
 
                             is QuestionContent.ImageRes -> Image(
-                                painter = org.jetbrains.compose.resources.painterResource(content.imageRes),
+                                painter = painterResource(content.imageRes),
                                 contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
                                 modifier = Modifier
                                     .fillMaxWidth(),
@@ -812,7 +807,7 @@ fun ReviewQuizScreen(
                                     )
 
                                     is QuestionContent.ImageRes -> Image(
-                                        painter = org.jetbrains.compose.resources.painterResource(extraText.imageRes),
+                                        painter = painterResource(extraText.imageRes),
                                         contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -948,7 +943,7 @@ fun ReviewQuizScreen(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Image(
-                                            painter = org.jetbrains.compose.resources.painterResource(answer.imageRes),
+                                            painter = painterResource(answer.imageRes),
                                             contentDescription = "Hình ảnh đáp án", // Thêm mô tả cho hình ảnh đáp án
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -1090,7 +1085,7 @@ fun RenderQuestionContent(content: QuestionContent) {
             )
         }
         is QuestionContent.ImageRes -> {Image(
-            painter = org.jetbrains.compose.resources.painterResource(content.imageRes),
+            painter = painterResource(content.imageRes),
             contentDescription = "Hình ảnh câu hỏi",
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.FillWidth
@@ -1193,7 +1188,7 @@ fun RenderAnswerOptionContent(
         }
         is AnswerOption.ImageRes -> Box(modifier = Modifier.fillMaxWidth()) {
             Image(
-                painter = org.jetbrains.compose.resources.painterResource(answer.imageRes),
+                painter = painterResource(answer.imageRes),
                 contentDescription = "Hình ảnh đáp án",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1774,7 +1769,7 @@ fun AllQuestionsScreen(
                                                     ?: ""
 
                                             val userTextNormalized =
-                                                com.exam.quizapp.ui.screens.normalizeText(
+                                                normalizeText(
                                                     userStr
                                                 )
 
@@ -1795,7 +1790,7 @@ fun AllQuestionsScreen(
                                             val isCorrect =
                                                 staticCorrectTexts
                                                     .map {
-                                                        com.exam.quizapp.ui.screens.normalizeText(it)
+                                                        normalizeText(it)
                                                     }
                                                     .any {
                                                         it.isNotBlank() &&
@@ -2106,7 +2101,7 @@ fun QuestionScreen(
                                 .fillMaxWidth()
                         )
                         is QuestionContent.ImageRes -> Image(
-                            painter = org.jetbrains.compose.resources.painterResource(content.imageRes),
+                            painter = painterResource(content.imageRes),
                             contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -2247,7 +2242,7 @@ fun QuestionScreen(
                                     .fillMaxWidth()
                             )
                             is QuestionContent.ImageRes -> Image(
-                                painter = org.jetbrains.compose.resources.painterResource(extraText.imageRes),
+                                painter = painterResource(extraText.imageRes),
                                 contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
                                 modifier = Modifier
                                     .fillMaxWidth(),
@@ -2476,7 +2471,7 @@ fun QuestionScreen(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Image(
-                                            painter = org.jetbrains.compose.resources.painterResource(answer.imageRes),
+                                            painter = painterResource(answer.imageRes),
                                             contentDescription = "Hình ảnh đáp án", // Thêm mô tả cho hình ảnh đáp án
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -2845,7 +2840,7 @@ fun ResultScreen(
 
                         is QuestionContent.ImageRes -> {
                             Image(
-                                painter = org.jetbrains.compose.resources.painterResource(question.imageRes),
+                                painter = painterResource(question.imageRes),
                                 contentDescription = null,
                                 modifier = Modifier.fillMaxWidth(),
                                 contentScale = ContentScale.FillWidth
@@ -2979,7 +2974,7 @@ fun ResultScreen(
 
                                 is QuestionContent.ImageRes -> {
                                     Image(
-                                        painter = org.jetbrains.compose.resources.painterResource(extraText.imageRes),
+                                        painter = painterResource(extraText.imageRes),
                                         contentDescription = "Hình ảnh câu hỏi",
                                         modifier = Modifier.fillMaxWidth(),
                                         contentScale = ContentScale.FillWidth
@@ -3218,7 +3213,7 @@ fun ResultScreen(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Image(
-                                            painter = org.jetbrains.compose.resources.painterResource(answer.imageRes),
+                                            painter = painterResource(answer.imageRes),
                                             contentDescription = "Hình ảnh đáp án",
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -3498,7 +3493,7 @@ fun ResultScreen(
                                                 // ==============================
                                                 is AnswerOption.ImageRes -> {
                                                     Image(
-                                                        painter = org.jetbrains.compose.resources.painterResource(detailedCorrectAnswer.imageRes),
+                                                        painter = painterResource(detailedCorrectAnswer.imageRes),
                                                         contentDescription = "Hình ảnh đáp án",
                                                         modifier = Modifier.fillMaxWidth(),
                                                         contentScale = ContentScale.FillWidth
@@ -4032,7 +4027,7 @@ fun ResultDetailScreen(
                                     val drawableRes = Res.allDrawableResources[imageKey]
                                     if (drawableRes != null) {
                                         Image(
-                                            painter = org.jetbrains.compose.resources.painterResource(drawableRes),
+                                            painter = painterResource(drawableRes),
                                             contentDescription = null,
                                             modifier = Modifier.fillMaxWidth(),
                                             contentScale = ContentScale.FillWidth
@@ -4236,7 +4231,7 @@ fun ResultDetailScreen(
                                             val drawableRes = Res.allDrawableResources[imageKey]
                                             if (drawableRes != null) {
                                                 Image(
-                                                    painter = org.jetbrains.compose.resources.painterResource(drawableRes),
+                                                    painter = painterResource(drawableRes),
                                                     contentDescription = null,
                                                     modifier = Modifier.fillMaxWidth(),
                                                     contentScale = ContentScale.FillWidth
@@ -4510,7 +4505,7 @@ fun ResultDetailScreen(
                                                 val drawableRes = Res.allDrawableResources[imageKey]
                                                 if (drawableRes != null) {
                                                     Image(
-                                                        painter = org.jetbrains.compose.resources.painterResource(drawableRes),
+                                                        painter = painterResource(drawableRes),
                                                         contentDescription = null,
                                                         modifier = Modifier
                                                             .background(backgroundColor)
@@ -4894,7 +4889,7 @@ fun ResultDetailScreen(
                                                         val drawableRes = Res.allDrawableResources[imageKey]
                                                         if (drawableRes != null) {
                                                             Image(
-                                                                painter = org.jetbrains.compose.resources.painterResource(drawableRes),
+                                                                painter = painterResource(drawableRes),
                                                                 contentDescription = null,
                                                                 modifier = Modifier
                                                                     .fillMaxWidth(),
