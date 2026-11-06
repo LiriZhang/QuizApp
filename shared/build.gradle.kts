@@ -11,6 +11,19 @@ plugins {
 }
 
 kotlin {
+cocoapods {
+        summary = "QuizApp shared module"
+        homepage = "https://github.com/exam/quizapp"
+        ios.deploymentTarget = "15.0"
+        framework {
+            baseName = "shared"
+            isStatic = true
+        }
+        // Thêm dòng này để GitHub tự động tải SDK AdMob cho iOS khi build
+        pod("Google-Mobile-Ads-SDK") {
+            version = "~> 11.0"
+        }
+    }
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
