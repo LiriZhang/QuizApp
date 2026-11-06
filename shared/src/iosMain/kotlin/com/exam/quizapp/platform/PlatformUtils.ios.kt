@@ -286,20 +286,6 @@ private fun formatAudioTime(millis: Long): String {
 
 @Composable
 actual fun PlatformBannerAd(modifier: Modifier) {
-    UIKitView(
-        modifier = modifier.fillMaxWidth().height(50.dp),
-        factory = {
-            platform.GoogleMobileAds.GADBannerView(adSize = platform.GoogleMobileAds.kGADAdSizeBanner).apply {
-                adUnitID = "ca-app-pub-3940256099942544/2934735716" // Test Ad ID cho iOS
-                val window = UIApplication.sharedApplication.keyWindow
-                rootViewController = window?.rootViewController
-                loadRequest(platform.GoogleMobileAds.GADRequest())
-            }
-        },
-        update = { bannerView ->
-            // Cập nhật view nếu cần
-        }
-    )
 }
 
 actual fun playPlatformSound(isCorrect: Boolean) {
