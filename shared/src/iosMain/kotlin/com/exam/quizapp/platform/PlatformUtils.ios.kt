@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.interop.UIKitView
 import androidx.compose.ui.interop.UIKitViewController
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -72,6 +73,7 @@ import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.create
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPMethod
+import platform.UIKit.UIApplication
 
 @Composable
 actual fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier) {
@@ -284,7 +286,7 @@ private fun formatAudioTime(millis: Long): String {
 
 @Composable
 actual fun PlatformBannerAd(modifier: Modifier) {
-    // iOS Banner Ad stub (excluded as requested)
+    // iOS Banner Ad stub (Sẽ hiển thị banner native GADBannerView khi build trên macOS/Xcode với AdMob SDK)
 }
 
 actual fun playPlatformSound(isCorrect: Boolean) {
@@ -419,7 +421,7 @@ actual suspend fun fetchTextFromUrl(url: String): String {
 }
 
 @Composable
-actual fun getBannerAdHeight(): Dp = 0.dp
+actual fun getBannerAdHeight(): Dp = getStatusBarHeight()
 
 private object ImageCacheManager {
     private val memoryCache = mutableMapOf<String, ByteArray>()
