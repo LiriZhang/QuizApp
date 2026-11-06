@@ -295,9 +295,6 @@ actual fun PlatformBannerAd(modifier: Modifier) {
                 rootViewController = window?.rootViewController
                 loadRequest(platform.GoogleMobileAds.GADRequest())
             }
-        },
-        update = { bannerView ->
-            // Cập nhật view nếu cần
         }
     )
 }
