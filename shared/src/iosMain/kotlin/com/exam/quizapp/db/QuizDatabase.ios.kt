@@ -29,7 +29,8 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
     val docPath = documentDirectory?.path ?: NSTemporaryDirectory()
     val dbFilePath = "$docPath/quiz_database.db"
     return Room.databaseBuilder<QuizDatabase>(
-        name = dbFilePath
+        name = dbFilePath,
+        factory = { QuizDatabaseConstructor.initialize() }
     )
         .fallbackToDestructiveMigration(dropAllTables = true)
         .setDriver(BundledSQLiteDriver())
@@ -38,17 +39,22 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<QuizDatabase> {
 
 actual fun initQuizDatabase(): QuizDatabase {
     return try {
-        QuizDatabase.getDatabase(getDatabaseBuilder())
-    } catch (e: Exception) {
+        val builder = getDatabaseBuilder()
+        val db = builder.build()
+        QuizDatabase.setInstance(db)
+        db
+    } catch (e: Throwable) {
         println("Lỗi khởi tạo QuizDatabase trên iOS: ${e.message}")
         try {
-            val inMemoryBuilder = Room.inMemoryDatabaseBuilder<QuizDatabase>()
+            val fallbackDb = Room.inMemoryDatabaseBuilder<QuizDatabase>(
+                factory = { QuizDatabaseConstructor.initialize() }
+            )
                 .setDriver(BundledSQLiteDriver())
                 .setQueryCoroutineContext(Dispatchers.IO)
-            val fallbackDb = inMemoryBuilder.build()
+                .build()
             QuizDatabase.setInstance(fallbackDb)
             fallbackDb
-        } catch (e2: Exception) {
+        } catch (e2: Throwable) {
             println("Lỗi tạo fallback DB: ${e2.message}")
             throw e
         }

@@ -19,7 +19,7 @@ class ResultViewModel : ViewModel() {
     private val quizDao: QuizResultDao? by lazy {
         try {
             QuizDatabase.getDatabase().quizResultDao()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             println("QuizDatabase không khả dụng: ${e.message}")
             null
         }

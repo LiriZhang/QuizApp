@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.exam.quizapp.viewmodel.QuizViewModel
 import com.exam.quizapp.viewmodel.ResultViewModel
 import com.exam.quizapp.platform.*
@@ -29,7 +28,7 @@ actual fun QuizApp(
     onQuizCompleted: () -> Unit
 ) {
     var currentScreen by remember { mutableStateOf<IosScreen>(IosScreen.TheoryAndExercise) }
-    val resultViewModel: ResultViewModel = viewModel()
+    val resultViewModel = remember { ResultViewModel() }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
