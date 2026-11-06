@@ -8,6 +8,9 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp") version "2.3.6"
+    id("org.jetbrains.kotlin.native.cocoapods")
+
+
 }
 
 kotlin {
