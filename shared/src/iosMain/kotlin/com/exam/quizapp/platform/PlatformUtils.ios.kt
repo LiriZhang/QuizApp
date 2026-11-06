@@ -284,23 +284,9 @@ private fun formatAudioTime(millis: Long): String {
     return "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
 }
 
-@Composable // lỗi này không quan tâm vì khi up lên git hub hoặc chạy xcode sẽ hết lỗi,
-// lỗi ảo trên window
+@Composable
 actual fun PlatformBannerAd(modifier: Modifier) {
-    UIKitView(
-        modifier = modifier.fillMaxWidth().height(50.dp),
-        factory = {
-            platform.GoogleMobileAds.GADBannerView(adSize = platform.GoogleMobileAds.kGADAdSizeBanner).apply {
-                adUnitID = "ca-app-pub-3940256099942544/2934735716" // Test Ad ID cho iOS
-                val window = UIApplication.sharedApplication.keyWindow
-                rootViewController = window?.rootViewController
-                loadRequest(platform.GoogleMobileAds.GADRequest())
-            }
-        },
-        update = { bannerView ->
-            // Cập nhật view nếu cần
-        }
-    )
+    // iOS Banner Ad stub (excluded as requested)
 }
 
 actual fun playPlatformSound(isCorrect: Boolean) {
