@@ -8,11 +8,10 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp") version "2.3.6"
-    //id("org.jetbrains.kotlin.native.cocoapods")
 }
 
 kotlin {
-/*cocoapods {
+cocoapods {
         summary = "QuizApp shared module"
         homepage = "https://github.com/exam/quizapp"
         ios.deploymentTarget = "15.0"
@@ -24,7 +23,7 @@ kotlin {
         pod("Google-Mobile-Ads-SDK") {
             version = "~> 11.0"
         }
-    }*/
+    }
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
