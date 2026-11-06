@@ -7,6 +7,11 @@ import com.exam.quizapp.model.*
 import com.exam.quizapp.shared.resources.Res
 import com.exam.quizapp.shared.resources.allDrawableResources
 import com.exam.quizapp.shared.resources.allStringResources
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -17,6 +22,24 @@ class ResultViewModel : ViewModel() {
         } catch (e: Exception) {
             println("QuizDatabase không khả dụng: ${e.message}")
             null
+        }
+    }
+
+    private val _allResults = MutableStateFlow<List<QuizResult>>(emptyList())
+    val allResults: StateFlow<List<QuizResult>> = _allResults.asStateFlow()
+
+    init {
+        loadAllResults()
+    }
+
+    fun loadAllResults() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val dao = quizDao ?: return@launch
+            try {
+                _allResults.value = dao.getAllResults()
+            } catch (e: Exception) {
+                println("Lỗi đọc danh sách kết quả: ${e.message}")
+            }
         }
     }
 
@@ -35,9 +58,10 @@ class ResultViewModel : ViewModel() {
             history = historyString,
             timestamp = timestamp
         )
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 quizDao?.insert(quizResult)
+                loadAllResults()
             } catch (e: Exception) {
                 println("Lỗi lưu kết quả: ${e.message}")
             }
@@ -160,18 +184,23 @@ class ResultViewModel : ViewModel() {
     }
 
     fun getAllResults(): List<QuizResult> {
-        val dao = quizDao ?: return emptyList()
+        val current = _allResults.value
+        if (current.isNotEmpty()) return current
         return try {
-            runBlocking { dao.getAllResults() }
+            runBlocking(Dispatchers.IO) {
+                quizDao?.getAllResults() ?: emptyList()
+            }
         } catch (e: Exception) {
             emptyList()
         }
     }
 
     fun getResultById(id: Int): QuizResult? {
+        val cached = _allResults.value.firstOrNull { it.id == id }
+        if (cached != null) return cached
         val dao = quizDao ?: return null
         return try {
-            runBlocking { dao.getResultById(id) }
+            runBlocking(Dispatchers.IO) { dao.getResultById(id) }
         } catch (e: Exception) {
             null
         }
@@ -187,9 +216,10 @@ class ResultViewModel : ViewModel() {
     }
 
     fun deleteResultById(id: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 quizDao?.deleteResultById(id)
+                loadAllResults()
             } catch (e: Exception) {
                 println("Lỗi xóa kết quả: ${e.message}")
             }

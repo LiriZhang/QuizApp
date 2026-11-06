@@ -6,7 +6,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.exam.quizapp.viewmodel.QuizViewModel
+import com.exam.quizapp.viewmodel.ResultViewModel
 import com.exam.quizapp.platform.*
 
 sealed interface IosScreen {
@@ -17,6 +19,8 @@ sealed interface IosScreen {
     data class ReviewQuiz(val quiz: String) : IosScreen
     data class AllQuestions(val quiz: String) : IosScreen
     data class Result(val score: Int, val totalQuestions: Int, val quizName: String) : IosScreen
+    object ResultList : IosScreen
+    data class ResultDetail(val resultId: Int) : IosScreen
 }
 
 @Composable
@@ -25,6 +29,7 @@ actual fun QuizApp(
     onQuizCompleted: () -> Unit
 ) {
     var currentScreen by remember { mutableStateOf<IosScreen>(IosScreen.TheoryAndExercise) }
+    val resultViewModel: ResultViewModel = viewModel()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -50,7 +55,8 @@ actual fun QuizApp(
                         currentScreen = IosScreen.LessonSelection(chapter)
                     },
                     onList = {
-                        // Bỏ qua phần bài đã lưu trên iOS theo yêu cầu
+                        playVoice(isCorrect = true)
+                        currentScreen = IosScreen.ResultList
                     },
                     onBackApp = {
                         playVoice(isCorrect = false)
@@ -222,7 +228,14 @@ actual fun QuizApp(
                         currentScreen = IosScreen.Question(screen.quizName)
                     },
                     onSaveResult = {
-                        // Bỏ qua trên iOS theo yêu cầu
+                        playVoice(isCorrect = true)
+                        resultViewModel.saveResult(
+                            quizName = screen.quizName,
+                            score = screen.score,
+                            totalQuestions = screen.totalQuestions,
+                            history = viewModel.history
+                        )
+                        currentScreen = IosScreen.ResultList
                     },
                     onHomePage = {
                         playVoice(isCorrect = false)
@@ -242,6 +255,43 @@ actual fun QuizApp(
                         playVoice(isCorrect = false)
                         viewModel.resetLesson()
                         currentScreen = IosScreen.LessonSelection(viewModel.selectedChapter ?: "")
+                    }
+                )
+            }
+            is IosScreen.ResultList -> {
+                ResultListScreen(
+                    onResultClick = { resultId ->
+                        playVoice(isCorrect = true)
+                        currentScreen = IosScreen.ResultDetail(resultId)
+                    },
+                    onHomePage = {
+                        playVoice(isCorrect = false)
+                        viewModel.goToHome()
+                        currentScreen = IosScreen.ChapterSelection
+                    },
+                    onBack = {
+                        playVoice(isCorrect = false)
+                        currentScreen = IosScreen.ChapterSelection
+                    }
+                )
+            }
+            is IosScreen.ResultDetail -> {
+                ResultDetailScreen(
+                    resultId = screen.resultId,
+                    onBackTest = { quizName ->
+                        playVoice(isCorrect = true)
+                        viewModel.startQuiz(quizName)
+                        currentScreen = IosScreen.Question(quizName)
+                    },
+                    onHomePage = {
+                        playVoice(isCorrect = false)
+                        viewModel.goToHome()
+                        currentScreen = IosScreen.ChapterSelection
+                    },
+                    onBack = {
+                        playVoice(isCorrect = false)
+                        currentScreen = IosScreen.ResultList
+                        onQuizCompleted()
                     }
                 )
             }
