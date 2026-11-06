@@ -14,6 +14,8 @@ sealed interface IosScreen {
     object ChapterSelection : IosScreen
     data class LessonSelection(val chapter: String) : IosScreen
     data class Question(val quiz: String) : IosScreen
+    data class ReviewQuiz(val quiz: String) : IosScreen
+    data class AllQuestions(val quiz: String) : IosScreen
     data class Result(val score: Int, val totalQuestions: Int, val quizName: String) : IosScreen
 }
 
@@ -68,17 +70,64 @@ actual fun QuizApp(
                     onQuizSelectedAllQuestions = { quiz ->
                         playVoice(isCorrect = true)
                         viewModel.startQuiz(quiz)
-                        currentScreen = IosScreen.Question(quiz)
+                        currentScreen = IosScreen.AllQuestions(quiz)
                     },
                     onQuizReviewSelected = { quiz ->
                         playVoice(isCorrect = true)
                         viewModel.selectLesson(quiz)
-                        currentScreen = IosScreen.Question(quiz)
+                        currentScreen = IosScreen.ReviewQuiz(quiz)
                     },
                     onBack = {
                         playVoice(isCorrect = false)
                         viewModel.resetChapter()
                         currentScreen = IosScreen.ChapterSelection
+                    }
+                )
+            }
+            is IosScreen.ReviewQuiz -> {
+                ReviewQuizScreen(
+                    lessonName = viewModel.selectedLesson ?: screen.quiz,
+                    questions = viewModel.questions,
+                    onStartQuiz = {
+                        playVoice(isCorrect = true)
+                        viewModel.resetTest()
+                        currentScreen = IosScreen.Question(viewModel.selectedLesson ?: screen.quiz)
+                    },
+                    onHomePage = {
+                        playVoice(isCorrect = false)
+                        viewModel.goToHome()
+                        currentScreen = IosScreen.ChapterSelection
+                    },
+                    onBack = {
+                        playVoice(isCorrect = false)
+                        currentScreen = IosScreen.LessonSelection(viewModel.selectedChapter ?: "")
+                    }
+                )
+            }
+            is IosScreen.AllQuestions -> {
+                AllQuestionsScreen(
+                    questions = viewModel.questions,
+                    quizName = viewModel.selectedLesson ?: screen.quiz,
+                    onSubmitQuiz = { calculatedScore, calculatedHistory ->
+                        viewModel.score = calculatedScore
+                        viewModel.history = calculatedHistory
+                        viewModel.showResult = true
+                        currentScreen = IosScreen.Result(
+                            score = viewModel.score,
+                            totalQuestions = viewModel.questions.size,
+                            quizName = viewModel.selectedLesson ?: screen.quiz
+                        )
+                        onQuizCompleted()
+                    },
+                    onHomePage = {
+                        playVoice(isCorrect = false)
+                        viewModel.resetChapter()
+                        currentScreen = IosScreen.ChapterSelection
+                    },
+                    onBackQuiz = {
+                        playVoice(isCorrect = false)
+                        viewModel.resetLesson()
+                        currentScreen = IosScreen.LessonSelection(viewModel.selectedChapter ?: "")
                     }
                 )
             }
@@ -181,9 +230,13 @@ actual fun QuizApp(
                     },
                     onQuizReviewSelected = {
                         playVoice(isCorrect = true)
+                        viewModel.selectLesson(screen.quizName)
+                        currentScreen = IosScreen.ReviewQuiz(screen.quizName)
                     },
                     onQuizReviewSelected2 = {
                         playVoice(isCorrect = true)
+                        viewModel.selectLesson(screen.quizName)
+                        currentScreen = IosScreen.ReviewQuiz(screen.quizName)
                     },
                     onBackQuiz = {
                         playVoice(isCorrect = false)
