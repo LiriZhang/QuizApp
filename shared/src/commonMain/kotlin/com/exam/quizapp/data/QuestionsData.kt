@@ -123,17 +123,6 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),
-            Question(//câu 9
-                mainContent = QuestionContent.ClipUrl("https://drive.google.com/uc?export=download&id=1NV5HHPo4MYMiGf7fXcICKTuWSBX-msw7"),
-                //correctAnswer = 3 // Đáp án đúng là D
-                answers = listOf(
-                    AnswerOption.Text("Nhiệt kế y tế"),
-                    AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
-                    AnswerOption.Text("Nhiệt kế thủy ngân"),
-                    AnswerOption.Text("Nhiệt kế rượu")
-                ),
-                correctAnswer = 1 // Đáp án đúng là B
-            ),
             Question(//câu10
                 mainContent = QuestionContent.AudioUrl("https://drive.google.com/uc?export=download&id=1fhUf0joDFAiGtg2ou3Mks0aD_6YQiHm4"),
                 //correctAnswer = 3 // Đáp án đúng là D
@@ -157,21 +146,27 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
             ),
         ),
         "Thử nghiệm 02" to listOf(
-            Question( // video ok nhé
-                mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
+            Question(//câu 9
+                mainContent = QuestionContent.ClipUrl("https://drive.google.com/uc?export=download&id=1NV5HHPo4MYMiGf7fXcICKTuWSBX-msw7"),
+                //correctAnswer = 3 // Đáp án đúng là D
                 answers = listOf(
-                    AnswerOption.Text("Xuân trên là texturl nhé"),
+                    AnswerOption.Text("Nhiệt kế y tế"),
+                    AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
+                    AnswerOption.Text("Nhiệt kế thủy ngân"),
+                    AnswerOption.Text("Nhiệt kế rượu")
+                ),
+                correctAnswer = 1 // Đáp án đúng là B
+            ),
+            Question( // câu 7
+                mainContent = QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C2.txt"),
+                answers = listOf(
+                    AnswerOption.Text("Xuân"),
                     AnswerOption.TextRes(Res.string.mau_1),
-                    AnswerOption.ImageRes(Res.drawable.anhmau),
+                    AnswerOption.Text("Thu"),
                     AnswerOption.Text("Đông")
                 ),
-                correctAnswer = 1,
-                detailedCorrectAnswers = listOf(
-                    AnswerOption.Text("Xuân hè thu"),
-                    AnswerOption.TextRes(Res.string.mau_1),
-                    AnswerOption.ImageRes(Res.drawable.anhmau),
-                    )// Đáp án đúng là B
-            )
+                correctAnswer = 1 // Đáp án đúng là B
+            ),
         ),
         "Thử nghiệm 03" to listOf( //audio ok nhé
             Question( // câu 4
