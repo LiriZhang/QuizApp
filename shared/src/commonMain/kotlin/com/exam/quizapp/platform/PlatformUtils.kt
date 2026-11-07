@@ -30,8 +30,8 @@ expect fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier = Modifier)
 @Composable
 expect fun PlatformAudioPlayer(audioUrl: String, modifier: Modifier = Modifier)
 
-@Composable
-expect fun PlatformBannerAd(modifier: Modifier = Modifier)
+/*@Composable
+expect fun PlatformBannerAd(modifier: Modifier = Modifier)*/
 
 @Composable
 expect fun ImageFromUrl(
@@ -49,7 +49,7 @@ expect fun ZoomableImageFromUrl(
 
 expect fun playSound(isCorrect: Boolean)
 
-expect fun playPlatformSound(isCorrect: Boolean)
+/*expect fun playPlatformSound(isCorrect: Boolean)*/
 
 expect fun playVoice(isCorrect: Boolean)
 
