@@ -27,7 +27,17 @@ actual fun QuizApp(
     }
     val navController = rememberNavController()
     val resultViewModel: ResultViewModel = viewModel()
-    NavHost(navController = navController, startDestination = "theory_and_exercise") {
+    val startDestination = if (isUserLoggedIn()) "theory_and_exercise" else "login"
+    NavHost(navController = navController, startDestination = startDestination) {
+        composable("login") {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate("theory_and_exercise") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                }
+            )
+        }
         composable("theory_and_exercise") {
             TheoryAndExerciseScreen(
                 onTheorySelected = {

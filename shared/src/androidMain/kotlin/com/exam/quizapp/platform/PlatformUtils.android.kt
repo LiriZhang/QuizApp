@@ -476,3 +476,13 @@ actual fun ZoomableImageFromUrl(
         modifier = modifier
     )
 }
+
+actual fun isUserLoggedIn(): Boolean {
+    val prefs = AppContextHolder.context?.getSharedPreferences("quiz_app_prefs", Context.MODE_PRIVATE)
+    return prefs?.getBoolean("is_logged_in", false) ?: false
+}
+
+actual fun setUserLoggedIn(loggedIn: Boolean) {
+    val prefs = AppContextHolder.context?.getSharedPreferences("quiz_app_prefs", Context.MODE_PRIVATE)
+    prefs?.edit()?.putBoolean("is_logged_in", loggedIn)?.apply()
+}

@@ -12,6 +12,7 @@ import com.exam.quizapp.db.initQuizDatabase
 import com.exam.quizapp.platform.*
 
 sealed interface IosScreen {
+    object Login : IosScreen
     object TheoryAndExercise : IosScreen
     object ChapterSelection : IosScreen
     data class LessonSelection(val chapter: String) : IosScreen
@@ -35,7 +36,9 @@ actual fun QuizApp(
             println("Lỗi khởi tạo DB: ${e.message}")
         }
     }
-    var currentScreen by remember { mutableStateOf<IosScreen>(IosScreen.TheoryAndExercise) }
+    var currentScreen by remember {
+        mutableStateOf<IosScreen>(if (isUserLoggedIn()) IosScreen.TheoryAndExercise else IosScreen.Login)
+    }
     val resultViewModel = remember { ResultViewModel() }
 
     Surface(
@@ -43,6 +46,13 @@ actual fun QuizApp(
         color = MaterialTheme.colorScheme.background
     ) {
         when (val screen = currentScreen) {
+            is IosScreen.Login -> {
+                LoginScreen(
+                    onLoginSuccess = {
+                        currentScreen = IosScreen.TheoryAndExercise
+                    }
+                )
+            }
             is IosScreen.TheoryAndExercise -> {
                 TheoryAndExerciseScreen(
                     onTheorySelected = {

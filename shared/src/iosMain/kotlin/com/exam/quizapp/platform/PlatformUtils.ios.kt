@@ -71,6 +71,7 @@ import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSString
 import platform.Foundation.NSURLCache
 import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.NSUserDefaults
 import platform.Foundation.create
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPMethod
@@ -357,7 +358,7 @@ private fun playSoundFile(filename: String) {
 }
 
 actual fun playSound(isCorrect: Boolean) {
-    val fileName = if (isCorrect) "files/ting_nhe.mp3" else "files/te.mp3"
+    val fileName = if (isCorrect) "files/ting_nhe.mp3" else "files/tetete.mp3"
     playSoundFile(fileName)
 }
 
@@ -634,4 +635,12 @@ actual fun ZoomableImageFromUrl(
         contentDescription = contentDescription,
         modifier = modifier
     )
+}
+
+actual fun isUserLoggedIn(): Boolean {
+    return NSUserDefaults.standardUserDefaults.boolForKey("is_logged_in")
+}
+
+actual fun setUserLoggedIn(loggedIn: Boolean) {
+    NSUserDefaults.standardUserDefaults.setBool(loggedIn, forKey = "is_logged_in")
 }

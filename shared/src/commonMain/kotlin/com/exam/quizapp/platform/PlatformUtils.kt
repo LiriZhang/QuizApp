@@ -76,3 +76,7 @@ fun getNavigationBarHeight(): Dp {
 
 @Composable
 expect fun getBannerAdHeight(): Dp
+
+expect fun isUserLoggedIn(): Boolean
+
+expect fun setUserLoggedIn(loggedIn: Boolean)
