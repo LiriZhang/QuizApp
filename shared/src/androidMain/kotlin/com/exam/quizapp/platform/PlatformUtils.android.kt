@@ -345,27 +345,8 @@ private fun formatAudioTime(millis: Long): String {
     return "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
 }
 
-@Composable
-actual fun PlatformBannerAd(modifier: Modifier) {
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            AdView(context).apply {
-                setAdSize(AdSize.BANNER)
-                adUnitId = "ca-app-pub-3940256099942544/6300978111" // Test AdUnit
-                loadAd(AdRequest.Builder().build())
-            }
-        }
-    )
-}
-
 object AppContextHolder {
     var context: Context? = null
-}
-
-// Hàm của âm thanh nền tảng
-actual fun playPlatformSound(isCorrect: Boolean) {
-    playSound(isCorrect)
 }
 
 // Hàm của âm thanh có tính đúng sai

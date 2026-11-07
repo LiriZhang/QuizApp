@@ -285,42 +285,39 @@ private fun formatAudioTime(millis: Long): String {
     return "${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}"
 }
 
-@Composable
-actual fun PlatformBannerAd(modifier: Modifier) {
-}
-
-actual fun playPlatformSound(isCorrect: Boolean) {
-    playSound(isCorrect)
-}
 
 private val activeAudioPlayers = mutableListOf<AVAudioPlayer>()
 
 private fun findResourcePath(fileName: String): String? {
     try {
         val bundle = NSBundle.mainBundle
-        val lastSlash = fileName.lastIndexOf('/')
-        val name = if (lastSlash >= 0) fileName.substring(lastSlash + 1, fileName.lastIndexOf('.')) else fileName.substringBefore('.')
-        val ext = if (fileName.contains('.')) fileName.substringAfterLast('.') else "mp3"
+        val targetFileName = fileName.substringAfterLast('/') // ví dụ: "te.mp3"
+        val nameWithoutExt = targetFileName.substringBefore('.') // ví dụ: "te"
+        val ext = targetFileName.substringAfterLast('.') // ví dụ: "mp3"
 
-        // 1. Try standard pathForResource
-        var path = bundle.pathForResource(name, ext)
+        // 1. Try standard pathForResource với đúng tên và extension chính xác
+        var path = bundle.pathForResource(nameWithoutExt, ext)
         if (path != null) return path
 
         // 2. Try searching in compose-resources
-        path = bundle.pathForResource(name, ext, inDirectory = "compose-resources/files")
+        path = bundle.pathForResource(nameWithoutExt, ext, inDirectory = "compose-resources/files")
         if (path != null) return path
 
-        path = bundle.pathForResource(name, ext, inDirectory = "compose-resources")
+        path = bundle.pathForResource(nameWithoutExt, ext, inDirectory = "compose-resources")
         if (path != null) return path
 
-        // 3. Dynamic search in bundle using NSFileManager
+        // 3. Dynamic search in bundle using NSFileManager with EXACT filename matching
         val resourcePath = bundle.resourcePath ?: return null
         val enumerator = NSFileManager.defaultManager.enumeratorAtPath(resourcePath) ?: return null
         var element: Any? = enumerator.nextObject()
         while (element != null) {
             val subPath = element as? String
-            if (subPath != null && (subPath.contains(fileName) || subPath.endsWith("$name.$ext"))) {
-                return "$resourcePath/$subPath"
+            if (subPath != null) {
+                val currentFileName = subPath.substringAfterLast('/')
+                // SO SÁNH TUYỆT ĐỐI (EXACT MATCH) THAY VÌ CHỨA KÝ TỰ (CONTAINS)
+                if (currentFileName == targetFileName) {
+                    return "$resourcePath/$subPath"
+                }
             }
             element = enumerator.nextObject()
         }
