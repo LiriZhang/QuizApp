@@ -459,9 +459,14 @@ private object ImageCacheManager {
         }
     }
 
+    private fun getSafeFileName(url: String): String {
+        val sanitized = url.substringAfterLast('/').take(30).replace(Regex("[^A-Za-z0-9]"), "_")
+        return "${url.hashCode()}_$sanitized"
+    }
+
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
     fun getDiskBytes(url: String): ByteArray? {
-        val safeName = url.hashCode().toString()
+        val safeName = getSafeFileName(url)
         val cacheDir = NSHomeDirectory() + "/Library/Caches/image_cache"
         val filePath = "$cacheDir/$safeName"
         val fileManager = NSFileManager.defaultManager
@@ -480,7 +485,7 @@ private object ImageCacheManager {
     @OptIn(ExperimentalForeignApi::class)
     fun saveToDisk(url: String, data: NSData) {
         try {
-            val safeName = url.hashCode().toString()
+            val safeName = getSafeFileName(url)
             val cacheDir = NSHomeDirectory() + "/Library/Caches/image_cache"
             val fileManager = NSFileManager.defaultManager
             if (!fileManager.fileExistsAtPath(cacheDir)) {
