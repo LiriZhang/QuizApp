@@ -498,62 +498,62 @@ private object ImageCacheManager {
 }
 
 private suspend fun fetchImageBytesFromUrl(url: String): ByteArray {
-    ImageCacheManager.getMemory(url)?.let { return it }
-    ImageCacheManager.getDiskBytes(url)?.let {
-        ImageCacheManager.putMemory(url, it)
-        return it
-    }
+    try {
+        ImageCacheManager.getMemory(url)?.let { return it }
+        ImageCacheManager.getDiskBytes(url)?.let {
+            ImageCacheManager.putMemory(url, it)
+            return it
+        }
 
-    val nsUrl = NSURL.URLWithString(url)
-        ?: throw IllegalArgumentException("URL không hợp lệ")
+        val nsUrl = NSURL.URLWithString(url) ?: return byteArrayOf()
+        val request = NSMutableURLRequest.requestWithURL(nsUrl).apply {
+            setHTTPMethod("GET")
+            setTimeoutInterval(20.0)
+        }
 
-    val request = NSMutableURLRequest.requestWithURL(nsUrl).apply {
-        setHTTPMethod("GET")
-        setTimeoutInterval(30.0)
-    }
+        return suspendCancellableCoroutine { continuation ->
+            val task = NSURLSession.sharedSession.dataTaskWithRequest(request) { data, response, error ->
+                try {
+                    if (error != null || data == null) {
+                        if (continuation.isActive) continuation.resume(byteArrayOf())
+                        return@dataTaskWithRequest
+                    }
+                    val httpResponse = response as? NSHTTPURLResponse
+                    if (httpResponse != null && httpResponse.statusCode !in 200L..299L) {
+                        if (continuation.isActive) continuation.resume(byteArrayOf())
+                        return@dataTaskWithRequest
+                    }
 
-    return suspendCancellableCoroutine { continuation ->
-        val task = NSURLSession.sharedSession.dataTaskWithRequest(request) { data, response, error ->
-            try {
-                if (error != null) {
-                    throw IllegalStateException("Lỗi tải ảnh: ${error.localizedDescription}")
-                }
-                val httpResponse = response as? NSHTTPURLResponse
-                    ?: throw IllegalStateException("Không nhận được HTTP response")
-
-                if (httpResponse.statusCode !in 200L..299L) {
-                    throw IllegalStateException("HTTP ERROR: ${httpResponse.statusCode}")
-                }
-                val responseData = data
-                    ?: throw IllegalStateException("Không có dữ liệu ảnh")
-
-                @OptIn(ExperimentalForeignApi::class)
-                val bytes = ByteArray(responseData.length.toInt()).apply {
-                    if (isNotEmpty()) {
-                        usePinned { pinned ->
-                            memcpy(pinned.addressOf(0), responseData.bytes, responseData.length)
+                    @OptIn(ExperimentalForeignApi::class)
+                    val bytes = ByteArray(data.length.toInt()).apply {
+                        if (isNotEmpty()) {
+                            usePinned { pinned ->
+                                memcpy(pinned.addressOf(0), data.bytes, data.length)
+                            }
                         }
                     }
-                }
 
-                if (bytes.isNotEmpty()) {
-                    ImageCacheManager.putMemory(url, bytes)
-                    ImageCacheManager.saveToDisk(url, responseData)
-                }
+                    if (bytes.isNotEmpty()) {
+                        ImageCacheManager.putMemory(url, bytes)
+                        ImageCacheManager.saveToDisk(url, data)
+                    }
 
-                if (continuation.isActive) {
-                    continuation.resume(bytes)
-                }
-            } catch (e: Exception) {
-                if (continuation.isActive) {
-                    continuation.resumeWithException(e)
+                    if (continuation.isActive) {
+                        continuation.resume(bytes)
+                    }
+                } catch (_: Throwable) {
+                    if (continuation.isActive) {
+                        continuation.resume(byteArrayOf())
+                    }
                 }
             }
+            continuation.invokeOnCancellation {
+                task.cancel()
+            }
+            task.resume()
         }
-        continuation.invokeOnCancellation {
-            task.cancel()
-        }
-        task.resume()
+    } catch (_: Throwable) {
+        return byteArrayOf()
     }
 }
 
@@ -575,10 +575,12 @@ actual fun ImageFromUrl(
         }
         try {
             val bytes = fetchImageBytesFromUrl(imageUrl)
-            val bitmap = SkiaImage.makeFromEncoded(bytes).toComposeImageBitmap()
-            imageBitmap = bitmap
-        } catch (e: Exception) {
-            e.printStackTrace()
+            if (bytes.isNotEmpty()) {
+                imageBitmap = SkiaImage.makeFromEncoded(bytes).toComposeImageBitmap()
+            } else {
+                isError = true
+            }
+        } catch (_: Throwable) {
             isError = true
         }
     }
