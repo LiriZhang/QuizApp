@@ -57,6 +57,7 @@ import platform.Foundation.NSURL
 import platform.UIKit.UIImpactFeedbackGenerator
 import platform.UIKit.UIImpactFeedbackStyle
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSData
 import platform.Foundation.NSFileManager
@@ -294,41 +295,66 @@ actual fun playPlatformSound(isCorrect: Boolean) {
 
 private val activeAudioPlayers = mutableListOf<AVAudioPlayer>()
 
-private fun playSoundFile(filename: String) {
+private fun findResourcePath(fileName: String): String? {
     try {
-        // Cấu hình AVAudioSession để iOS cho phép phát âm thanh ngay cả ở chế độ silent
-        try {
-            val audioSession = AVAudioSession.sharedInstance()
-            audioSession.setCategory(
-                AVAudioSessionCategoryPlayback,
-                error = null
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        val bundle = NSBundle.mainBundle
+        val lastSlash = fileName.lastIndexOf('/')
+        val name = if (lastSlash >= 0) fileName.substring(lastSlash + 1, fileName.lastIndexOf('.')) else fileName.substringBefore('.')
+        val ext = if (fileName.contains('.')) fileName.substringAfterLast('.') else "mp3"
 
-        val lastSlash = filename.lastIndexOf('/')
-        val name = if (lastSlash >= 0) filename.substring(lastSlash + 1, filename.lastIndexOf('.')) else filename.substringBefore('.')
-        val ext = if (filename.contains('.')) filename.substringAfterLast('.') else "mp3"
+        // 1. Try standard pathForResource
+        var path = bundle.pathForResource(name, ext)
+        if (path != null) return path
 
-        // Tìm kiếm file resource trong các thư mục bundle của iOS
-        val path = NSBundle.mainBundle.pathForResource(name, ext, inDirectory = "compose-resources/files")
-            ?: NSBundle.mainBundle.pathForResource(name, ext, inDirectory = "compose-resources")
-            ?: NSBundle.mainBundle.pathForResource(name, ext)
+        // 2. Try searching in compose-resources
+        path = bundle.pathForResource(name, ext, inDirectory = "compose-resources/files")
+        if (path != null) return path
 
-        if (path != null) {
-            val url = NSURL.fileURLWithPath(path)
-            val player = AVAudioPlayer(contentsOfURL = url, error = null).apply {
-                prepareToPlay()
-                play()
+        path = bundle.pathForResource(name, ext, inDirectory = "compose-resources")
+        if (path != null) return path
+
+        // 3. Dynamic search in bundle using NSFileManager
+        val resourcePath = bundle.resourcePath ?: return null
+        val enumerator = NSFileManager.defaultManager.enumeratorAtPath(resourcePath) ?: return null
+        var element: Any? = enumerator.nextObject()
+        while (element != null) {
+            val subPath = element as? String
+            if (subPath != null && (subPath.contains(fileName) || subPath.endsWith("$name.$ext"))) {
+                return "$resourcePath/$subPath"
             }
-            activeAudioPlayers.add(player)
-            // Giới hạn danh sách player để tránh rò rỉ bộ nhớ nhưng vẫn giữ lại các player đang phát
-            if (activeAudioPlayers.size > 10) {
-                activeAudioPlayers.removeAt(0)
-            }
+            element = enumerator.nextObject()
         }
     } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
+}
+
+private fun playSoundFile(filename: String) {
+    try {
+        val audioSession = AVAudioSession.sharedInstance()
+        audioSession.setCategory(
+            AVAudioSessionCategoryPlayback,
+            error = null
+        )
+
+        val path = findResourcePath(filename)
+        if (path == null) {
+            println("Không tìm thấy file audio trong bundle iOS: $filename")
+            return
+        }
+
+        val url = NSURL.fileURLWithPath(path)
+        val player = AVAudioPlayer(contentsOfURL = url, error = null).apply {
+            prepareToPlay()
+            play()
+        }
+        activeAudioPlayers.add(player)
+        if (activeAudioPlayers.size > 10) {
+            activeAudioPlayers.removeAt(0)
+        }
+    } catch (e: Exception) {
+        println("Lỗi phát âm thanh iOS: ${e.message}")
         e.printStackTrace()
     }
 }
@@ -343,11 +369,14 @@ actual fun playVoice(isCorrect: Boolean) {
     playSoundFile(fileName)
 }
 
+private val feedbackGenerator by lazy {
+    UIImpactFeedbackGenerator(style = UIImpactFeedbackStyle.UIImpactFeedbackStyleMedium)
+}
+
 actual fun triggerVibration() {
     try {
-        val generator = UIImpactFeedbackGenerator(style = UIImpactFeedbackStyle.UIImpactFeedbackStyleMedium)
-        generator.prepare()
-        generator.impactOccurred()
+        feedbackGenerator.prepare()
+        feedbackGenerator.impactOccurred()
     } catch (e: Exception) {
         e.printStackTrace()
     }
