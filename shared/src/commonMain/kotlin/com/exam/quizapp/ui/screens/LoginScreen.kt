@@ -67,7 +67,7 @@ fun LoginScreen(
     val bottomPadding = getNavigationBarHeight()
 
     // 🔗 Dán URL Web App (có đuôi /exec) của Google Apps Script vào đây:
-    val googleSheetApiUrl = "THAY_URL_WEB_APP_EXEC_CUA_BAN_VAO_DAY"
+    val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbx1Sp1QjTXs117P0ai22hs5Ff3GOnsmJ_xzTkSeU7TfBRMMyTpCWaJhTvdQV6dkEeSs/exec"
 
     fun performLogin() {
         val trimmedPhone = phoneNumber.trim()
@@ -100,7 +100,7 @@ fun LoginScreen(
             return
         }
 
-        if (googleSheetApiUrl == "THAY_URL_WEB_APP_EXEC_CUA_BAN_VAO_DAY") {
+        if (googleSheetApiUrl == "https://script.google.com/u/0/home/projects/1Z0WN8kyCWE-3WX6M0IGD3CBtFZ-jlPNlEp-VL_IMtmPXvY_xWhqxIzxx/axec") {
             errorMessage = "Vui lòng cấu hình URL Google Sheets API trong LoginScreen.kt!"
             playVoice(isCorrect = false)
             return
