@@ -4,6 +4,7 @@ package com.exam.quizapp.platform
 
 import android.app.Activity
 import android.content.Context
+import android.provider.Settings
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.media.MediaPlayer
@@ -70,6 +71,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import java.text.Normalizer
+import java.util.UUID
 
 //HÀM HIỂN THỊ CLIP TỪ URL
 @Composable
@@ -485,4 +487,17 @@ actual fun isUserLoggedIn(): Boolean {
 actual fun setUserLoggedIn(loggedIn: Boolean) {
     val prefs = AppContextHolder.context?.getSharedPreferences("quiz_app_prefs", Context.MODE_PRIVATE)
     prefs?.edit()?.putBoolean("is_logged_in", loggedIn)?.apply()
+}
+
+actual fun getDeviceId(): String {
+    val context = AppContextHolder.context ?: return "unknown_android"
+    val prefs = context.getSharedPreferences("device_id_prefs", Context.MODE_PRIVATE)
+    var deviceId = prefs.getString("device_uuid", null)
+    if (deviceId.isNullOrEmpty()) {
+        deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            .takeIf { !it.isNullOrEmpty() }
+            ?: UUID.randomUUID().toString()
+        prefs.edit().putString("device_uuid", deviceId).apply()
+    }
+    return deviceId
 }

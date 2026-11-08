@@ -57,6 +57,8 @@ expect fun triggerVibration()
 
 expect suspend fun fetchTextFromUrl(url: String): String
 
+expect fun getDeviceId(): String
+
 
 @Composable
 fun getStatusBarHeight(): Dp {

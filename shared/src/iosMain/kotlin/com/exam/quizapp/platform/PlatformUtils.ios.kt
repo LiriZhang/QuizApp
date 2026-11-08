@@ -71,11 +71,13 @@ import platform.Foundation.NSHomeDirectory
 import platform.Foundation.NSString
 import platform.Foundation.NSURLCache
 import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.NSUUID
 import platform.Foundation.NSUserDefaults
 import platform.Foundation.create
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPMethod
 import platform.UIKit.UIApplication
+import platform.UIKit.UIDevice
 
 @Composable
 actual fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier) {
@@ -448,6 +450,17 @@ actual suspend fun fetchTextFromUrl(url: String): String {
 
 @Composable
 actual fun getBannerAdHeight(): Dp = getStatusBarHeight()
+
+actual fun getDeviceId(): String {
+    val defaults = NSUserDefaults.standardUserDefaults
+    var deviceId = defaults.stringForKey("device_uuid")
+    if (deviceId.isNullOrEmpty()) {
+        deviceId = UIDevice.currentDevice.identifierForVendor?.UUIDString()
+            ?: NSUUID().UUIDString()
+        defaults.setObject(deviceId, forKey = "device_uuid")
+    }
+    return deviceId ?: "unknown_ios"
+}
 
 private object ImageCacheManager {
     private val memoryCache = mutableMapOf<String, ByteArray>()

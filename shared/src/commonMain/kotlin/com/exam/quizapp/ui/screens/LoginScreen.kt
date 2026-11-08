@@ -21,11 +21,36 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.exam.quizapp.platform.fetchTextFromUrl
 import com.exam.quizapp.platform.getBannerAdHeight
+import com.exam.quizapp.platform.getDeviceId
 import com.exam.quizapp.platform.getNavigationBarHeight
 import com.exam.quizapp.platform.playVoice
 import com.exam.quizapp.platform.setUserLoggedIn
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.coroutines.launch
+
+@Serializable
+data class LoginRequest(val phone: String, val deviceId: String)
+
+@Serializable
+data class LoginResponse(val status: String, val message: String)
+
+private val loginHttpClient by lazy {
+    HttpClient {
+        install(ContentNegotiation) {
+            json(Json { ignoreUnknownKeys = true })
+        }
+    }
+}
 
 @Composable
 fun LoginScreen(
@@ -35,73 +60,14 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
-    val localPhoneNumbers = remember {
-        listOf(
-            "0900449008", "0987057417"
-        )
-    }
-
-    var remotePhoneNumbers by remember {
-        mutableStateOf<List<String>>(emptyList())
-    }
-
-    var lockedPhoneNumbers by remember {
-        mutableStateOf<List<String>>(emptyList())
-    }
-
-    var isRemoteListLoaded by remember {
-        mutableStateOf(false)
-    }
-
-    var remoteLoadError by remember {
-        mutableStateOf(false)
-    }
-
-// Đường dẫn file TXT trên GitHub
-    val githubUrl =
-        "https://raw.githubusercontent.com/LiriZhang/HKI.01.github.io/HKI.01/AccActive.txt"
-
-    val lockedGithubUrl =
-        "https://raw.githubusercontent.com/LiriZhang/HKI.01.github.io/HKI.01/AccLock.txt"
-
-// Tải danh sách số điện thoại từ GitHub
-    LaunchedEffect(Unit) {
-        try {
-            val content = fetchTextFromUrl(githubUrl)
-
-            remotePhoneNumbers = Regex("""\d{10}""")
-                .findAll(content)
-                .map { it.value }
-                .distinct()
-                .toList()
-
-            try {
-                val lockedContent = fetchTextFromUrl(lockedGithubUrl)
-                lockedPhoneNumbers = Regex("""\d{10}""")
-                    .findAll(lockedContent)
-                    .map { it.value }
-                    .distinct()
-                    .toList()
-            } catch (e: Exception) {
-                println("Lỗi tải danh sách tài khoản đã đăng nhập: ${e.message}")
-            }
-
-            remoteLoadError = false
-
-        } catch (_: Exception) {
-            remoteLoadError = true
-        } finally {
-            isRemoteListLoaded = true
-        }
-    }
-
-// Kết hợp danh sách cố định và danh sách GitHub
-    val allowedPhoneNumbers = remember(remotePhoneNumbers) {
-        (localPhoneNumbers + remotePhoneNumbers).distinct()
-    }
+    val scope = rememberCoroutineScope()
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
+
+    // 🔗 Dán URL Web App (có đuôi /exec) của Google Apps Script vào đây:
+    val googleSheetApiUrl = "THAY_URL_WEB_APP_EXEC_CUA_BAN_VAO_DAY"
 
     fun performLogin() {
         val trimmedPhone = phoneNumber.trim()
@@ -109,31 +75,6 @@ fun LoginScreen(
 
         if (trimmedPhone.length != 10 || !trimmedPhone.all { it.isDigit() }) {
             errorMessage = "Số điện thoại phải gồm đúng 10 chữ số!"
-            playVoice(isCorrect = false)
-            return
-        }
-
-        if (trimmedPhone in lockedPhoneNumbers) {
-            errorMessage = "Số điện thoại này đã được đăng nhập điện thoại khác nên không được cấp cho điện thoại này. Nếu có vấn đề liên hệ Zalo 0972712415 để được giải quyết nhé !"
-            playVoice(isCorrect = false)
-            return
-        }
-
-        if (trimmedPhone !in allowedPhoneNumbers) {
-
-            if (!isRemoteListLoaded) {
-                errorMessage = "Đang tải danh sách tài khoản, vui lòng thử lại!"
-                playVoice(isCorrect = false)
-                return
-            }
-
-            if (remoteLoadError) {
-                errorMessage = "Không thể tải danh sách tài khoản! Vui lòng kiểm tra Internet."
-                playVoice(isCorrect = false)
-                return
-            }
-
-            errorMessage = "Số điện thoại này chưa được cấp quyền truy cập ứng dụng!"
             playVoice(isCorrect = false)
             return
         }
@@ -153,14 +94,46 @@ fun LoginScreen(
             append(trimmedPhone[9])
         }
 
-        if (trimmedPassword == expectedPassword) {
-            errorMessage = null
-            playVoice(isCorrect = true)
-            setUserLoggedIn(true)
-            onLoginSuccess()
-        } else {
+        if (trimmedPassword != expectedPassword) {
             errorMessage = "Mật khẩu không chính xác!"
             playVoice(isCorrect = false)
+            return
+        }
+
+        if (googleSheetApiUrl == "THAY_URL_WEB_APP_EXEC_CUA_BAN_VAO_DAY") {
+            errorMessage = "Vui lòng cấu hình URL Google Sheets API trong LoginScreen.kt!"
+            playVoice(isCorrect = false)
+            return
+        }
+
+        isLoading = true
+        errorMessage = null
+
+        scope.launch {
+            try {
+                val deviceId = getDeviceId()
+                val responseText = loginHttpClient.post(googleSheetApiUrl) {
+                    contentType(ContentType.Application.Json)
+                    setBody(LoginRequest(phone = trimmedPhone, deviceId = deviceId))
+                }.bodyAsText()
+
+                val response = Json.decodeFromString<LoginResponse>(responseText)
+
+                if (response.status == "success") {
+                    errorMessage = null
+                    playVoice(isCorrect = true)
+                    setUserLoggedIn(true)
+                    onLoginSuccess()
+                } else {
+                    errorMessage = response.message
+                    playVoice(isCorrect = false)
+                }
+            } catch (_: Exception) {
+                errorMessage = "Không thể kết nối máy chủ! Vui lòng kiểm tra Internet."
+                playVoice(isCorrect = false)
+            } finally {
+                isLoading = false
+            }
         }
     }
 
@@ -234,6 +207,7 @@ fun LoginScreen(
                         )
                     },
                     singleLine = true,
+                    enabled = !isLoading,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next
@@ -269,6 +243,7 @@ fun LoginScreen(
                     },
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     singleLine = true,
+                    enabled = !isLoading,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.NumberPassword,
                         imeAction = ImeAction.Done
@@ -278,17 +253,6 @@ fun LoginScreen(
                     ),
                     modifier = Modifier.fillMaxWidth()
                 )
-
-                // Hiển thị gợi ý quy tắc mật khẩu
-                Spacer(modifier = Modifier.height(8.dp))
-                /*Text(
-                    //text = "* Mật khẩu là 5 chữ số ở vị trí thứ 2, 4, 6, 8, 10 của SĐT",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    fontSize = 11.sp,
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth()
-                )*/
 
                 // Hiển thị thông báo lỗi
                 if (errorMessage != null) {
@@ -307,6 +271,7 @@ fun LoginScreen(
                 // Nút Đăng nhập
                 Button(
                     onClick = { performLogin() },
+                    enabled = !isLoading,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
@@ -316,11 +281,19 @@ fun LoginScreen(
                         contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
-                    Text(
-                        text = "ĐĂNG NHẬP",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(
+                            text = "ĐĂNG NHẬP",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
