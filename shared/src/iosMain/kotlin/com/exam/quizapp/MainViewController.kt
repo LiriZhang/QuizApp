@@ -14,3 +14,11 @@ fun MainViewController(): UIViewController {
         )
     }
 }
+/*Text(
+                    text = "* Mật khẩu là 5 chữ số ở vị trí thứ 2, 4, 6, 8, 10 của SĐT",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    fontSize = 11.sp,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                )*/

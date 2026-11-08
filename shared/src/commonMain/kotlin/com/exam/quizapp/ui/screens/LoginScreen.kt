@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.exam.quizapp.platform.fetchTextFromUrl
 import com.exam.quizapp.platform.getBannerAdHeight
 import com.exam.quizapp.platform.getNavigationBarHeight
 import com.exam.quizapp.platform.playVoice
@@ -35,6 +36,70 @@ fun LoginScreen(
     var isPasswordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
+    val localPhoneNumbers = remember {
+        listOf(
+            "0900449008", "0987057417"
+        )
+    }
+
+    var remotePhoneNumbers by remember {
+        mutableStateOf<List<String>>(emptyList())
+    }
+
+    var lockedPhoneNumbers by remember {
+        mutableStateOf<List<String>>(emptyList())
+    }
+
+    var isRemoteListLoaded by remember {
+        mutableStateOf(false)
+    }
+
+    var remoteLoadError by remember {
+        mutableStateOf(false)
+    }
+
+// Đường dẫn file TXT trên GitHub
+    val githubUrl =
+        "https://raw.githubusercontent.com/LiriZhang/HKI.01.github.io/HKI.01/AccActive.txt"
+
+    val lockedGithubUrl =
+        "https://raw.githubusercontent.com/LiriZhang/HKI.01.github.io/HKI.01/AccLock.txt"
+
+// Tải danh sách số điện thoại từ GitHub
+    LaunchedEffect(Unit) {
+        try {
+            val content = fetchTextFromUrl(githubUrl)
+
+            remotePhoneNumbers = Regex("""\d{10}""")
+                .findAll(content)
+                .map { it.value }
+                .distinct()
+                .toList()
+
+            try {
+                val lockedContent = fetchTextFromUrl(lockedGithubUrl)
+                lockedPhoneNumbers = Regex("""\d{10}""")
+                    .findAll(lockedContent)
+                    .map { it.value }
+                    .distinct()
+                    .toList()
+            } catch (e: Exception) {
+                println("Lỗi tải danh sách tài khoản đã đăng nhập: ${e.message}")
+            }
+
+            remoteLoadError = false
+
+        } catch (_: Exception) {
+            remoteLoadError = true
+        } finally {
+            isRemoteListLoaded = true
+        }
+    }
+
+// Kết hợp danh sách cố định và danh sách GitHub
+    val allowedPhoneNumbers = remember(remotePhoneNumbers) {
+        (localPhoneNumbers + remotePhoneNumbers).distinct()
+    }
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
 
@@ -44,6 +109,31 @@ fun LoginScreen(
 
         if (trimmedPhone.length != 10 || !trimmedPhone.all { it.isDigit() }) {
             errorMessage = "Số điện thoại phải gồm đúng 10 chữ số!"
+            playVoice(isCorrect = false)
+            return
+        }
+
+        if (trimmedPhone in lockedPhoneNumbers) {
+            errorMessage = "Số điện thoại này đã được đăng nhập điện thoại khác nên không được cấp cho điện thoại này. Nếu có vấn đề liên hệ Zalo 0972712415 để được giải quyết nhé !"
+            playVoice(isCorrect = false)
+            return
+        }
+
+        if (trimmedPhone !in allowedPhoneNumbers) {
+
+            if (!isRemoteListLoaded) {
+                errorMessage = "Đang tải danh sách tài khoản, vui lòng thử lại!"
+                playVoice(isCorrect = false)
+                return
+            }
+
+            if (remoteLoadError) {
+                errorMessage = "Không thể tải danh sách tài khoản! Vui lòng kiểm tra Internet."
+                playVoice(isCorrect = false)
+                return
+            }
+
+            errorMessage = "Số điện thoại này chưa được cấp quyền truy cập ứng dụng!"
             playVoice(isCorrect = false)
             return
         }
@@ -192,7 +282,7 @@ fun LoginScreen(
                 // Hiển thị gợi ý quy tắc mật khẩu
                 Spacer(modifier = Modifier.height(8.dp))
                 /*Text(
-                    text = "* Mật khẩu là 5 chữ số ở vị trí thứ 2, 4, 6, 8, 10 của SĐT",
+                    //text = "* Mật khẩu là 5 chữ số ở vị trí thứ 2, 4, 6, 8, 10 của SĐT",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     fontSize = 11.sp,
