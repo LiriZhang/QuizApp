@@ -1,6 +1,8 @@
 package com.exam.quizapp.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -126,6 +128,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .imePadding()
             .padding(start = 16.dp, end = 16.dp, top = topPadding, bottom = bottomPadding),
         contentAlignment = Alignment.Center
     ) {
@@ -142,6 +145,7 @@ fun LoginScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -168,7 +172,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Vui lòng nhập Số điện thoại và Mật khẩu để tiếp tục",
+                    text = "Vui lòng nhập Số điện thoại và Mật khẩu để tiếp tục. Hoặc liên hệ 0972712415 để mua tài khoản và được cấp mật khẩu (giá 200K)",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -252,7 +256,7 @@ fun LoginScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+Spacer(modifier = Modifier.height(24.dp))
 
                 // Nút Đăng nhập
                 Button(
