@@ -28,18 +28,12 @@ import com.exam.quizapp.platform.playVoice
 import com.exam.quizapp.platform.setUserLoggedIn
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
+import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.launch
-
-@Serializable
-data class LoginRequest(val phone: String, val deviceId: String)
 
 @Serializable
 data class LoginResponse(val status: String, val message: String)
@@ -67,7 +61,7 @@ fun LoginScreen(
     val bottomPadding = getNavigationBarHeight()
 
     // 🔗 Dán URL Web App (có đuôi /exec) của Google Apps Script vào đây:
-    val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbx1Sp1QjTXs117P0ai22hs5Ff3GOnsmJ_xzTkSeU7TfBRMMyTpCWaJhTvdQV6dkEeSs/exec"
+    val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec"
 
     fun performLogin() {
         val trimmedPhone = phoneNumber.trim()
@@ -100,22 +94,14 @@ fun LoginScreen(
             return
         }
 
-        if (googleSheetApiUrl == "https://script.google.com/u/0/home/projects/1Z0WN8kyCWE-3WX6M0IGD3CBtFZ-jlPNlEp-VL_IMtmPXvY_xWhqxIzxx/axec") {
-            errorMessage = "Vui lòng cấu hình URL Google Sheets API trong LoginScreen.kt!"
-            playVoice(isCorrect = false)
-            return
-        }
-
         isLoading = true
         errorMessage = null
 
         scope.launch {
             try {
                 val deviceId = getDeviceId()
-                val responseText = loginHttpClient.post(googleSheetApiUrl) {
-                    contentType(ContentType.Application.Json)
-                    setBody(LoginRequest(phone = trimmedPhone, deviceId = deviceId))
-                }.bodyAsText()
+                val url = "$googleSheetApiUrl?phone=$trimmedPhone&deviceId=$deviceId"
+                val responseText = loginHttpClient.get(url).bodyAsText()
 
                 val response = Json.decodeFromString<LoginResponse>(responseText)
 
@@ -128,8 +114,8 @@ fun LoginScreen(
                     errorMessage = response.message
                     playVoice(isCorrect = false)
                 }
-            } catch (_: Exception) {
-                errorMessage = "Không thể kết nối máy chủ! Vui lòng kiểm tra Internet."
+            } catch (e: Exception) {
+                errorMessage = "Lỗi: ${e.message ?: e.toString()}"
                 playVoice(isCorrect = false)
             } finally {
                 isLoading = false
