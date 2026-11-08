@@ -23,30 +23,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.exam.quizapp.platform.fetchTextFromUrl
 import com.exam.quizapp.platform.getBannerAdHeight
 import com.exam.quizapp.platform.getDeviceId
 import com.exam.quizapp.platform.getNavigationBarHeight
 import com.exam.quizapp.platform.playVoice
 import com.exam.quizapp.platform.setUserLoggedIn
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.launch
 
 @Serializable
 data class LoginResponse(val status: String, val message: String)
-
-private val loginHttpClient by lazy {
-    HttpClient {
-        install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true })
-        }
-    }
-}
 
 @Composable
 fun LoginScreen(
@@ -62,8 +50,9 @@ fun LoginScreen(
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
 
-    // 🔗 Dán URL Web App (có đuôi /exec) của Google Apps Script vào đây:
+    // 🔗 URL Web App (có đuôi /exec) của Google Apps Script:
     val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec"
+    //https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec
 
     fun performLogin() {
         val trimmedPhone = phoneNumber.trim()
@@ -103,7 +92,7 @@ fun LoginScreen(
             try {
                 val deviceId = getDeviceId()
                 val url = "$googleSheetApiUrl?phone=$trimmedPhone&deviceId=$deviceId"
-                val responseText = loginHttpClient.get(url).bodyAsText()
+                val responseText = fetchTextFromUrl(url)
 
                 val response = Json.decodeFromString<LoginResponse>(responseText)
 
@@ -256,7 +245,7 @@ fun LoginScreen(
                     )
                 }
 
-Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 // Nút Đăng nhập
                 Button(
