@@ -3652,7 +3652,37 @@ fun ResultScreen(
                                         isSubmitting = false
                                         return@launch
                                     }
-                                    val url = "https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec?action=submit&phone=$phone&content=Quiz: $quizName - Diem: $score / $totalQuestions&fileName=KetQua_${quizName}.txt"
+                                    val rawContent = "Quiz: $quizName - Diem: $score / $totalQuestions"
+                                    val rawFileName = "KetQua_${quizName}.txt"
+                                    val contentText = buildString {
+                                        for (c in rawContent) {
+                                            when {
+                                                c.isLetterOrDigit() || c in "-_.~" -> append(c)
+                                                c == ' ' -> append("%20")
+                                                else -> {
+                                                    val hex = c.code.toString(16).uppercase()
+                                                    append("%")
+                                                    if (hex.length < 2) append("0")
+                                                    append(hex)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    val fileNameText = buildString {
+                                        for (c in rawFileName) {
+                                            when {
+                                                c.isLetterOrDigit() || c in "-_.~" -> append(c)
+                                                c == ' ' -> append("%20")
+                                                else -> {
+                                                    val hex = c.code.toString(16).uppercase()
+                                                    append("%")
+                                                    if (hex.length < 2) append("0")
+                                                    append(hex)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    val url = "https://script.google.com/macros/s/AKfycbzR7T7h68L0SlT2V2HhnB560IYEwrKNVS5SmQshrF82_2mlwB17YmGHYDuL4zOBEiO0/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
                                     val responseText = fetchTextFromUrl(url)
                                     val json = Json.parseToJsonElement(responseText).jsonObject
                                     val status = json["status"]?.jsonPrimitive?.content ?: "error"

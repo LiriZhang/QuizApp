@@ -248,7 +248,7 @@ actual fun QuizApp(
                         totalQuestions = totalQuestions,
                         history = viewModel.history
                     )
-                    navController.navigate("resultList")
+                    //navController.navigate("resultList")
                 },
                 onHomePage = {
                     playVoice(isCorrect = false)

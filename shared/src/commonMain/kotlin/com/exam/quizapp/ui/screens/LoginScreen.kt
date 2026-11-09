@@ -51,9 +51,8 @@ fun LoginScreen(
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
 
-    // 🔗 URL Web App (có đuôi /exec) của Google Apps Script:
-    val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec"
-    //https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec
+    // 🔗 URL Web App Đăng nhập:
+    val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbxYL6GqGJrouwnFIHmhadxLzpSA-149zC1CRSyjbJBe0KWDP3qwWCbG3z7oy4F6RYmL/exec"
     fun performLogin() {
         val trimmedPhone = phoneNumber.trim()
         val trimmedPassword = password.trim()
