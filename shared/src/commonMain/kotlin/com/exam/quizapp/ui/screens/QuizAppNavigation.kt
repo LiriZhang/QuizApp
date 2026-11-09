@@ -3652,7 +3652,7 @@ fun ResultScreen(
                                         isSubmitting = false
                                         return@launch
                                     }
-                                    val url = "https://script.google.com/macros/s/AKfycbw8bu21ZWrxViN7ebFAD5oIiHvo4lZw2tWst3Xcs82Hdd6QVpxLY6fNynZnzggzeXdZ/exec?action=submit&phone=$phone&content=Quiz: $quizName - Diem: $score / $totalQuestions&fileName=KetQua_${quizName}.txt"
+                                    val url = "https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec?action=submit&phone=$phone&content=Quiz: $quizName - Diem: $score / $totalQuestions&fileName=KetQua_${quizName}.txt"
                                     val responseText = fetchTextFromUrl(url)
                                     val json = Json.parseToJsonElement(responseText).jsonObject
                                     val status = json["status"]?.jsonPrimitive?.content ?: "error"
