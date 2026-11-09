@@ -252,7 +252,7 @@ actual fun QuizApp(
                             totalQuestions = screen.totalQuestions,
                             history = viewModel.history
                         )
-                        currentScreen = IosScreen.ResultList
+                        //currentScreen = IosScreen.ResultList
                     },
                     onHomePage = {
                         playVoice(isCorrect = false)
