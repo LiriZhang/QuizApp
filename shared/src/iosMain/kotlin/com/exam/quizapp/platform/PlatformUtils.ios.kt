@@ -657,3 +657,11 @@ actual fun isUserLoggedIn(): Boolean {
 actual fun setUserLoggedIn(loggedIn: Boolean) {
     NSUserDefaults.standardUserDefaults.setBool(loggedIn, forKey = "is_logged_in")
 }
+
+actual fun getLoggedInPhone(): String {
+    return NSUserDefaults.standardUserDefaults.stringForKey("logged_in_phone") ?: ""
+}
+
+actual fun setLoggedInPhone(phone: String) {
+    NSUserDefaults.standardUserDefaults.setObject(phone, forKey = "logged_in_phone")
+}

@@ -489,6 +489,16 @@ actual fun setUserLoggedIn(loggedIn: Boolean) {
     prefs?.edit()?.putBoolean("is_logged_in", loggedIn)?.apply()
 }
 
+actual fun getLoggedInPhone(): String {
+    val prefs = AppContextHolder.context?.getSharedPreferences("quiz_app_prefs", Context.MODE_PRIVATE)
+    return prefs?.getString("logged_in_phone", "") ?: ""
+}
+
+actual fun setLoggedInPhone(phone: String) {
+    val prefs = AppContextHolder.context?.getSharedPreferences("quiz_app_prefs", Context.MODE_PRIVATE)
+    prefs?.edit()?.putString("logged_in_phone", phone)?.apply()
+}
+
 actual fun getDeviceId(): String {
     val context = AppContextHolder.context ?: return "unknown_android"
     val prefs = context.getSharedPreferences("device_id_prefs", Context.MODE_PRIVATE)

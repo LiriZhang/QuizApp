@@ -28,6 +28,7 @@ import com.exam.quizapp.platform.getBannerAdHeight
 import com.exam.quizapp.platform.getDeviceId
 import com.exam.quizapp.platform.getNavigationBarHeight
 import com.exam.quizapp.platform.playVoice
+import com.exam.quizapp.platform.setLoggedInPhone
 import com.exam.quizapp.platform.setUserLoggedIn
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -53,7 +54,6 @@ fun LoginScreen(
     // 🔗 URL Web App (có đuôi /exec) của Google Apps Script:
     val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec"
     //https://script.google.com/macros/s/AKfycbxwqack9635Nt9ltp62HVsCrqg5N8YTNQLE7zKqv0kIdW5vxMUmF7xUy88r8HFaEBZL/exec
-
     fun performLogin() {
         val trimmedPhone = phoneNumber.trim()
         val trimmedPassword = password.trim()
@@ -100,6 +100,7 @@ fun LoginScreen(
                     errorMessage = null
                     playVoice(isCorrect = true)
                     setUserLoggedIn(true)
+                    setLoggedInPhone(trimmedPhone)
                     onLoginSuccess()
                 } else {
                     errorMessage = response.message

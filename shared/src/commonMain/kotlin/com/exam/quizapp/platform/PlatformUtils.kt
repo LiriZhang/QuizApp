@@ -59,6 +59,10 @@ expect suspend fun fetchTextFromUrl(url: String): String
 
 expect fun getDeviceId(): String
 
+expect fun getLoggedInPhone(): String
+
+expect fun setLoggedInPhone(phone: String)
+
 
 @Composable
 fun getStatusBarHeight(): Dp {

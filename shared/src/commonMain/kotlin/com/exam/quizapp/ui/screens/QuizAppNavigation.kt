@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,6 +30,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.geometry.Offset
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import com.exam.quizapp.model.*
 import com.exam.quizapp.viewmodel.*
 import com.exam.quizapp.platform.*
@@ -2670,6 +2674,9 @@ fun ResultScreen(
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
+    var isSubmitting by remember { mutableStateOf(false) }
+    var submitDialogMessage by remember { mutableStateOf<String?>(null) }
+
     // Sử dụng nestedScroll để phát hiện khi người dùng cuộn
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -3627,11 +3634,31 @@ fun ResultScreen(
                             Text(text = "Thi lại", fontSize = 10.sp, fontWeight = FontWeight.Light)
                         }
                     }
-                    // Nút "Lưu lại" (ở giữa "Thi lại" và "Trang đầu")
+                    // Nút "Lưu & Nộp" (vừa lưu local vừa nộp lên Google Drive cho giáo viên)
                     Button(
-                        onClick = { if (testShowButtons) {
+                        onClick = {
+                            if (!testShowButtons) return@Button
+                            // 1. Lưu local trên máy học sinh
                             onSaveResult()
-                        }
+
+                            // 2. Nộp bài lên Google Drive cho giáo viên
+                            if (isSubmitting) return@Button
+                            isSubmitting = true
+                            coroutineScope.launch {
+                                try {
+                                    val phone = getLoggedInPhone().ifEmpty { "0900449008" }
+                                    val url = "https://script.google.com/macros/s/AKfycbw8bu21ZWrxViN7ebFAD5oIiHvo4lZw2tWst3Xcs82Hdd6QVpxLY6fNynZnzggzeXdZ/exec?action=submit&phone=$phone&content=Quiz: $quizName - Diem: $score / $totalQuestions&fileName=KetQua_${quizName}.txt"
+                                    val responseText = fetchTextFromUrl(url)
+                                    val json = Json.parseToJsonElement(responseText).jsonObject
+                                    val status = json["status"]?.jsonPrimitive?.content ?: "error"
+                                    val msg = json["message"]?.jsonPrimitive?.content ?: "Lỗi"
+                                    submitDialogMessage = if (status == "success") "Lưu máy & Nộp bài Google Drive thành công!" else msg
+                                } catch (e: Exception) {
+                                    submitDialogMessage = "Đã lưu máy nhưng nộp Drive thất bại: ${e.message}"
+                                } finally {
+                                    isSubmitting = false
+                                }
+                            }
                         },
                         modifier = Modifier.weight(1f),
                         contentPadding = PaddingValues(0.dp),
@@ -3642,8 +3669,12 @@ fun ResultScreen(
                         ),
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(imageVector = Icons.Outlined.Save, contentDescription = "Lưu lại", modifier = Modifier.size(20.dp))
-                            Text(text = "Lưu lại", fontSize = 10.sp, fontWeight = FontWeight.Light)
+                            if (isSubmitting) {
+                                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                            } else {
+                                Icon(imageVector = Icons.Outlined.Save, contentDescription = "Lưu & Nộp", modifier = Modifier.size(20.dp))
+                                Text(text = "Lưu & Nộp", fontSize = 10.sp, fontWeight = FontWeight.Light, color = Color.Black)
+                            }
                         }
                     }
 
@@ -3663,6 +3694,7 @@ fun ResultScreen(
                             Text(text = "Trang đầu", fontSize = 10.sp, fontWeight = FontWeight.Light, color = Color.Black)
                         }
                     }
+                    // Nút "Xem review" (khôi phục lại như cũ)
                     Button(
                         onClick = { if (testShowButtons) {
                             onQuizReviewSelected()
@@ -3702,6 +3734,19 @@ fun ResultScreen(
                 }
             }
         }
+    }
+
+    if (submitDialogMessage != null) {
+        AlertDialog(
+            onDismissRequest = { submitDialogMessage = null },
+            title = { Text("Thông báo") },
+            text = { Text(submitDialogMessage ?: "") },
+            confirmButton = {
+                TextButton(onClick = { submitDialogMessage = null }) {
+                    Text("OK")
+                }
+            }
+        )
     }
 }
 // MÀN HÌNH DANH SÁCH KẾT QUẢ LÀM BÀI ĐÃ ĐƯỢC LƯU LẠI THEO DẠNG MỤC LỤC
@@ -3876,6 +3921,9 @@ fun ResultDetailScreen(
     val isToolbarVisible = remember { mutableStateOf(true) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+    var isSubmitting by remember { mutableStateOf(false) }
+    var submitDialogMessage by remember { mutableStateOf<String?>(null) }
     // Sử dụng nestedScroll để phát hiện khi người dùng cuộn
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
