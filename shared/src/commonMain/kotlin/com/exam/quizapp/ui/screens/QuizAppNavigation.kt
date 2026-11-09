@@ -3653,7 +3653,26 @@ fun ResultScreen(
                                         isSubmitting = false
                                         return@launch
                                     }
-                                    val rawContent = "Quiz: $quizName - Diem: $score / $totalQuestions"
+                                    val rawContent = buildString {
+                                    appendLine("=== KẾT QUẢ BÀI LÀM ===")
+                                    appendLine("Quiz: $quizName")
+                                    appendLine("Điểm số: $score / $totalQuestions")
+                                    appendLine("----------------------------------------")
+                                    history.forEachIndexed { index, qr ->
+                                        val status = if (qr.isCorrect) "ĐÚNG (✓)" else "SAI (✕)"
+                                        appendLine("Câu ${index + 1}: $status")
+                                        if (!qr.userInputText.isNullOrBlank()) {
+                                            appendLine("  - Học sinh điền (Tự luận): ${qr.userInputText}")
+                                        }
+                                        if (qr.selectedAnswer != null) {
+                                            appendLine("  - Đáp án đã chọn (Trắc nghiệm): ${qr.selectedAnswer}")
+                                        }
+                                        if (qr.correctAnswer != null) {
+                                            appendLine("  - Đáp án đúng: ${qr.correctAnswer}")
+                                        }
+                                        appendLine()
+                                    }
+                                }
                                     val rawFileName = "KetQua_${quizName}.txt"
                                     val contentText = buildString {
                                         for (c in rawContent) {
@@ -3961,8 +3980,6 @@ fun ResultDetailScreen(
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    var isSubmitting by remember { mutableStateOf(false) }
-    var submitDialogMessage by remember { mutableStateOf<String?>(null) }
     // Sử dụng nestedScroll để phát hiện khi người dùng cuộn
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -5069,27 +5086,27 @@ fun ResultDetailScreen(
                 .padding(bottom = bottomPadding)
                 .fillMaxSize()
         ) {
-            Row(
+            Box (
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White)
-                    .padding(horizontal = 4.dp, vertical = 4.dp)
+                    .padding(horizontal = 0.dp)
                     .align(Alignment.BottomCenter),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
             ) {
-                // 1. Thi lại
                 Button(
                     onClick = {
                         result?.quizName?.let { quizName ->
                             onBackTest(quizName)
                         }
                     },
-                    contentPadding = PaddingValues(4.dp),
-                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .wrapContentSize(),
+                    contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định
+                    shape = RoundedCornerShape(4.dp), // Bo góc nhẹ
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.LightGray.copy(0.3f),
-                        contentColor = Color.Black
+                        containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút
+                        contentColor = Color.Black // Màu của icon và chữ
                     ),
                 ) {
                     Column (horizontalAlignment = Alignment.CenterHorizontally) {
@@ -5097,166 +5114,41 @@ fun ResultDetailScreen(
                         Text(text = "Thi lại", fontSize = 10.sp, fontWeight = FontWeight.Light)
                     }
                 }
-
-                // 2. Nộp bài lên Google Drive
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            val phone = getLoggedInPhone()
-                            if (phone.isBlank()) {
-                                submitDialogMessage = "Vui lòng đăng nhập số điện thoại trước khi nộp bài!"
-                                return@launch
-                            }
-
-                            isSubmitting = true
-                            submitDialogMessage = null
-
-                            try {
-                                val quizNameStr = result?.quizName ?: "Quiz"
-                                val scoreVal = result?.score ?: 0
-                                val totalVal = result?.totalQuestions ?: 0
-                                val resultIdVal = result?.id ?: 0
-
-                                val rawContent = buildString {
-                                    appendLine("=== KẾT QUẢ BÀI LÀM QUIZAPP ===")
-                                    appendLine("Số điện thoại: $phone")
-                                    appendLine("Tên bài: $quizNameStr")
-                                    appendLine("Điểm số: $scoreVal / $totalVal")
-                                    appendLine("ID kết quả: $resultIdVal")
-                                    appendLine("Thời gian: ${result?.timestamp ?: 0}")
-                                    appendLine("----------------------------------------")
-                                    appendLine("Lịch sử chi tiết:")
-                                    appendLine(result?.history ?: "")
-                                }
-                                val rawFileName = "KetQua_${quizNameStr}_id${resultIdVal}.txt"
-
-                                val contentText = buildString {
-                                    for (c in rawContent) {
-                                        when {
-                                            c.isLetterOrDigit() || c in "-_.~" -> append(c)
-                                            c == ' ' -> append("%20")
-                                            else -> {
-                                                val hex = c.code.toString(16).uppercase()
-                                                append("%")
-                                                if (hex.length < 2) append("0")
-                                                append(hex)
-                                            }
-                                        }
-                                    }
-                                }
-                                val fileNameText = buildString {
-                                    for (c in rawFileName) {
-                                        when {
-                                            c.isLetterOrDigit() || c in "-_.~" -> append(c)
-                                            c == ' ' -> append("%20")
-                                            else -> {
-                                                val hex = c.code.toString(16).uppercase()
-                                                append("%")
-                                                if (hex.length < 2) append("0")
-                                                append(hex)
-                                            }
-                                        }
-                                    }
-                                }
-
-                                val scriptUrl = "https://script.google.com/macros/s/AKfycbyHBksynrJ_ercSlxCpSuNPvvYoOHgzmhx_2mDJLgHEHjpM3o7ZPG7TBdOdD3V6HXvQ7A/exec"
-                                val url = "$scriptUrl?phone=$phone&content=$contentText&fileName=$fileNameText"
-                                val responseText = fetchTextFromUrl(url)
-
-                                val json = Json.parseToJsonElement(responseText).jsonObject
-                                val status = json["status"]?.jsonPrimitive?.content ?: "error"
-                                val msg = json["message"]?.jsonPrimitive?.content ?: "Lỗi"
-                                submitDialogMessage = if (status == "success") "Nộp bài Google Drive thành công!" else msg
-                            } catch (e: Exception) {
-                                submitDialogMessage = "Nộp Drive thất bại: ${e.message}"
-                            } finally {
-                                isSubmitting = false
-                            }
-                        }
-                    },
-                    contentPadding = PaddingValues(4.dp),
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF1565C0),
-                        contentColor = Color.White
-                    ),
-                ) {
-                    Column (horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(imageVector = Icons.Default.Send, contentDescription = "Nộp bài", modifier = Modifier.size(20.dp))
-                        Text(text = "Nộp bài", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    }
-                }
-
-                // 3. Trang đầu
                 Button(
                     onClick = { onHomePage() },
-                    contentPadding = PaddingValues(4.dp),
-                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .wrapContentSize(),
+                    contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định
+                    shape = RoundedCornerShape(4.dp), // Bo góc nhẹ
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.LightGray.copy(0.3f),
-                        contentColor = Color.Black
+                        containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút
+                        contentColor = Color.Black // Màu của icon và chữ
                     ),
                 ) {
                     Column (horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(imageVector = Icons.Outlined.Home, contentDescription = "Trang đầu", modifier = Modifier.size(20.dp))
-                        Text(text = "Trang đầu", fontSize = 10.sp, fontWeight = FontWeight.Light, color = Color.Black)
+                        Text(text = "Trang đầu", fontSize = 10.sp, fontWeight = FontWeight.Light,
+                            color = Color.Black)
                     }
                 }
-
-                // 4. Quay lại
                 Button(
                     onClick = { onBack() },
-                    contentPadding = PaddingValues(4.dp),
-                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .wrapContentSize(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.LightGray.copy(0.3f),
-                        contentColor = Color.Black
+                        containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút
+                        contentColor = Color.Black // Màu của icon và chữ
                     ),
                 ) {
-                    Column (horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Quay lại", modifier = Modifier.size(20.dp))
-                        Text(text = "Quay lại", fontSize = 10.sp, fontWeight = FontWeight.Light, color = Color.Black)
-                    }
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Sử dụng phiên bản AutoMirrored
+                        contentDescription = "Quay lại"
+                    )
                 }
             }
         }
-    }
-
-    // Hiển thị Dialog và Loading khi Nộp bài
-    if (isSubmitting) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Card(
-                modifier = Modifier.padding(16.dp),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                    Text(text = "Đang nộp bài lên Google Drive...", style = MaterialTheme.typography.bodyLarge)
-                }
-            }
-        }
-    }
-
-    submitDialogMessage?.let { message ->
-        AlertDialog(
-            onDismissRequest = { submitDialogMessage = null },
-            title = { Text("Thông báo nộp bài") },
-            text = { Text(message) },
-            confirmButton = {
-                TextButton(onClick = { submitDialogMessage = null }) {
-                    Text("OK")
-                }
-            }
-        )
     }
 }
 // Các hàm phụ và hoàn toàn không liên quan đến việc hiển thị màn hình và điều hướng
