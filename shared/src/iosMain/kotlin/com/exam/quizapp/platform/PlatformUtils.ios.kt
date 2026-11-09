@@ -73,6 +73,9 @@ import platform.Foundation.NSURLCache
 import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.NSUUID
 import platform.Foundation.NSUserDefaults
+import platform.Foundation.NSCharacterSet
+import platform.Foundation.URLQueryAllowedCharacterSet
+import platform.Foundation.stringByAddingPercentEncodingWithAllowedCharacters
 import platform.Foundation.create
 import platform.Foundation.dataTaskWithRequest
 import platform.Foundation.setHTTPMethod
@@ -664,4 +667,29 @@ actual fun getLoggedInPhone(): String {
 
 actual fun setLoggedInPhone(phone: String) {
     NSUserDefaults.standardUserDefaults.setObject(phone, forKey = "logged_in_phone")
+}
+
+@OptIn(BetaInteropApi::class)
+actual suspend fun uploadQuizResultToDrive(
+    url: String,
+    phone: String,
+    quizName: String,
+    score: Int,
+    totalQuestions: Int,
+    resultId: Int,
+    fileContent: String
+): String {
+    return try {
+        val safeQuizName = quizName.replace(Regex("[\\\\/:*?\"<>|]"), "_")
+        val fileName = "${safeQuizName}_id${resultId}.txt"
+
+        val encodedPhone = NSString.create(string = phone).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet) ?: phone
+        val encodedFileName = NSString.create(string = fileName).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet) ?: fileName
+        val encodedContent = NSString.create(string = fileContent).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet) ?: fileContent
+        
+        val fullUrl = "$url?phone=$encodedPhone&fileName=$encodedFileName&content=$encodedContent"
+        fetchTextFromUrl(fullUrl)
+    } catch (e: Exception) {
+        "{\"status\":\"error\",\"message\":\"${e.message}\"}"
+    }
 }

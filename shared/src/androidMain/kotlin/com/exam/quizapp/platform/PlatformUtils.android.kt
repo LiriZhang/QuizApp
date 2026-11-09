@@ -70,6 +70,7 @@ import java.net.URL
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import java.net.URLEncoder
 import java.text.Normalizer
 import java.util.UUID
 
@@ -510,4 +511,28 @@ actual fun getDeviceId(): String {
         prefs.edit().putString("device_uuid", deviceId).apply()
     }
     return deviceId
+}
+
+actual suspend fun uploadQuizResultToDrive(
+    url: String,
+    phone: String,
+    quizName: String,
+    score: Int,
+    totalQuestions: Int,
+    resultId: Int,
+    fileContent: String
+): String {
+    return try {
+        val safeQuizName = quizName.replace(Regex("[\\\\/:*?\"<>|]"), "_")
+        val fileName = "${safeQuizName}_id${resultId}.txt"
+
+        val encodedPhone = URLEncoder.encode(phone, "UTF-8")
+        val encodedFileName = URLEncoder.encode(fileName, "UTF-8")
+        val encodedContent = URLEncoder.encode(fileContent, "UTF-8")
+        
+        val fullUrl = "$url?phone=$encodedPhone&fileName=$encodedFileName&content=$encodedContent"
+        fetchTextFromUrl(fullUrl)
+    } catch (e: Exception) {
+        "{\"status\":\"error\",\"message\":\"${e.message}\"}"
+    }
 }

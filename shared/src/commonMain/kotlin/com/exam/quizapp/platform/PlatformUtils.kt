@@ -57,6 +57,16 @@ expect fun triggerVibration()
 
 expect suspend fun fetchTextFromUrl(url: String): String
 
+expect suspend fun uploadQuizResultToDrive(
+    url: String,
+    phone: String,
+    quizName: String,
+    score: Int,
+    totalQuestions: Int,
+    resultId: Int,
+    fileContent: String
+): String
+
 expect fun getDeviceId(): String
 
 expect fun getLoggedInPhone(): String
