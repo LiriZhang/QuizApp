@@ -5348,6 +5348,7 @@ class StudentSubmissionsRepository(
         ignoreUnknownKeys = true
     }
 
+
     private fun buildUrl(
         action: String,
         parameterName: String? = null,
@@ -5401,6 +5402,7 @@ class StudentSubmissionsRepository(
 
 
 
+
 data class ParsedSubmission(
     val quizName: String = "",
     val score: Int = 0,
@@ -5408,6 +5410,8 @@ data class ParsedSubmission(
     val history: List<QuestionResult> = emptyList()
 )
 
+
+private val quizQuestions by lazy { quizQuestions1 +quizQuestions2 + quizQuestions3 }
 fun parseStudentSubmissionContent(fileContent: String): ParsedSubmission? {
     if (fileContent.isBlank()) return null
 
@@ -5432,7 +5436,7 @@ fun parseStudentSubmissionContent(fileContent: String): ParsedSubmission? {
 
     if (quizName.isBlank()) return null
 
-    val originalQuestions = quizQuestions3[quizName] ?: return null
+    val originalQuestions = quizQuestions[quizName] ?: return null
     if (originalQuestions.isEmpty()) return null
 
     data class ParsedQuestionState(
