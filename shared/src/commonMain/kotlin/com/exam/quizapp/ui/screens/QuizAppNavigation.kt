@@ -69,6 +69,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.sp
+import com.exam.quizapp.data.quizQuestions3
 import com.exam.quizapp.shared.resources.Res
 import com.exam.quizapp.shared.resources.allStringResources
 import com.exam.quizapp.shared.resources.allDrawableResources
@@ -5398,6 +5399,392 @@ class StudentSubmissionsRepository(
 
 
 
+data class ParsedSubmission(
+    val quizName: String = "",
+    val score: Int = 0,
+    val totalQuestions: Int = 0,
+    val history: List<QuestionResult> = emptyList()
+)
+
+fun parseStudentSubmissionContent(fileContent: String): ParsedSubmission? {
+    if (fileContent.isBlank()) return null
+
+    val lines = fileContent.lines().map { it.trim() }
+
+    var quizName = ""
+    var score = 0
+    var totalQuestions = 0
+
+    for (line in lines) {
+        if (line.startsWith("Quiz:")) {
+            quizName = line.substringAfter("Quiz:").trim()
+        } else if (line.startsWith("Điểm số:")) {
+            val scoreStr = line.substringAfter("Điểm số:").trim()
+            val parts = scoreStr.split("/")
+            if (parts.size >= 2) {
+                score = parts[0].trim().toIntOrNull() ?: 0
+                totalQuestions = parts[1].trim().toIntOrNull() ?: 0
+            }
+        }
+    }
+
+    if (quizName.isBlank()) return null
+
+    val originalQuestions = quizQuestions3[quizName] ?: return null
+    if (originalQuestions.isEmpty()) return null
+
+    data class ParsedQuestionState(
+        val isCorrect: Boolean = false,
+        val selectedIndex: Int? = null,
+        val userInputText: String? = null
+    )
+
+    val parsedStates = mutableMapOf<Int, ParsedQuestionState>()
+
+    var currentQNum: Int? = null
+    var currentIsCorrect = false
+
+    for (line in lines) {
+        if (line.startsWith("Câu ")) {
+            val qNumStr = line.substringAfter("Câu ").substringBefore(":").trim()
+            val qNum = qNumStr.toIntOrNull()
+            if (qNum != null) {
+                currentQNum = qNum
+                currentIsCorrect = line.contains("ĐÚNG") || line.contains("✓")
+                parsedStates[qNum] = ParsedQuestionState(isCorrect = currentIsCorrect)
+            }
+        } else if (currentQNum != null) {
+            if (line.contains("Học sinh điền (Tự luận):")) {
+                val inputStr = line.substringAfter("Học sinh điền (Tự luận):").trim()
+                parsedStates[currentQNum!!] = ParsedQuestionState(
+                    isCorrect = currentIsCorrect,
+                    userInputText = inputStr
+                )
+            } else if (line.contains("Đã chọn:")) {
+                val selectedPart = line.substringAfter("Đã chọn:").substringBefore("|").trim()
+                val selectedIdx = when {
+                    selectedPart.toIntOrNull() != null -> selectedPart.toInt()
+                    selectedPart.length == 1 && selectedPart[0] in 'A'..'Z' -> selectedPart[0] - 'A'
+                    selectedPart.length == 1 && selectedPart[0] in 'a'..'z' -> selectedPart[0] - 'a'
+                    else -> -1
+                }
+                parsedStates[currentQNum!!] = ParsedQuestionState(
+                    isCorrect = currentIsCorrect,
+                    selectedIndex = if (selectedIdx >= 0) selectedIdx else null
+                )
+            }
+        }
+    }
+
+    val historyList = mutableListOf<QuestionResult>()
+
+    originalQuestions.forEachIndexed { index, question ->
+        val qNum = index + 1
+        val state = parsedStates[qNum]
+
+        val isCorrect = state?.isCorrect ?: false
+        val userInputText = state?.userInputText
+        val selectedIdx = state?.selectedIndex
+
+        val selectedAnswer = if (selectedIdx != null && selectedIdx >= 0) {
+            question.answers.getOrNull(selectedIdx)
+        } else null
+
+        val correctAnswer = if (question.correctAnswer != null) {
+            question.answers.getOrNull(question.correctAnswer)
+        } else null
+
+        historyList.add(
+            QuestionResult(
+                mainQuestion = question.mainContent,
+                extraQuestions = question.extraContents,
+                answers = question.answers,
+                selectedAnswer = selectedAnswer,
+                correctAnswer = correctAnswer,
+                userInputText = userInputText,
+                correctTextAnswers = question.correctTextAnswers,
+                isCorrect = isCorrect,
+                detailedCorrectAnswers = question.detailedCorrectAnswers
+            )
+        )
+    }
+
+    val finalScore = if (score > 0) score else historyList.count { it.isCorrect }
+    val finalTotal = if (totalQuestions > 0) totalQuestions else historyList.size
+
+    return ParsedSubmission(
+        quizName = quizName,
+        score = finalScore,
+        totalQuestions = finalTotal,
+        history = historyList
+    )
+}
+
+@Composable
+fun SubmissionResultView(
+    submission: ParsedSubmission
+) {
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Sub-header displaying quiz name and score
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.LightGray.copy(alpha = 0.5f))
+                .padding(horizontal = 8.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = Color.Black)) {
+                        append(submission.quizName)
+                    }
+                    withStyle(style = SpanStyle(color = Color.Red)) {
+                        append(" (đúng: ${submission.score} / ${submission.totalQuestions})")
+                    }
+                },
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.weight(1f)
+            )
+
+            IconButton(
+                onClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                },
+                modifier = Modifier.size(32.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Lên đầu trang",
+                    tint = Color.Black
+                )
+            }
+        }
+
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            if (submission.history.isNotEmpty()) {
+                item {
+                    QuestionGridButtons(
+                        questionResults = submission.history,
+                        onQuestionClick = { index ->
+                            coroutineScope.launch {
+                                listState.animateScrollToItem(index + 1)
+                            }
+                        }
+                    )
+                }
+            }
+
+            itemsIndexed(submission.history) { index, result ->
+                Column(
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                ) {
+                    val questionTitleColor = Color(0xFF0D47A1)
+                    val questionBackground = Color(0xFFE8F1F8)
+                    val questionTextColor = Color(0xFF172B3A)
+
+                    Text(
+                        text = "Câu ${index + 1}",
+                        color = questionTitleColor,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    // Render main question
+                    RenderQuestionContent(content = result.mainQuestion)
+
+                    // Render extra questions
+                    result.extraQuestions.forEach { extra ->
+                        RenderQuestionContent(content = extra)
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Multiple choice answers
+                    if (result.answers.isNotEmpty()) {
+                        val selectedAnswer = result.selectedAnswer
+                        val correctAnswer = result.correctAnswer
+
+                        result.answers.forEach { answer ->
+                            val isCorrectAnswer = answer == correctAnswer
+                            val isSelected = answer == selectedAnswer
+
+                            val backgroundColor = when {
+                                isSelected && isCorrectAnswer -> Color(0xFF1565C0) // Xanh dương đậm
+                                isSelected && !isCorrectAnswer -> Color(0xFFA04B00) // Cam/nâu đậm
+                                !isSelected && isCorrectAnswer -> Color(0xFFD6E8FF) // Xanh dương nhạt
+                                else -> Color(0xFFF2F2F2)
+                            }
+
+                            val textColor = when {
+                                isSelected -> Color.White
+                                !isSelected && isCorrectAnswer -> Color(0xFF0D47A1)
+                                else -> Color(0xFF333333)
+                            }
+
+                            val statusIcon = when {
+                                isSelected && isCorrectAnswer -> "✓"
+                                isSelected && !isCorrectAnswer -> "✕"
+                                !isSelected && isCorrectAnswer -> "✓"
+                                else -> "—"
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 2.dp)
+                                    .background(backgroundColor, shape = RoundedCornerShape(6.dp))
+                                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = statusIcon,
+                                    color = textColor,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+
+                                RenderAnswerOptionContent(
+                                    answer = answer,
+                                    textColor = textColor
+                                )
+                            }
+                        }
+                    }
+                    // Essay question
+                    else if (result.correctTextAnswers.isNotEmpty() || !result.userInputText.isNullOrBlank()) {
+                        val userInput = result.userInputText ?: ""
+                        val isCorrect = result.isCorrect
+
+                        if (isCorrect) {
+                            Surface(
+                                color = Color(0xFF1565C0),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "✓",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+                                    Text(
+                                        text = "Đáp án của học sinh: $userInput",
+                                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
+                                    )
+                                }
+                            }
+                        } else {
+                            val randomCorrect = remember(result) {
+                                result.correctTextAnswers.randomOrNull()
+                            }
+                            val backgroundColor = Color(0xFFA04B00)
+
+                            Surface(
+                                color = backgroundColor,
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "✕",
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(end = 8.dp)
+                                    )
+
+                                    if (randomCorrect != null) {
+                                        RenderAnswerOptionContent(
+                                            answer = randomCorrect,
+                                            textColor = Color.White
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "Học sinh điền: '$userInput' (Chưa đúng)",
+                                            style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Detailed answer explanation
+                    if (result.detailedCorrectAnswers.isNotEmpty()) {
+                        var showDetail by remember { mutableStateOf(false) }
+                        val explanationBackground = Color(0xFFFFF7E6)
+                        val explanationTextColor = Color(0xFF3A3025)
+                        val explanationTitleColor = Color(0xFF8A4B00)
+
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            TextButton(onClick = { showDetail = !showDetail }) {
+                                Text(
+                                    text = if (showDetail) "Ẩn đáp án chi tiết" else "Đáp án chi tiết",
+                                    color = explanationTitleColor,
+                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                                )
+                            }
+
+                            if (showDetail) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(explanationBackground, shape = RoundedCornerShape(8.dp))
+                                        .padding(10.dp)
+                                ) {
+                                    Text(
+                                        text = "Giải thích",
+                                        color = explanationTitleColor,
+                                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                        modifier = Modifier.padding(bottom = 6.dp)
+                                    )
+
+                                    result.detailedCorrectAnswers.forEach { detail ->
+                                        RenderAnswerOptionContent(
+                                            answer = detail,
+                                            textColor = explanationTextColor
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(top = 12.dp),
+                        color = Color.LightGray.copy(alpha = 0.5f)
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Composable
 fun StudentSubmissionsScreen(
     onBack: () -> Unit
@@ -5707,23 +6094,31 @@ fun StudentSubmissionsScreen(
                     // --------------------------------
                     selectedFile != null -> {
 
-                        Card(
-                            modifier = Modifier.fillMaxSize(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.White
-                            )
-                        ) {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(16.dp)
+                        val parsedSubmission = remember(fileContent) {
+                            parseStudentSubmissionContent(fileContent)
+                        }
+
+                        if (parsedSubmission != null) {
+                            SubmissionResultView(submission = parsedSubmission)
+                        } else {
+                            Card(
+                                modifier = Modifier.fillMaxSize(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.White
+                                )
                             ) {
-                                item {
-                                    Text(
-                                        text = fileContent,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = Color.DarkGray
-                                    )
+                                LazyColumn(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(16.dp)
+                                ) {
+                                    item {
+                                        Text(
+                                            text = fileContent,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = Color.DarkGray
+                                        )
+                                    }
                                 }
                             }
                         }
