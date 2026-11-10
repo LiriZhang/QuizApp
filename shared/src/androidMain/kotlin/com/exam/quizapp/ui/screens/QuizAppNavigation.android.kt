@@ -60,10 +60,19 @@ actual fun QuizApp(
                     playVoice(isCorrect = true)
                     navController.navigate("resultList")
                 },
+                onStudentSubmissions = {
+                    playVoice(isCorrect = true)
+                    navController.navigate("student_submissions")
+                },
                 onBackApp = {
                     playVoice(isCorrect = false)
                     viewModel.resetTest()
                 }
+            )
+        }
+        composable("student_submissions") {
+            StudentSubmissionsScreen(
+                onBack = { navController.popBackStack() }
             )
         }
         composable("quiz_selection/{chapter}") { backStackEntry ->
