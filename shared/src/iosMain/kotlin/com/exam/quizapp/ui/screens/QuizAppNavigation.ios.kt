@@ -22,6 +22,7 @@ sealed interface IosScreen {
     data class Result(val score: Int, val totalQuestions: Int, val quizName: String) : IosScreen
     object ResultList : IosScreen
     data class ResultDetail(val resultId: Int) : IosScreen
+    object StudentSubmissions : IosScreen
 }
 
 @Composable
@@ -75,11 +76,20 @@ actual fun QuizApp(
                         playVoice(isCorrect = true)
                         currentScreen = IosScreen.ResultList
                     },
+                    onStudentSubmissions = {
+                        playVoice(isCorrect = true)
+                        currentScreen = IosScreen.StudentSubmissions
+                    },
                     onBackApp = {
                         playVoice(isCorrect = false)
                         viewModel.resetTest()
                         currentScreen = IosScreen.TheoryAndExercise
                     }
+                )
+            }
+            is IosScreen.StudentSubmissions -> {
+                StudentSubmissionsScreen(
+                    onBack = { currentScreen = IosScreen.ChapterSelection }
                 )
             }
             is IosScreen.LessonSelection -> {
@@ -252,7 +262,7 @@ actual fun QuizApp(
                             totalQuestions = screen.totalQuestions,
                             history = viewModel.history
                         )
-                        currentScreen = IosScreen.ResultList
+                        //currentScreen = IosScreen.ResultList
                     },
                     onHomePage = {
                         playVoice(isCorrect = false)
