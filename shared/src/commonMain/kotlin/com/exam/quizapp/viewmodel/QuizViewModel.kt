@@ -12,7 +12,7 @@ import com.exam.quizapp.data.*
 
 
 class QuizViewModel : ViewModel() {
-    private val quizQuestions by lazy { quizQuestions3 }
+    private val quizQuestions by lazy { quizQuestions1 +quizQuestions2 + quizQuestions3 }
 
     var selectedChapter by mutableStateOf<String?>(null)
     var selectedLesson by mutableStateOf<String?>(null)

@@ -70,6 +70,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.sp
 import com.exam.quizapp.data.quizQuestions3
+import com.exam.quizapp.data.*
 import com.exam.quizapp.shared.resources.Res
 import com.exam.quizapp.shared.resources.allStringResources
 import com.exam.quizapp.shared.resources.allDrawableResources
@@ -81,6 +82,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.URLBuilder
+import org.jetbrains.compose.resources.stringResource
 
 // Multiplatform QuizApp Composable
 // Hàm điều phối màn hình dùng riêng cho từng nền tảng
@@ -5526,45 +5528,63 @@ fun SubmissionResultView(
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val isToolbarVisible = remember { mutableStateOf(true) }
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y < 0) {
+                    isToolbarVisible.value = false // Cuộn xuống
+                } else if (available.y > 0) {
+                    isToolbarVisible.value = true // Cuộn lên
+                }
+                return Offset.Zero
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize()
+            .nestedScroll(nestedScrollConnection) // Theo dõi sự kiện cuộn
+
+
     ) {
         // Sub-header displaying quiz name and score
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray.copy(alpha = 0.5f))
-                .padding(horizontal = 8.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = Color.Black)) {
-                        append(submission.quizName)
-                    }
-                    withStyle(style = SpanStyle(color = Color.Red)) {
-                        append(" (đúng: ${submission.score} / ${submission.totalQuestions})")
-                    }
-                },
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.weight(1f)
-            )
-
-            IconButton(
-                onClick = {
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(0)
-                    }
-                },
-                modifier = Modifier.size(32.dp)
+        if (isToolbarVisible.value) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray.copy(alpha = 0.5f))
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = "Lên đầu trang",
-                    tint = Color.Black
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color.Black)) {
+                            append(submission.quizName)
+                        }
+                        withStyle(style = SpanStyle(color = Color.Red)) {
+                            append(" (đúng: ${submission.score} / ${submission.totalQuestions})")
+                        }
+                    },
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.weight(1f)
                 )
+
+                IconButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    },
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowUp,
+                        contentDescription = "Lên đầu trang",
+                        tint = Color.Black
+                    )
+                }
             }
         }
 
@@ -5718,16 +5738,72 @@ fun SubmissionResultView(
                                         modifier = Modifier.padding(end = 8.dp)
                                     )
 
-                                    if (randomCorrect != null) {
-                                        RenderAnswerOptionContent(
-                                            answer = randomCorrect,
-                                            textColor = Color.White
-                                        )
-                                    } else {
-                                        Text(
-                                            text = "Học sinh điền: '$userInput' (Chưa đúng)",
-                                            style = MaterialTheme.typography.bodyLarge.copy(color = Color.White)
-                                        )
+                                    when (randomCorrect) {
+                                        is AnswerOption.Text -> {
+                                            Text(
+                                                text = "$userInput (Đáp án đúng là: ${randomCorrect.text})",
+                                                style = MaterialTheme.typography.bodyLarge.copy(
+                                                    color = Color.White
+                                                ),
+                                                textAlign = TextAlign.Justify,
+                                                modifier = Modifier.padding(12.dp)
+                                            )
+                                        }
+
+                                        is AnswerOption.TextRes -> {
+                                            Text(
+                                                text = "$userInput (Đáp án đúng là: ${
+                                                    stringResource(randomCorrect.textRes)
+                                                })",
+                                                style = MaterialTheme.typography.bodyLarge.copy(
+                                                    color = Color.White
+                                                ),
+                                                textAlign = TextAlign.Justify,
+                                                modifier = Modifier.padding(12.dp)
+                                            )
+                                        }
+
+                                        is AnswerOption.TextUrl -> {
+                                            var textContent by remember(randomCorrect.textUrl) {
+                                                mutableStateOf("Đang tải...")
+                                            }
+                                            var isError by remember(randomCorrect.textUrl) {
+                                                mutableStateOf(false)
+                                            }
+
+                                            LaunchedEffect(randomCorrect.textUrl) {
+                                                try {
+                                                    textContent = fetchTextFromUrl(randomCorrect.textUrl)
+                                                    isError = false
+                                                } catch (e: Exception) {
+                                                    textContent = "Không thể tải nội dung, kiểm tra kết nối mạng!"
+                                                    isError = true
+                                                }
+                                            }
+
+                                            Text(
+                                                text = if (!isError) {
+                                                    "$userInput (Đáp án đúng là: ${textContent})"
+                                                } else {
+                                                    "Lỗi khi tải nội dung từ URL, kiểm tra kết nối mạng!"
+                                                },
+                                                style = MaterialTheme.typography.bodyLarge.copy(
+                                                    color = Color.White
+                                                ),
+                                                textAlign = TextAlign.Justify,
+                                                modifier = Modifier.padding(12.dp)
+                                            )
+                                        }
+
+                                        else -> {
+                                            Text(
+                                                text = "$userInput (Chưa đúng)",
+                                                style = MaterialTheme.typography.bodyLarge.copy(
+                                                    color = Color.White
+                                                ),
+                                                modifier = Modifier.padding(12.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -5982,14 +6058,14 @@ fun StudentSubmissionsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(vertical = 4.dp)
         ) {
 
             // Thanh tiêu đề.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 12.dp),
+                    .padding(bottom = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -6029,7 +6105,7 @@ fun StudentSubmissionsScreen(
                             "Học sinh: ${selectedStudent?.phone}"
 
                         else ->
-                            "Bài làm học sinh (Google Drive)"
+                            "Bài làm học sinh"
                     },
                     modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.titleMedium,
@@ -6110,7 +6186,7 @@ fun StudentSubmissionsScreen(
                                 LazyColumn(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(16.dp)
+                                        //.padding(16.dp)
                                 ) {
                                     item {
                                         Text(
