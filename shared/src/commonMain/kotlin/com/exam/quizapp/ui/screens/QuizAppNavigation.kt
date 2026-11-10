@@ -2617,7 +2617,7 @@ fun ResultScreen(
                                         }
                                     }
                                     val url = "https://script.google.com/macros/s/AKfycbxxde1KsjDnLl-7EoOLmDtsi9WU0ECbY8Yxi8s-vnR7kZn4bL7cKOMJmxvXUjS64fr3/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
-                                    val responseText = fetchTextFromUrl(url)
+                                    val responseText = fetchTextFromUrlCommon(url)
                                     val json = Json.parseToJsonElement(responseText).jsonObject
                                     val status = json["status"]?.jsonPrimitive?.content ?: "error"
                                     val msg = json["message"]?.jsonPrimitive?.content ?: "Lỗi"
@@ -6345,3 +6345,20 @@ fun StudentSubmissionsScreen(
         }
     }
 }
+
+private val ktorClient by lazy { HttpClient() }
+
+suspend fun fetchTextFromUrlCommon(url: String): String {
+    TextCacheManager.get(url)?.let { return it }
+    return try {
+        val result = ktorClient.get(url).bodyAsText().trim()
+        if (result.isNotBlank()) {
+            TextCacheManager.put(url, result)
+        }
+        result
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+
