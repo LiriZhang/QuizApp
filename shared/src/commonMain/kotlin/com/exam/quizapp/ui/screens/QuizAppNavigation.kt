@@ -2574,10 +2574,10 @@ fun ResultScreen(
                                                 appendLine("  - Học sinh điền (Tự luận): ${qr.userInputText.trim()}")
                                             } else if (qr.answers.isNotEmpty()) {
                                                 val selectedIdx = qr.answers.indexOf(qr.selectedAnswer)
-                                                val selectedStr = if (selectedIdx >= 0) "${'A' + selectedIdx}" else "Chưa chọn"
+                                                val selectedStr = if (selectedIdx >= 0) "$selectedIdx" else "Chưa chọn"
 
                                                 val correctIdx = qr.answers.indexOf(qr.correctAnswer)
-                                                val correctStr = if (correctIdx >= 0) "${'A' + correctIdx}" else "N/A"
+                                                val correctStr = if (correctIdx >= 0) "$correctIdx" else "N/A"
 
                                                 appendLine("  - Đã chọn: $selectedStr | Đáp án đúng: $correctStr")
                                             }
