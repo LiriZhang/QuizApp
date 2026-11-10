@@ -74,6 +74,12 @@ import com.exam.quizapp.shared.resources.allStringResources
 import com.exam.quizapp.shared.resources.allDrawableResources
 import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.painterResource
+import kotlinx.coroutines.CancellationException
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.URLBuilder
 
 // Multiplatform QuizApp Composable
 // Hàm điều phối màn hình dùng riêng cho từng nền tảng
@@ -83,501 +89,7 @@ expect fun QuizApp(
     onQuizCompleted: () -> Unit
 )
 
-//Màn hình lý thuyết và bài tập dùng chung được nhé
-@Composable
-fun TheoryAndExerciseScreen(
-    onExerciseSelected: () -> Unit,
-    onTheorySelected: () -> Unit
-) {
-    val topPadding = getBannerAdHeight()
-    val bottomPadding = getNavigationBarHeight()
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 8.dp, end = 8.dp, top = topPadding, bottom = bottomPadding)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "CẬP NHẬT NGÀY 25/06/25",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Button(
-                onClick = { onExerciseSelected() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Làm Bài Tập",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-
-            OutlinedButton(
-                onClick = { onTheorySelected() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Build,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Lý Thuyết (Đang cập nhật)",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-        }
-    }
-}
-// Màn hình chọn chương dùng chung được nhé
-@Composable
-fun ChapterSelectionScreen(
-    onChapterSelected: (String) -> Unit,
-    onList: () -> Unit,
-    onBackApp: () -> Unit,
-) {
-    val topPadding = getBannerAdHeight()
-
-    val bottomPadding = getNavigationBarHeight()
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = topPadding,
-                bottom = bottomPadding
-            )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    Surface(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    ) {
-                        Text(
-                            text = "BÀI TẬP (cập nhật 25/01/2025)",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(12.dp)
-                        )
-                    }
-                }
-
-                val chapters = listOf(
-                    "VẬT LÍ NHIỆT",
-                    "ÔN TẬP CHƯƠNG I",
-                    "KHÍ LÍ TƯỞNG",
-                    "ÔN TẬP HỌC KÌ I",
-                    "TỪ TRƯỜNG",
-                    "ÔN TẬP CHƯƠNG III (đang cập nhật)",
-                    "VẬT LÍ HẠT NHÂN (đang cập nhật)",
-                    "ÔN TẬP CHƯƠNG IV (đang cập nhật)",
-                    "ÔN TẬP HỌC KÌ II (đang cập nhật)",
-                    "TỔNG ÔN TẬP (đang cập nhật)"
-                )
-
-                items(chapters) { chapter ->
-                    val isUpdating = chapter.contains("đang cập nhật")
-
-                    if (!isUpdating) {
-                        Button(
-                            onClick = { onChapterSelected(chapter) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF00668C),
-                                contentColor = Color.White
-                            ),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 3.dp),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Book,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = chapter,
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
-                    } else {
-                        OutlinedButton(
-                            onClick = {},
-                            enabled = false,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 3.dp),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Build,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = chapter,
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Surface(
-            color = MaterialTheme.colorScheme.surface,
-            tonalElevation = 3.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextButton(onClick = onList) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Outlined.Folder,
-                            contentDescription = "Bài đã lưu",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(text = "Bài đã lưu", fontSize = 10.sp)
-                    }
-                }
-
-                TextButton(onClick = onBackApp) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Filled.Home,
-                            contentDescription = "Trang đầu",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(text = "Trang đầu", fontSize = 10.sp)
-                    }
-                }
-
-                TextButton(onClick = onBackApp) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Quay lại",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(text = "Quay lại", fontSize = 10.sp)
-                    }
-                }
-            }
-        }
-    }
-}
-// MÀN HÌNH CHỌN BÀI THI THEO TỪNG CHƯƠNG HOÀN TOÀN DÙNG CHUNG ĐƯỢC NHÉ
-@Composable
-fun LessonSelectionScreen(
-    chapter: String,
-    onQuizSelected: (String) -> Unit,
-    onQuizSelectedAllQuestions: (String) -> Unit,
-    onQuizReviewSelected: (String) -> Unit,
-    onBack: () -> Unit)
-{
-    var boxHeight by remember { mutableIntStateOf(0) } // Lưu chiều cao của Box
-    //var iconWidth by remember { mutableIntStateOf(0) } Kiểm tra thử có thế thay đổi Biến lưu độ rộng của icon
-    // Lấy khoảng đệm theo chiều cao thành trạng thái và thanh điều khiển
-    val topPadding = getBannerAdHeight()
-    val bottomPadding = getNavigationBarHeight()
-    val quizzes = when (chapter) {
-        "VẬT LÍ NHIỆT" -> listOf(
-            "Thử nghiệm 01",
-            "Thử nghiệm 02",
-            "Thử nghiệm 03",
-            "Thử nghiệm 04",
-            "Thử nghiệm 05",
-            "Ôn lại Nhiệt học 8 (1)","Ôn lại Nhiệt học 8 (2)",
-            "Nhiệt kế","Thang nhiệt độ",
-            "Cấu tạo vật chất","Mô hình động học phân tử",
-            "Cấu trúc chất rắn, lỏng, khí", "Hiện tượng chuyển thể",
-            "Điểm ba và hiện tượng chuyển thể của nước",
-            "Nội năng và biến thiên nội năng", "Nhiệt dung riêng, nhiệt nóng chảy riêng và nhiệt hóa hơi riêng",
-        )
-        "ÔN TẬP CHƯƠNG I" -> listOf (
-            "Bài kiểm tra 1.1","Bài kiểm tra 1.2","Bài kiểm tra 1.3",
-            "Bài kiểm tra 1.4"
-        )
-        "KHÍ LÍ TƯỞNG" -> listOf (
-            "Ôn lại Nhiệt học 6","Ôn lại chất khí",
-            "Định luật Boyle (lý thuyết)","Định luật Boyle (bài tập)",
-            "Định luật Charles (lý thuyết)","Định luật Charles (bài tập)",
-            "Định luật Gay-Lussac","Phương trình trạng thái khí lý tưởng (lý thuyết)",
-            "Phương trình trạng thái khí lý tưởng (bài tập)",
-            "Mối liên hệ áp suất và động năng tịnh tiến phân tử khí (lý thuyết)",
-            "Mối liên hệ áp suất và động năng tịnh tiến phân tử khí (bài tập)",
-        )
-        "ÔN TẬP CHƯƠNG II" -> listOf (
-            "Ôn lại Nhiệt học 6",
-            "Ôn lại chất khí"
-        )
-        "ÔN TẬP HỌC KÌ I" -> listOf (
-            "HKI-01","HKI-02","HKI-03"
-        )
-        "TỪ TRƯỜNG" -> listOf (
-            "Ôn lại Điện học 9","Ôn lại Từ học 9","Tương tác từ, từ trường, từ phổ và đường sức từ",
-            "Lực từ tác dụng lên dây dẫn mang dòng điện (lý thuyết)",
-            //"Sẽ cập nhật sau"
-        )
-        "ÔN TẬP CHƯƠNG III" -> listOf (
-            "Sẽ cập nhật sau"
-        )
-        "VẬT LÍ HẠT NHÂN" -> listOf (
-        )
-        "ÔN TẬP CHƯƠNG IV" -> listOf (
-        )
-        "ÔN TẬP HỌC KÌ II" -> listOf (
-        )
-        "TỔNG ÔN TẬP" -> listOf (
-        )
-        else -> emptyList()
-    }
-    Box (
-        modifier = Modifier
-            .fillMaxSize()
-            //.background(Color.White) // Đặt màu nền trắng
-            .padding(start = 0.dp, end = 0.dp, top = topPadding, bottom = bottomPadding)
-    )  {
-        Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 0.dp, end = 0.dp, top = 0.dp, bottom = with(LocalDensity.current) { boxHeight.toDp() }) // Dùng chiều cao Box làm padding
-        )   {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 8.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // TIÊU ĐỀ
-                item {
-                    Surface(
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(12.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = chapter,
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = "CHỌN BÀI TRẮC NGHIỆM",
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-
-                // DANH SÁCH BÀI TẬP
-                if (quizzes.isEmpty() || (quizzes.size == 1 && quizzes[0] == "Sẽ cập nhật sau")) {
-                    item {
-                        OutlinedButton(
-                            onClick = {},
-                            enabled = false,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(imageVector = Icons.Default.Build, contentDescription = null)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "Nội dung chương này đang được cập nhật...")
-                            }
-                        }
-                    }
-                } else {
-                    items(quizzes) { quiz ->
-                        val isUpdating = quiz == "Sẽ cập nhật sau"
-
-                        if (!isUpdating) {
-                            // THẺ BÀI TẬP (Đã tách riêng vùng bấm làm bài và vùng bấm xem Review)
-                            Surface(
-                                color = Color(0xFF00668C), // Màu xanh
-                                shape = RoundedCornerShape(8.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 3.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    // Cột bên trái: bao gồm 2 mục nằm đè lên nhau thành cột
-                                    Column(
-                                        modifier = Modifier.weight(1f)
-                                    ) {
-                                        // Mục 1 (hàng trên): Bấm vào tên bài để LÀM LẦN LƯỢT TỪNG CÂU
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickable { onQuizSelected(quiz) }
-                                                .padding(start = 12.dp, end = 12.dp, top = 10.dp, bottom = 4.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Text(
-                                                text = "$quiz (làm từng câu)",
-                                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                                                color = Color.White,
-                                                modifier = Modifier.weight(1f)
-                                            )
-                                        }
-
-                                        // Mục 2 (hàng dưới): Bấm vào dải dấu chấm để LÀM TOÀN BỘ CÂU HỎI MỘT LƯỢT
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickable { onQuizSelectedAllQuestions(quiz) }
-                                                .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 10.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Text(
-                                                text = "$quiz (làm nhiều câu。。。。。。。。)",//"。。。。。。。。。。。。",
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                color = Color.White.copy(alpha = 0.8f),
-                                                modifier = Modifier.weight(1f)
-                                            )
-                                        }
-                                    }
-
-                                    // Vùng 2 (bên phải): Nút Mắt riêng biệt để XEM REVIEW
-                                    IconButton(
-                                        onClick = { onQuizReviewSelected(quiz) },
-                                        modifier = Modifier.padding(end = 4.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Visibility,
-                                            contentDescription = "Xem review bài $quiz",
-                                            tint = Color.White
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        Box (
-            modifier = Modifier
-                .fillMaxWidth() // Đảm bảo Box chiếm toàn bộ chiều rộng
-                .align(Alignment.BottomCenter)
-                .background(MaterialTheme.colorScheme.surface)
-                .onGloballyPositioned { coordinates ->
-                    boxHeight = coordinates.size.height // Cập nhật chiều cao của Box
-                }
-                .padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 0.dp)
-        ) {
-            Button(
-                onClick = { onBack() },
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .wrapContentSize(),
-                contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định
-                shape = RoundedCornerShape(4.dp), // Bo góc nhẹ
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Màu nền của nút
-                    contentColor = Color.Black // Màu của icon và chữ
-                ),
-            ) {
-                Column (horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(imageVector = Icons.Outlined.Home , contentDescription = "Trang đầu", modifier = Modifier.size(20.dp))
-                    Text(text = "Trang đầu", fontSize = 10.sp, fontWeight = FontWeight.Light,
-                        color = Color.Black)
-                }
-            }
-            Button(
-                onClick = {
-                    onBack()
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 4.dp),
-                //.wrapContentSize()
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), // Màu nền của nút
-                    contentColor = Color.Black // Màu của icon và chữ
-                ),
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Sử dụng phiên bản AutoMirrored
-                    contentDescription = "Quay lại",
-                    tint = Color.Black // Màu icon đen
-                )
-            }
-        }
-    }
-}
 
 // MÀN HÌNH HIỂN THỊ DANH SÁCH MỘT LƯỢT THEO DẠNG REVIEW CÂN NHẮC DÙNG CHUNG HOẶC RIÊNG NHÉ
 @Composable
@@ -1971,610 +1483,7 @@ fun AllQuestionsScreen(
     }
 }
 
-//MÀN HÌNH HIỂN THỊ LẦN LƯỢT TỪNG CÂU HỎI TRẮC NGHIỆM VÀ TỰ LUẬN ĐỂ LÀM BÀI TẬP
-@Composable
-fun QuestionScreen(
-    question: Question,
-    currentQuestionIndex: Int,
-    totalQuestions: Int,
-    onTextAnswerSubmitted: (userInput: String, isCorrect: Boolean) -> Unit,
-    onAnswerSelected: (Int) -> Unit,
-    onBackQuiz: () -> Unit,
-    onHomePage: () -> Unit,
-    onBackQuestion: () -> Unit,
-) {// Lấy khoảng đệm theo chiều cao thành trạng thái và thanh điều khiển
-    val bottomPadding = getNavigationBarHeight()
-    val topPadding = getBannerAdHeight()
-    // Tạo LazyListState
-    val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    // Biến trạng thái để kiểm soát hiển thị tiêu đề và nút
-    val isToolbarVisible = remember { mutableStateOf(true) }
-    //val context = LocalContext.current // <-- THÊM DÒNG NÀY
-    // Sử dụng nestedScroll để phát hiện khi người dùng cuộn
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                if (available.y < 0) {
-                    isToolbarVisible.value = false // Cuộn xuống
-                } else if (available.y > 0) {
-                    isToolbarVisible.value = true // Cuộn lên
-                }
-                return Offset.Zero
-            }
-        }
-    }
 
-    // Sử dụng LaunchedEffect với currentQuestion Index để đưa câu hỏi mới về đầu câu
-    LaunchedEffect(currentQuestionIndex) {
-        coroutineScope.launch {
-            lazyListState.scrollToItem(0)
-        }
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            //.background(Color.White)
-            .padding(top = topPadding, bottom = bottomPadding)
-            .imePadding()
-    ) {
-        val horizontalPadding = if (question.mainContent !is QuestionContent.ClipUrl) {
-            8.dp
-        } else {
-            0.dp
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .nestedScroll(nestedScrollConnection) // Theo dõi sự kiện cuộn
-                .padding(horizontal = horizontalPadding)
-        ) {
-            if (question.mainContent !is QuestionContent.ClipUrl) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                    //.background(Color.White.copy(alpha = 1.0f))
-                ) {
-                    val progress = if (totalQuestions > 0) (currentQuestionIndex + 1) / totalQuestions
-                        .toFloat() else 0f
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 0.dp, horizontal = 4.dp),
-                        color = Color(0xFF00668C).copy(alpha = 1.0f)
-                    )
-                    Text(
-                        text = "${currentQuestionIndex + 1} / $totalQuestions",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        color = Color.Black, // Màu chữ đen
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd),
-                        //color = Color.Blue.copy(alpha = 1.0f)
-                    )
-                }
-            }
-            val questionBackground = Color(0xFFE8F1F8) // xanh rất nhạt
-            val questionTextColor = Color(0xFF172B3A)   // xanh đen, dễ đọc
-            val questionErrorColor = Color(0xFF8A4B00)  // cam nâu đậm
-            LazyColumn(
-                state = lazyListState, // Sử dụng LazyListState ở đây
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                //.padding(bottom = 0.dp)
-            ) {
-                item {
-                    when (val content = question.mainContent) {
-
-                        is QuestionContent.AudioUrl -> {
-                            AudioPlayerFromUrl(
-                                audioUrl = content.audioUrl, // hoặc it.audioUrl tùy tên biến trong khối when của bạn
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-
-                        is QuestionContent.ClipUrl -> {
-                            VideoPlayerFromUrl(
-                                videoUrl = content.clipUrl,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-
-                        is QuestionContent.TextRes -> Text(
-                            text = org.jetbrains.compose.resources.stringResource(content.textRes),
-                            color = questionTextColor,
-                            style = MaterialTheme.typography.titleLarge,
-                            textAlign = TextAlign.Justify,
-                            //color = Color.Black, // Màu chữ đen
-                            modifier = Modifier
-                                .background(questionBackground)
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth(),
-                        )
-                        is QuestionContent.Text -> Text(
-                            text = content.text,
-                            color = questionTextColor,
-                            style = MaterialTheme.typography.titleLarge,
-                            textAlign = TextAlign.Justify,
-                            //color = Color.Black, // Màu chữ đen
-                            modifier = Modifier
-                                .background(questionBackground)
-                                .padding(horizontal = 4.dp)
-                                .fillMaxWidth()
-                        )
-                        is QuestionContent.ImageRes -> Image(
-                            painter = painterResource(content.imageRes),
-                            contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            contentScale = ContentScale.FillWidth
-                            //.background(Color.Unspecified.copy(alpha = 1.0f))
-                        )
-                        is QuestionContent.ImageUrl -> {//đoạn code này khác các đoạn kia nhưng không sao nhé
-                            if (content.imageUrl.contains("long") || content.imageUrl.contains("big")) {
-                                // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
-                                ImageFromUrl(
-                                    imageUrl = content.imageUrl,
-                                    contentDescription = "Hình ảnh câu hỏi"
-                                )
-                            } else
-                            {
-                                // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
-                                ZoomableImageFromUrl(
-                                    imageUrl = content.imageUrl,
-                                    contentDescription = "Hình ảnh câu hỏi"
-                                )
-                            }
-                        }
-
-                        is QuestionContent.TextUrl -> {
-
-                            var textContent by remember(content.textUrl) {
-                                mutableStateOf("Đang tải...")
-                            }
-
-                            var isError by remember(content.textUrl) {
-                                mutableStateOf(false)
-                            }
-
-                            LaunchedEffect(content.textUrl) {
-
-                                textContent = "Đang tải..."
-                                isError = false
-
-                                try {
-                                    println("COMPOSE_TEST_A: BAT DAU FETCH")
-
-                                    val result = fetchTextFromUrl(content.textUrl)
-
-                                    println("COMPOSE_TEST_B: FETCH HOAN TAT")
-                                    println("COMPOSE_TEST_B_LENGTH: ${result.length}")
-
-                                    textContent = result
-                                    isError = false
-
-                                    println("COMPOSE_TEST_C: CAP NHAT GIAO DIEN")
-
-                                } catch (e: kotlinx.coroutines.CancellationException) {
-
-                                    // Không xử lý như lỗi tải dữ liệu
-                                    throw e
-
-                                } catch (e: Exception) {
-
-                                    println("COMPOSE_TEST_ERROR: ${e.message}")
-                                    e.printStackTrace()
-
-                                    textContent =
-                                        "Không thể tải nội dung, vui lòng kiểm tra kết nối mạng. " +
-                                                "Nếu nội dung bị lỗi, phản hồi qua Zalo: 0972712415."
-
-                                    isError = true
-                                }
-                            }
-
-                            Text(
-                                text = textContent,
-                                color = if (isError) questionErrorColor else questionTextColor,
-                                style = if (isError)
-                                    MaterialTheme.typography.bodyLarge
-                                else
-                                    MaterialTheme.typography.titleLarge,
-                                textAlign = if (isError)
-                                    TextAlign.Center
-                                else
-                                    TextAlign.Justify,
-                                modifier = Modifier
-                                    .background(
-                                        if (isError) Color.LightGray
-                                        else questionBackground
-                                    )
-                                    .padding(horizontal = 4.dp)
-                                    .fillMaxWidth()
-                            )
-                        }
-
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-                // hiển thị câu hỏi thêm
-                items(question.extraContents.size) { index ->
-                    val extraText = question.extraContents[index]
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = 2.dp),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        when (extraText) {
-                            is QuestionContent.AudioUrl -> {
-                                AudioPlayerFromUrl(
-                                    audioUrl = extraText.audioUrl, // hoặc it.audioUrl tùy tên biến trong khối when của bạn
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            }
-
-                            is QuestionContent.ClipUrl -> {
-                                VideoPlayerFromUrl(
-                                    videoUrl = extraText.clipUrl,
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            } //Luu y
-
-
-                            is QuestionContent.TextRes -> Text(
-                                text = org.jetbrains.compose.resources.stringResource(extraText.textRes),
-                                color = questionTextColor,
-                                style = MaterialTheme.typography.titleLarge,
-                                textAlign = TextAlign.Justify,
-                                //color = Color.Black, // Màu chữ đen
-                                modifier = Modifier
-                                    .background(questionBackground)
-                                    .padding(horizontal = 4.dp)
-                                    .fillMaxWidth(),
-                            )
-                            is QuestionContent.Text -> Text(
-                                text = extraText.text,
-                                color = questionTextColor,
-                                style = MaterialTheme.typography.titleLarge,
-                                textAlign = TextAlign.Justify,
-                                //color = Color.Black, // Màu chữ đen
-                                modifier = Modifier
-                                    .background(questionBackground)
-                                    .padding(horizontal = 4.dp)
-                                    .fillMaxWidth()
-                            )
-                            is QuestionContent.ImageRes -> Image(
-                                painter = painterResource(extraText.imageRes),
-                                contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                contentScale = ContentScale.FillWidth
-                                //.background(Color.Unspecified.copy(alpha = 1.0f))
-                            )
-                            is QuestionContent.ImageUrl -> {
-                                if (extraText.imageUrl.contains("long") || extraText.imageUrl.contains("big")) {
-                                    // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
-                                    ImageFromUrl(
-                                        imageUrl = extraText.imageUrl,
-                                        contentDescription = "Hình ảnh câu hỏi"
-                                    )
-                                } else
-                                {
-                                    // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
-                                    ZoomableImageFromUrl(
-                                        imageUrl = extraText.imageUrl,
-                                        contentDescription = "Hình ảnh câu hỏi"
-                                    )
-                                }
-                            }
-                            is QuestionContent.TextUrl -> {
-                                var textContent by remember { mutableStateOf("Đang tải...") }
-                                var isError by remember { mutableStateOf(false) }
-
-                                LaunchedEffect(extraText.textUrl) {
-                                    try {
-                                        textContent = fetchTextFromUrl(extraText.textUrl)
-                                        isError = false
-                                    } catch (e: Exception) {
-                                        textContent = "Không thể tải nội dung, chưa được kết nối mạng hoặc " +
-                                                "nội dung bị lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục"
-                                        isError = true
-                                    }
-                                }
-
-                                if (!isError) {
-                                    Text(
-                                        text = textContent,
-                                        color = questionTextColor,
-                                        style = MaterialTheme.typography.titleLarge,
-                                        textAlign = TextAlign.Justify,
-                                        //color = Color.Black, // Màu chữ đen
-                                        modifier = Modifier
-                                            .background(questionBackground)
-                                            .padding(horizontal = 4.dp)
-                                            .fillMaxWidth()
-                                    )
-                                } else {
-                                    Text(
-                                        text = "Lỗi khi tải nội dung, chưa được kết nối mạng hoặc nội dung bị " +
-                                                "lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục",
-                                        style = MaterialTheme.typography.bodyLarge.copy(color = questionErrorColor),
-                                        textAlign = TextAlign.Center,
-                                        //color = Color.Black, // Màu chữ đen
-                                        modifier = Modifier
-                                            .background(questionBackground)
-                                            .padding(horizontal = 4.dp)
-                                            .fillMaxWidth()
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (question.correctAnswer == null && question.correctTextAnswers.isNotEmpty()) {
-                    item {
-                        var userInput by remember(currentQuestionIndex, question) { mutableStateOf("") }
-
-                        // 1. Lấy ngay các đáp án tĩnh (Text và TextRes) vì gọi được stringResource trực tiếp tại đây
-                        val staticCorrectTexts = question.correctTextAnswers.mapNotNull {
-                            when (it) {
-                                is AnswerOption.Text -> it.text
-                                is AnswerOption.TextRes -> org.jetbrains.compose.resources.stringResource(it.textRes) // Hỗ trợ TextRes
-                                else -> null
-                            }
-                        }
-
-                        // 2. Khai báo state để chứa các đáp án tải từ URL
-                        var urlCorrectTexts by remember(currentQuestionIndex, question) { mutableStateOf<List<String>>(emptyList()) }
-                        var isUrlLoading by remember(currentQuestionIndex, question) { mutableStateOf(false) }
-
-                        // 3. Dùng LaunchedEffect để tải ngầm các TextUrl (nếu có)
-                        LaunchedEffect(question) {
-                            val urlTexts = mutableListOf<String>()
-                            val textUrlOptions = question.correctTextAnswers.filterIsInstance<AnswerOption.TextUrl>()
-
-                            if (textUrlOptions.isNotEmpty()) {
-                                isUrlLoading = true
-                                for (option in textUrlOptions) {
-                                    try {
-                                        val textContent = fetchTextFromUrl(option.textUrl)
-                                        urlTexts.add(textContent)
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-                                }
-                                isUrlLoading = false
-                            }
-                            urlCorrectTexts = urlTexts
-                        }
-
-                        // 4. Gộp cả đáp án tĩnh và đáp án từ URL lại, sau đó chuẩn hóa
-                        val allCorrectAnswers = (staticCorrectTexts + urlCorrectTexts).map {
-                            normalizeText(
-                                it
-                            )
-                        }
-                        val isLoading = isUrlLoading
-                        val keyboardController = LocalSoftwareKeyboardController.current
-                        val focusManager = LocalFocusManager.current
-                        // 5. Nút Gửi kiểm tra đáp án
-                        Button(
-                            onClick = {
-                                if (userInput.isNotBlank() && !isLoading) {
-                                    keyboardController?.hide()
-                                    focusManager.clearFocus()
-
-                                    val userTextNormalized =
-                                        normalizeText(userInput)
-
-                                    // So sánh user nhập với toàn bộ danh sách đáp án (bao gồm cả Text, TextRes và TextUrl)
-                                    val isCorrect = allCorrectAnswers.any { it.isNotBlank() && it == userTextNormalized }
-
-                                    onTextAnswerSubmitted(userInput, isCorrect)
-                                }
-                            },
-                            enabled = !isLoading,
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(4.dp)
-                        ) {
-                            Text(if (isLoading) "Đang chuẩn bị..." else "Gửi")
-                        }
-                        // 6. Ô nhập liệu tự luận
-                        OutlinedTextField(
-                            value = userInput,
-                            onValueChange = { userInput = it },
-                            placeholder = { Text(if (isLoading) "Đang tải dữ liệu đáp án..." else "Nhập câu trả lời...") },
-                            enabled = !isLoading,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp)
-                        )
-
-                    }
-                }
-                else {
-                    // CÂU TRẮC NGHIỆM
-                    items(question.answers.size) { index ->
-                        val answer = question.answers[index]
-                        Button(
-                            onClick = {
-                                onAnswerSelected(index)
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 2.dp)
-                                .semantics { contentDescription = "Answer option ${index + 1}" }, // Thêm mô tả trợ năng
-                            shape = RoundedCornerShape(16.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF00668C),//00668C màu xanh ô đáp án trắc nghiệm
-                                //contentColor = Color.White
-                            ),
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ) {
-                                when (answer) {
-                                    is AnswerOption.ImageUrl -> {
-                                        if (answer.imageUrl.contains("long") || answer.imageUrl.contains("big")) {
-                                            // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
-                                            ImageFromUrl(
-                                                imageUrl = answer.imageUrl,
-                                                contentDescription = "Hình ảnh câu hỏi"
-                                            )
-                                        } else
-                                        {
-                                            // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
-                                            ZoomableImageFromUrl(
-                                                imageUrl = answer.imageUrl,
-                                                contentDescription = "Hình ảnh câu hỏi"
-                                            )
-                                        }
-                                    }
-                                    is AnswerOption.TextRes -> Text(
-                                        text = org.jetbrains.compose.resources.stringResource(answer.textRes),
-                                        //style = MaterialTheme.typography.titleLarge,
-                                        textAlign = TextAlign.Justify,
-                                        //modifier = Modifier.padding(horizontal = 4.dp).fillMaxWidth()
-                                    )
-                                    is AnswerOption.Text -> Text(text = answer.text,
-                                        textAlign = TextAlign.Justify)
-                                    is AnswerOption.TextUrl -> {
-                                        var textContent by remember { mutableStateOf("Đang tải...") }
-                                        var isError by remember { mutableStateOf(false) }
-
-                                        LaunchedEffect(answer.textUrl) {
-                                            try {
-                                                textContent = fetchTextFromUrl(answer.textUrl)
-                                                isError = false
-                                            } catch (e: Exception) {
-                                                textContent = "Không thể tải nội dung, kiểm tra kết nối mạng hoặc phản hồi nội dung lỗi qua Zalo: 0972721415"
-                                                isError = true
-                                            }
-                                        }
-
-                                        if (!isError) {
-                                            Text(
-                                                text = textContent,
-                                                textAlign = TextAlign.Justify,
-                                                //modifier = Modifier.padding(horizontal = 4.dp).fillMaxWidth()
-                                            )
-                                        } else {
-                                            Text(
-                                                text = "Lỗi khi tải nội dung, kiểm tra kết nối mạng hoặc phản hồi lỗi nội dụng qua Zalo: 0972712415",
-                                                textAlign = TextAlign.Justify,
-                                                //modifier = Modifier.padding(horizontal = 4.dp).fillMaxWidth()
-                                            )
-                                        }
-                                    }
-                                    is AnswerOption.ImageRes -> Box(
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Image(
-                                            painter = painterResource(answer.imageRes),
-                                            contentDescription = "Hình ảnh đáp án", // Thêm mô tả cho hình ảnh đáp án
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .align(Alignment.Center),
-                                            contentScale = ContentScale.FillWidth
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (isToolbarVisible.value) {
-            Box(
-                modifier = Modifier
-                    //.padding(bottom = bottomPadding)
-                    .fillMaxSize()
-            ) {
-                if (question.mainContent !is QuestionContent.ClipUrl) {
-                    Box (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                            .padding(horizontal = 0.dp)
-                            .align(Alignment.BottomCenter),
-                    )
-                    {   // Nút quay lại câu hỏi trước
-                        if (currentQuestionIndex != 0) {
-                            Button(
-                                onClick = {
-                                    onBackQuestion()
-                                },
-                                modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(start = 4.dp, bottom = 0.dp) // Căn chỉnh lề
-                                    .wrapContentSize(),
-                                contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định
-                                shape = RoundedCornerShape(4.dp), // Bo góc nhẹ
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.LightGray.copy(0.3f),
-                                    contentColor = Color.Black
-                                ),
-                            ) {
-                                Column (horizontalAlignment = Alignment.CenterHorizontally)  {
-                                    Icon(imageVector = Icons.Filled.ChevronLeft, contentDescription = "Câu trước", modifier = Modifier.size(20.dp))
-                                    Text(text = "Câu trước", fontSize = 10.sp, fontWeight = FontWeight.Light)
-                                }
-                            }
-                        }
-                        // Nút quay về trang chủ
-                        Button(
-                            onClick = { onHomePage() },
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .wrapContentSize(),
-                            contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định
-                            shape = RoundedCornerShape(4.dp), // Bo góc nhẹ
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút
-                                contentColor = Color.Black // Màu của icon và chữ
-                            ),
-                        ) {
-                            Column (horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(imageVector = Icons.Outlined.Home , contentDescription = "Trang đầu", modifier = Modifier.size(20.dp))
-                                Text(text = "Trang đầu", fontSize = 10.sp, fontWeight = FontWeight.Light,
-                                    color = Color.Black)
-                            }
-                        }
-                        // Nút "QUAY LẠI (chọn bài thi khác)" góc dưới bên phải
-                        Button(
-                            onClick = {
-                                onBackQuiz()
-                            },
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(end = 4.dp, bottom = 0.dp)
-                                .wrapContentSize(),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.LightGray.copy(0.3f),
-                                contentColor = Color.Black
-                            )
-                        )
-                        {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Sử dụng phiên bản AutoMirrored
-                                contentDescription = "Quay lại"
-                            )
-                        }
-                    }
-
-                }
-
-            }
-        }
-    }
-}
 // BẢNG NÚT VUÔNG CHỈ SỐ CÂU HỎI VỚI MÀU TRẠNG THÁI (XANH: ĐÚNG, NÂU XÁM: SAI)
 @Composable
 fun QuestionGridButtons(
@@ -3702,7 +2611,7 @@ fun ResultScreen(
                                             }
                                         }
                                     }
-                                    val url = "https://script.google.com/macros/s/AKfycbzR7T7h68L0SlT2V2HhnB560IYEwrKNVS5SmQshrF82_2mlwB17YmGHYDuL4zOBEiO0/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
+                                    val url = "https://script.google.com/macros/s/AKfycbxxde1KsjDnLl-7EoOLmDtsi9WU0ECbY8Yxi8s-vnR7kZn4bL7cKOMJmxvXUjS64fr3/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
                                     val responseText = fetchTextFromUrl(url)
                                     val json = Json.parseToJsonElement(responseText).jsonObject
                                     val status = json["status"]?.jsonPrimitive?.content ?: "error"
@@ -5151,17 +4060,1216 @@ fun ResultDetailScreen(
         }
     }
 }
+
 // Các hàm phụ và hoàn toàn không liên quan đến việc hiển thị màn hình và điều hướng
 @Composable
 fun VideoPlayerFromUrl(videoUrl: String, modifier: Modifier = Modifier) {
     PlatformVideoPlayer(videoUrl = videoUrl, modifier = modifier)
 }
-
-// Hàm chuẩn hóa văn bản không phân biệt chữ hoa, chữ thưởng
+// Hàm không phân biệt chữ hoa, chữ thưởng
 // dấu, nhiều dấu cách dùng chung đa nền tảng
 fun normalizeText(input: String): String {
     val srcM = "áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđ"
-    val desM = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyyd"
+    val desM = "aaaaaaaaaaaaaaaaaee@Serializable\n"+
+            "data class SubmissionResponse(val status: String, val message: String)\n"+
+            "\n"+
+            "// MÀN HÌNH CHI TIẾT BÀI LÀM ĐÃ LƯU THEO TỪNG BÀI LÀM\n"+
+            "@Composable\n"+
+            "fun ResultDetailScreen(\n"+
+            "    resultId: Int,\n"+
+            "    viewModel: ResultViewModel = viewModel(),\n"+
+            "    onHomePage: () -> Unit,\n"+
+            "    onBack: () -> Unit,\n"+
+            "    onBackTest: (String) -> Unit\n"+
+            ") {\n"+
+            "    // Lấy khoảng đệm theo chiều cao thành trạng thái và thanh điều khiển\n"+
+            "    val bottomPadding = getNavigationBarHeight()\n"+
+            "    val topPadding = getBannerAdHeight()\n"+
+            "    // Lấy dữ liệu kết quả từ ViewModel\n"+
+            "    val result = viewModel.getResultById(resultId)\n"+
+            "    val questionResults =\n"+
+            "        result?.let { viewModel.getQuestionResultsForResult(it.id) } ?: emptyList()\n"+
+            "    // Biến trạng thái để kiểm soát hiển thị tiêu đề và nút\n"+
+            "    val isToolbarVisible = remember { mutableStateOf(true) }\n"+
+            "    val listState = rememberLazyListState()\n"+
+            "    val coroutineScope = rememberCoroutineScope()\n"+
+            "\n"+
+            "    // Sử dụng nestedScroll để phát hiện khi người dùng cuộn\n"+
+            "    val nestedScrollConnection = remember {\n"+
+            "        object : NestedScrollConnection {\n"+
+            "            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {\n"+
+            "                if (available.y < 0) {\n"+
+            "                    isToolbarVisible.value = false // Cuộn xuống\n"+
+            "                } else if (available.y > 0) {\n"+
+            "                    isToolbarVisible.value = true // Cuộn lên\n"+
+            "                }\n"+
+            "                return Offset.Zero\n"+
+            "            }\n"+
+            "        }\n"+
+            "    }\n"+
+            "\n"+
+            "    Column(\n"+
+            "        modifier = Modifier\n"+
+            "            .fillMaxSize()\n"+
+            "            .padding(\n"+
+            "                top = topPadding,\n"+
+            "                bottom = bottomPadding)\n"+
+            "            .nestedScroll(nestedScrollConnection), // Theo dõi sự kiện cuộn\n"+
+            "        verticalArrangement = Arrangement.Center,\n"+
+            "        horizontalAlignment = Alignment.CenterHorizontally\n"+
+            "    ) {\n"+
+            "        // Hiển thị tiêu đề và điểm số nếu isToolbarVisible là true\n"+
+            "        if (isToolbarVisible.value) {\n"+
+            "            Row(\n"+
+            "                modifier = Modifier\n"+
+            "                    .fillMaxWidth()\n"+
+            "                    .background(Color.LightGray.copy(alpha = 0.5f))\n"+
+            "                    .padding(vertical = 4.dp),\n"+
+            "                verticalAlignment = Alignment.CenterVertically,\n"+
+            "                horizontalArrangement = Arrangement.SpaceBetween\n"+
+            "            ) {\n"+
+            "                Text(\n"+
+            "                    text = buildAnnotatedString {\n"+
+            "                        withStyle(style = SpanStyle(color = Color.Black)) {\n"+
+            "                            append(\"\${result?.quizName}\") // Phần quizName có màu đen\n"+
+            "                        }\n"+
+            "                        withStyle(style = SpanStyle(color = Color.Blue)) {\n"+
+            "                            append(\" (đúng: \${result?.score} / \${result?.totalQuestions})\") // Phần kết quả có màu xanh/đỏ\n"+
+            "                        }\n"+
+            "                    },\n"+
+            "                    style = MaterialTheme\n"+
+            "                        .typography\n"+
+            "                        .headlineSmall\n"+
+            "                        .copy(fontWeight = FontWeight.Bold),\n"+
+            "                    modifier = Modifier\n"+
+            "                        .weight(1f)\n"+
+            "                        .padding(start = 8.dp, end = 4.dp)\n"+
+            "                )\n"+
+            "\n"+
+            "                IconButton(\n"+
+            "                    onClick = {\n"+
+            "                        coroutineScope.launch {\n"+
+            "                            listState.animateScrollToItem(0)\n"+
+            "                        }\n"+
+            "                    },\n"+
+            "                    modifier = Modifier.padding(end = 4.dp)\n"+
+            "                ) {\n"+
+            "                    Column(horizontalAlignment = Alignment.CenterHorizontally) {\n"+
+            "                        Text(text = \"Top\", fontSize = 10.sp, fontWeight = FontWeight.Light)\n"+
+            "                        Icon(\n"+
+            "                            imageVector = Icons.Default.KeyboardArrowUp,\n"+
+            "                            contentDescription = \"Lên đầu trang\",\n"+
+            "                            tint = Color.Black\n"+
+            "                        )\n"+
+            "                    }\n"+
+            "                }\n"+
+            "            }\n"+
+            "        }\n"+
+            "\n"+
+            "        // Hiển thị lịch sử câu hỏi\n"+
+            "        LazyColumn(state = listState) {\n"+
+            "            if (questionResults.isNotEmpty()) {\n"+
+            "                item {\n"+
+            "                    QuestionGridButtons(\n"+
+            "                        questionResults = questionResults,\n"+
+            "                        onQuestionClick = { index ->\n"+
+            "                            coroutineScope.launch {\n"+
+            "                                listState.animateScrollToItem(index + 1)\n"+
+            "                            }\n"+
+            "                        }\n"+
+            "                    )\n"+
+            "                }\n"+
+            "            }\n"+
+            "            items(questionResults) { result ->\n"+
+            "                Column(modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 8.dp)) {\n"+
+            "                    val currentQuestionIndex = questionResults.indexOf(result)\n"+
+            "                    // Hiển thị câu hỏi\n"+
+            "                    Text(\n"+
+            "                        text = \"Câu \${currentQuestionIndex + 1}\",\n"+
+            "                        color = Color(0xFF0D47A1),\n"+
+            "                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)\n"+
+            "                    )\n"+
+            "                    val questionBackground = Color(0xFFE8F1F8) // Xanh rất nhạt\n"+
+            "                    val questionTextColor = Color(0xFF172B3A)   // Xanh đen\n"+
+            "                    val questionErrorColor = Color(0xFF8A4B00)  // Cam nâu đậm\n"+
+            "\n"+
+            "                    when (val question = result.mainQuestion) {\n"+
+            "                        is QuestionContent.AudioUrl -> {}\n"+
+            "                        is QuestionContent.Text -> {\n"+
+            "\n"+
+            "                            when {\n"+
+            "                                // Văn bản thường\n"+
+            "                                question.text.startsWith(\"TEXTXT\") -> {\n"+
+            "\n"+
+            "                                    val text = question.text.removePrefix(\"TEXTXT\")\n"+
+            "\n"+
+            "                                    Text(\n"+
+            "                                        text = text,\n"+
+            "                                        color = questionTextColor,\n"+
+            "                                        textAlign = TextAlign.Justify,\n"+
+            "                                        modifier = Modifier\n"+
+            "                                            .background(questionBackground),\n"+
+            "                                        style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                            fontWeight = if (result.isCorrect)\n"+
+            "                                                FontWeight.Normal\n"+
+            "                                            else\n"+
+            "                                                FontWeight.Bold\n"+
+            "                                        )\n"+
+            "                                    )\n"+
+            "                                }\n"+
+            "                                // Text Resource\n"+
+            "                                question.text.startsWith(\"RESTEX\") -> {\n"+
+            "                                    val textId = question.text.removePrefix(\"RESTEX\")\n"+
+            "                                    val stringRes = Res.allStringResources[textId]\n"+
+            "                                    if (stringRes != null) {\n"+
+            "                                        Text(\n"+
+            "                                            text = org.jetbrains.compose.resources.stringResource(stringRes),\n"+
+            "                                            color = questionTextColor,\n"+
+            "                                            modifier = Modifier\n"+
+            "                                                .background(questionBackground),\n"+
+            "                                            style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                fontWeight = if (result.isCorrect)\n"+
+            "                                                    FontWeight.Normal\n"+
+            "                                                else\n"+
+            "                                                    FontWeight.Bold\n"+
+            "                                            )\n"+
+            "                                        )\n"+
+            "                                    }\n"+
+            "                                }\n"+
+            "\n"+
+            "                                // ==============================\n"+
+            "                                // Image Resource\n"+
+            "                                // ==============================\n"+
+            "                                question.text.startsWith(\"RESIMA\") -> {\n"+
+            "                                    val imageKey = question.text.removePrefix(\"RESIMA\")\n"+
+            "                                    val drawableRes = Res.allDrawableResources[imageKey]\n"+
+            "                                    if (drawableRes != null) {\n"+
+            "                                        Image(\n"+
+            "                                            painter = painterResource(drawableRes),\n"+
+            "                                            contentDescription = null,\n"+
+            "                                            modifier = Modifier.fillMaxWidth(),\n"+
+            "                                            contentScale = ContentScale.FillWidth\n"+
+            "                                        )\n"+
+            "                                    }\n"+
+            "                                }\n"+
+            "\n"+
+            "                                // ==============================\n"+
+            "                                // Text URL\n"+
+            "                                // ==============================\n"+
+            "                                question.text.startsWith(\"URLTEX\") -> {\n"+
+            "\n"+
+            "                                    val textUrl = question.text\n"+
+            "                                        .removePrefix(\"URLTEX\")\n"+
+            "\n"+
+            "                                    var textContent by remember {\n"+
+            "                                        mutableStateOf(\"Đang tải...\")\n"+
+            "                                    }\n"+
+            "\n"+
+            "                                    var isError by remember {\n"+
+            "                                        mutableStateOf(false)\n"+
+            "                                    }\n"+
+            "\n"+
+            "                                    LaunchedEffect(textUrl) {\n"+
+            "\n"+
+            "                                        try {\n"+
+            "                                            textContent = fetchTextFromUrl(textUrl)\n"+
+            "                                            isError = false\n"+
+            "\n"+
+            "                                        } catch (e: Exception) {\n"+
+            "\n"+
+            "                                            textContent = \"Không thể tải nội dung\"\n"+
+            "                                            isError = true\n"+
+            "                                        }\n"+
+            "                                    }\n"+
+            "\n"+
+            "                                    if (!isError) {\n"+
+            "\n"+
+            "                                        Text(\n"+
+            "                                            text = textContent,\n"+
+            "                                            color = questionTextColor,\n"+
+            "                                            textAlign = TextAlign.Justify,\n"+
+            "                                            modifier = Modifier\n"+
+            "                                                .background(questionBackground),\n"+
+            "                                            style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                fontWeight = if (result.isCorrect)\n"+
+            "                                                    FontWeight.Normal\n"+
+            "                                                else\n"+
+            "                                                    FontWeight.Bold\n"+
+            "                                            )\n"+
+            "                                        )\n"+
+            "\n"+
+            "                                    } else {\n"+
+            "\n"+
+            "                                        Text(\n"+
+            "                                            text = \"Lỗi khi tải nội dung từ URL, kiểm tra kết nối mạng!\",\n"+
+            "                                            color = questionErrorColor,\n"+
+            "                                            style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                fontWeight = if (result.isCorrect)\n"+
+            "                                                    FontWeight.Normal\n"+
+            "                                                else\n"+
+            "                                                    FontWeight.Bold\n"+
+            "                                            ),\n"+
+            "                                            textAlign = TextAlign.Center\n"+
+            "                                        )\n"+
+            "                                    }\n"+
+            "                                }\n"+
+            "\n"+
+            "                                // ==============================\n"+
+            "                                // Image URL\n"+
+            "                                // ==============================\n"+
+            "                                question.text.startsWith(\"URLIMA\") -> {\n"+
+            "\n"+
+            "                                    val imageUrl = question.text\n"+
+            "                                        .removePrefix(\"URLIMA\")\n"+
+            "\n"+
+            "                                    ImageFromUrl(\n"+
+            "                                        imageUrl = imageUrl,\n"+
+            "                                        contentDescription = \"Hình ảnh từ URL\",\n"+
+            "                                        modifier = Modifier.fillMaxWidth()\n"+
+            "                                    )\n"+
+            "                                }\n"+
+            "\n"+
+            "                                // ==============================\n"+
+            "                                // Clip / Video URL\n"+
+            "                                // ==============================\n"+
+            "                                question.text.startsWith(\"URLCLI\") -> {\n"+
+            "\n"+
+            "                                    val clipUrl = question.text\n"+
+            "                                        .removePrefix(\"URLCLI\")\n"+
+            "\n"+
+            "                                    VideoPlayerFromUrl(\n"+
+            "                                        videoUrl = clipUrl,\n"+
+            "                                        modifier = Modifier.fillMaxWidth()\n"+
+            "                                    )\n"+
+            "                                }\n"+
+            "                                // ==============================\n"+
+            "                                // AUDIO / AUDIO URL\n"+
+            "                                // ==============================\n"+
+            "                                question.text.startsWith(\"URLAUD\") -> {\n"+
+            "\n"+
+            "                                    val audioUrl = question.text\n"+
+            "                                        .removePrefix(\"URLAUD\")\n"+
+            "\n"+
+            "                                    AudioPlayerFromUrl(\n"+
+            "                                        audioUrl = audioUrl, // hoặc it.audioUrl tùy tên biến trong khối when của bạn\n"+
+            "                                        modifier = Modifier.fillMaxWidth()\n"+
+            "                                    )\n"+
+            "                                }\n"+
+            "\n"+
+            "                                // ==============================\n"+
+            "                                // Dữ liệu không xác định\n"+
+            "                                // ==============================\n"+
+            "                                else -> {\n"+
+            "\n"+
+            "                                    Text(\n"+
+            "                                        text = question.text,\n"+
+            "                                        textAlign = TextAlign.Justify,\n"+
+            "                                        modifier = Modifier\n"+
+            "                                            .background(Color.LightGray),\n"+
+            "                                        style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                            fontWeight = if (result.isCorrect)\n"+
+            "                                                FontWeight.Normal\n"+
+            "                                            else\n"+
+            "                                                FontWeight.Bold\n"+
+            "                                        )\n"+
+            "                                    )\n"+
+            "                                }\n"+
+            "                            }\n"+
+            "                        }\n"+
+            "                        else -> {}\n"+
+            "                    }\n"+
+            "                    // Hiển thi phần câu hỏi thêm extraQuestions\n"+
+            "                    result.extraQuestions.forEachIndexed { extraTextIndex, extraText ->\n"+
+            "                        Row(\n"+
+            "                            modifier = Modifier\n"+
+            "                                .fillMaxWidth()\n"+
+            "                                .padding(vertical = 2.dp),\n"+
+            "                            verticalAlignment = Alignment.CenterVertically\n"+
+            "                        ) {\n"+
+            "                            /*Text(\n"+
+            "                                text = \"\${'A' + answerIndex}: \",\n"+
+            "                                style = MaterialTheme.typography.bodyLarge,\n"+
+            "                                modifier = Modifier.padding(end = 4.dp)\n"+
+            "                            )*/\n"+
+            "                            when (extraText) {\n"+
+            "\n"+
+            "                                is QuestionContent.Text -> {\n"+
+            "\n"+
+            "                                    when {\n"+
+            "\n"+
+            "                                        // ==============================\n"+
+            "                                        // 1. TEXT THƯỜNG\n"+
+            "                                        // ==============================\n"+
+            "                                        extraText.text.startsWith(\"TEXTXT\") -> {\n"+
+            "\n"+
+            "                                            val text = extraText.text.removePrefix(\"TEXTXT\")\n"+
+            "\n"+
+            "                                            Text(\n"+
+            "                                                text = text,\n"+
+            "                                                color = questionTextColor,\n"+
+            "                                                textAlign = TextAlign.Justify,\n"+
+            "                                                modifier = Modifier\n"+
+            "                                                    .background(questionBackground),\n"+
+            "                                                style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                    fontWeight = if (result.isCorrect)\n"+
+            "                                                        FontWeight.Normal\n"+
+            "                                                    else\n"+
+            "                                                        FontWeight.Bold\n"+
+            "                                                )\n"+
+            "                                            )\n"+
+            "                                        }\n"+
+            "\n"+
+            "                                        // ==============================\n"+
+            "                                        // 2. TEXT RESOURCE\n"+
+            "                                        // ==============================\n"+
+            "                                        extraText.text.startsWith(\"RESTEX\") -> {\n"+
+            "                                            val textId = extraText.text.removePrefix(\"RESTEX\")\n"+
+            "                                            val stringRes = Res.allStringResources[textId]\n"+
+            "                                            if (stringRes != null) {\n"+
+            "                                                Text(\n"+
+            "                                                    text = org.jetbrains.compose.resources.stringResource(stringRes),\n"+
+            "                                                    color = questionTextColor,\n"+
+            "                                                    modifier = Modifier\n"+
+            "                                                        .background(questionBackground),\n"+
+            "                                                    style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                        fontWeight = if (result.isCorrect)\n"+
+            "                                                            FontWeight.Normal\n"+
+            "                                                        else\n"+
+            "                                                            FontWeight.Bold\n"+
+            "                                                    )\n"+
+            "                                                )\n"+
+            "                                            }\n"+
+            "                                        }\n"+
+            "\n"+
+            "                                        // ==============================\n"+
+            "                                        // 3. IMAGE RESOURCE\n"+
+            "                                        // ==============================\n"+
+            "                                        extraText.text.startsWith(\"RESIMA\") -> {\n"+
+            "                                            val imageKey = extraText.text.removePrefix(\"RESIMA\")\n"+
+            "                                            val drawableRes = Res.allDrawableResources[imageKey]\n"+
+            "                                            if (drawableRes != null) {\n"+
+            "                                                Image(\n"+
+            "                                                    painter = painterResource(drawableRes),\n"+
+            "                                                    contentDescription = null,\n"+
+            "                                                    modifier = Modifier.fillMaxWidth(),\n"+
+            "                                                    contentScale = ContentScale.FillWidth\n"+
+            "                                                )\n"+
+            "                                            }\n"+
+            "                                        }\n"+
+            "\n"+
+            "                                        // ==============================\n"+
+            "                                        // 4. TEXT URL\n"+
+            "                                        // ==============================\n"+
+            "                                        extraText.text.startsWith(\"URLTEX\") -> {\n"+
+            "\n"+
+            "                                            val textUrl = extraText.text\n"+
+            "                                                .removePrefix(\"URLTEX\")\n"+
+            "\n"+
+            "                                            var textContent by remember {\n"+
+            "                                                mutableStateOf(\"Đang tải...\")\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            var isError by remember {\n"+
+            "                                                mutableStateOf(false)\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            LaunchedEffect(textUrl) {\n"+
+            "\n"+
+            "                                                try {\n"+
+            "                                                    textContent = fetchTextFromUrl(textUrl)\n"+
+            "                                                    isError = false\n"+
+            "\n"+
+            "                                                } catch (e: Exception) {\n"+
+            "\n"+
+            "                                                    textContent = \"Không thể tải nội dung\"\n"+
+            "                                                    isError = true\n"+
+            "                                                }\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            if (!isError) {\n"+
+            "\n"+
+            "                                                Text(\n"+
+            "                                                    text = textContent,\n"+
+            "                                                    color = questionTextColor,\n"+
+            "                                                    textAlign = TextAlign.Justify,\n"+
+            "                                                    modifier = Modifier\n"+
+            "                                                        .background(questionBackground),\n"+
+            "                                                    style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                        fontWeight = if (result.isCorrect)\n"+
+            "                                                            FontWeight.Normal\n"+
+            "                                                        else\n"+
+            "                                                            FontWeight.Bold\n"+
+            "                                                    )\n"+
+            "                                                )\n"+
+            "\n"+
+            "                                            } else {\n"+
+            "\n"+
+            "                                                Text(\n"+
+            "                                                    text = \"Lỗi khi tải nội dung từ URL, kiểm tra kết nối mạng!\",\n"+
+            "                                                    color = questionErrorColor,\n"+
+            "                                                    style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                        fontWeight = if (result.isCorrect)\n"+
+            "                                                            FontWeight.Normal\n"+
+            "                                                        else\n"+
+            "                                                            FontWeight.Bold\n"+
+            "                                                    ),\n"+
+            "                                                    textAlign = TextAlign.Center\n"+
+            "                                                )\n"+
+            "                                            }\n"+
+            "                                        }\n"+
+            "\n"+
+            "                                        // ==============================\n"+
+            "                                        // 5. IMAGE URL\n"+
+            "                                        // ==============================\n"+
+            "                                        extraText.text.startsWith(\"URLIMA\") -> {\n"+
+            "\n"+
+            "                                            val imageUrl = extraText.text\n"+
+            "                                                .removePrefix(\"URLIMA\")\n"+
+            "\n"+
+            "                                            ImageFromUrl(\n"+
+            "                                                imageUrl = imageUrl,\n"+
+            "                                                contentDescription = \"Hình ảnh từ URL\",\n"+
+            "                                                modifier = Modifier.fillMaxWidth()\n"+
+            "                                            )\n"+
+            "                                        }\n"+
+            "\n"+
+            "                                        // ==============================\n"+
+            "                                        // 6. VIDEO / CLIP URL\n"+
+            "                                        // ==============================\n"+
+            "                                        extraText.text.startsWith(\"URLCLI\") -> {\n"+
+            "\n"+
+            "                                            val clipUrl = extraText.text\n"+
+            "                                                .removePrefix(\"URLCLI\")\n"+
+            "\n"+
+            "                                            VideoPlayerFromUrl(\n"+
+            "                                                videoUrl = clipUrl,\n"+
+            "                                                modifier = Modifier.fillMaxWidth()\n"+
+            "                                            )\n"+
+            "                                        }\n"+
+            "                                        // ==============================\n"+
+            "                                        // 7. AUDIO / AUDIO URL\n"+
+            "                                        // ==============================\n"+
+            "                                        extraText.text.startsWith(\"URLAUD\") -> {\n"+
+            "\n"+
+            "                                            val audioUrl = extraText.text\n"+
+            "                                                .removePrefix(\"URLAUD\")\n"+
+            "\n"+
+            "                                            AudioPlayerFromUrl(\n"+
+            "                                                audioUrl = audioUrl, // hoặc it.audioUrl tùy tên biến trong khối when của bạn\n"+
+            "                                                modifier = Modifier.fillMaxWidth()\n"+
+            "                                            )\n"+
+            "                                        }\n"+
+            "\n"+
+            "                                        // ==============================\n"+
+            "                                        // 7. DỮ LIỆU KHÔNG CÓ TIỀN TỐ\n"+
+            "                                        // ==============================\n"+
+            "                                        else -> {\n"+
+            "\n"+
+            "                                            Text(\n"+
+            "                                                text = extraText.text,\n"+
+            "                                                textAlign = TextAlign.Justify,\n"+
+            "                                                modifier = Modifier\n"+
+            "                                                    .background(Color.LightGray),\n"+
+            "                                                style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                    fontWeight = if (result.isCorrect)\n"+
+            "                                                        FontWeight.Normal\n"+
+            "                                                    else\n"+
+            "                                                        FontWeight.Bold\n"+
+            "                                                )\n"+
+            "                                            )\n"+
+            "                                        }\n"+
+            "                                    }\n"+
+            "                                }\n"+
+            "                                else -> {}\n"+
+            "                            }\n"+
+            "                        }\n"+
+            "                    }\n"+
+            "\n"+
+            "                    // Hiển thị danh sách đáp án trắc nghiệm\n"+
+            "                    if (result.answers.isNotEmpty()) {\n"+
+            "                        val selectedAnswer = result.selectedAnswer\n"+
+            "                        val correctAnswer = result.correctAnswer\n"+
+            "\n"+
+            "                        result.answers.forEach { answer ->\n"+
+            "\n"+
+            "                            val isCorrectAnswer = answer == correctAnswer\n"+
+            "                            val isSelected = answer == selectedAnswer\n"+
+            "\n"+
+            "                            // 4 trạng thái:\n"+
+            "                            // 1. Đúng + đã chọn\n"+
+            "                            // 2. Sai + đã chọn\n"+
+            "                            // 3. Đúng nhưng không chọn\n"+
+            "                            // 4. Không đúng + không chọn\n"+
+            "\n"+
+            "                            val backgroundColor = when {\n"+
+            "                                // 1. Người dùng chọn đúng\n"+
+            "                                isSelected && isCorrectAnswer ->\n"+
+            "                                    Color(0xFF1565C0) // Xanh dương đậm\n"+
+            "\n"+
+            "                                // 2. Người dùng chọn sai\n"+
+            "                                isSelected && !isCorrectAnswer ->\n"+
+            "                                    Color(0xFFA04B00) // Cam/nâu đậm\n"+
+            "\n"+
+            "                                // 3. Đáp án đúng nhưng người dùng không chọn\n"+
+            "                                !isSelected && isCorrectAnswer ->\n"+
+            "                                    Color(0xFFD6E8FF) // Xanh dương rất nhạt\n"+
+            "\n"+
+            "                                // 4. Không đúng và cũng không chọn\n"+
+            "                                else ->\n"+
+            "                                    Color(0xFFF2F2F2) // Xám rất nhạt\n"+
+            "                            }\n"+
+            "\n"+
+            "                            val textColor = when {\n"+
+            "                                // Nền đậm → chữ trắng\n"+
+            "                                isSelected && isCorrectAnswer ->\n"+
+            "                                    Color.White\n"+
+            "\n"+
+            "                                isSelected && !isCorrectAnswer ->\n"+
+            "                                    Color.White\n"+
+            "\n"+
+            "                                // Nền sáng → chữ tối\n"+
+            "                                !isSelected && isCorrectAnswer ->\n"+
+            "                                    Color(0xFF0D47A1)\n"+
+            "\n"+
+            "                                else ->\n"+
+            "                                    Color(0xFF333333)\n"+
+            "                            }\n"+
+            "\n"+
+            "                            val statusIcon = when {\n"+
+            "                                // Đúng + đã chọn\n"+
+            "                                isSelected && isCorrectAnswer -> \"✓\"\n"+
+            "\n"+
+            "                                // Sai + đã chọn\n"+
+            "                                isSelected && !isCorrectAnswer -> \"✕\"\n"+
+            "\n"+
+            "                                // Đúng nhưng không chọn\n"+
+            "                                !isSelected && isCorrectAnswer -> \"✓\"\n"+
+            "\n"+
+            "                                // Không đúng + không chọn\n"+
+            "                                else -> \"—\"\n"+
+            "                            }\n"+
+            "\n"+
+            "                            Row(\n"+
+            "                                modifier = Modifier\n"+
+            "                                    .fillMaxWidth()\n"+
+            "                                    .padding(vertical = 2.dp)\n"+
+            "                                    .background(backgroundColor)\n"+
+            "                                    .padding(horizontal = 8.dp, vertical = 8.dp),\n"+
+            "                                verticalAlignment = Alignment.CenterVertically\n"+
+            "                            ) {\n"+
+            "\n"+
+            "                                // Biểu tượng trạng thái\n"+
+            "                                Text(\n"+
+            "                                    text = statusIcon,\n"+
+            "                                    color = textColor,\n"+
+            "                                    fontWeight = FontWeight.Bold,\n"+
+            "                                    modifier = Modifier.padding(end = 8.dp)\n"+
+            "                                )\n"+
+            "\n"+
+            "                                when (answer) {\n"+
+            "\n"+
+            "                                    is AnswerOption.Text -> {\n"+
+            "                                        when {\n"+
+            "\n"+
+            "                                            // ==============================\n"+
+            "                                            // 1. TEXT THƯỜNG\n"+
+            "                                            // ==============================\n"+
+            "                                            answer.text.startsWith(\"TEXTXT\") -> {\n"+
+            "\n"+
+            "                                                val text = answer.text.removePrefix(\"TEXTXT\")\n"+
+            "\n"+
+            "                                                Text(\n"+
+            "                                                    text = text,\n"+
+            "                                                    color = textColor,\n"+
+            "                                                    textAlign = TextAlign.Justify,\n"+
+            "                                                    modifier = Modifier\n"+
+            "                                                        .background(backgroundColor),\n"+
+            "                                                    style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                        fontWeight = if (result.isCorrect)\n"+
+            "                                                            FontWeight.Normal\n"+
+            "                                                        else\n"+
+            "                                                            FontWeight.Bold\n"+
+            "                                                    )\n"+
+            "                                                )\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            // ==============================\n"+
+            "                                            // 2. TEXT RESOURCE\n"+
+            "                                            // ==============================\n"+
+            "                                            answer.text.startsWith(\"RESTEX\") -> {\n"+
+            "                                                val textId = answer.text.removePrefix(\"RESTEX\")\n"+
+            "                                                val stringRes = Res.allStringResources[textId]\n"+
+            "                                                if (stringRes != null) {\n"+
+            "                                                    Text(\n"+
+            "                                                        text = org.jetbrains.compose.resources.stringResource(stringRes),\n"+
+            "                                                        color = textColor,\n"+
+            "                                                        modifier = Modifier\n"+
+            "                                                            .background(backgroundColor),\n"+
+            "                                                        style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                            fontWeight = if (result.isCorrect)\n"+
+            "                                                                FontWeight.Normal\n"+
+            "                                                            else\n"+
+            "                                                                FontWeight.Bold\n"+
+            "                                                        )\n"+
+            "                                                    )\n"+
+            "                                                }\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            // ==============================\n"+
+            "                                            // 3. IMAGE RESOURCE\n"+
+            "                                            // ==============================\n"+
+            "                                            answer.text.startsWith(\"RESIMA\") -> {\n"+
+            "                                                val imageKey = answer.text.removePrefix(\"RESIMA\")\n"+
+            "                                                val drawableRes = Res.allDrawableResources[imageKey]\n"+
+            "                                                if (drawableRes != null) {\n"+
+            "                                                    Image(\n"+
+            "                                                        painter = painterResource(drawableRes),\n"+
+            "                                                        contentDescription = null,\n"+
+            "                                                        modifier = Modifier\n"+
+            "                                                            .background(backgroundColor)\n"+
+            "                                                            .fillMaxWidth(),\n"+
+            "                                                        contentScale = ContentScale.FillWidth\n"+
+            "                                                    )\n"+
+            "                                                }\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            // ==============================\n"+
+            "                                            // 4. TEXT URL\n"+
+            "                                            // ==============================\n"+
+            "                                            answer.text.startsWith(\"URLTEX\") -> {\n"+
+            "\n"+
+            "                                                val textUrl = answer.text\n"+
+            "                                                    .removePrefix(\"URLTEX\")\n"+
+            "\n"+
+            "                                                var textContent by remember {\n"+
+            "                                                    mutableStateOf(\"Đang tải...\")\n"+
+            "                                                }\n"+
+            "\n"+
+            "                                                var isError by remember {\n"+
+            "                                                    mutableStateOf(false)\n"+
+            "                                                }\n"+
+            "\n"+
+            "                                                LaunchedEffect(textUrl) {\n"+
+            "\n"+
+            "                                                    try {\n"+
+            "                                                        textContent = fetchTextFromUrl(textUrl)\n"+
+            "                                                        isError = false\n"+
+            "\n"+
+            "                                                    } catch (e: Exception) {\n"+
+            "\n"+
+            "                                                        textContent = \"Không thể tải nội dung\"\n"+
+            "                                                        isError = true\n"+
+            "                                                    }\n"+
+            "                                                }\n"+
+            "\n"+
+            "                                                if (!isError) {\n"+
+            "\n"+
+            "                                                    Text(\n"+
+            "                                                        text = textContent,\n"+
+            "                                                        color = textColor,\n"+
+            "                                                        textAlign = TextAlign.Justify,\n"+
+            "                                                        modifier = Modifier\n"+
+            "                                                            .background(backgroundColor),\n"+
+            "                                                        style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                            fontWeight = if (result.isCorrect)\n"+
+            "                                                                FontWeight.Normal\n"+
+            "                                                            else\n"+
+            "                                                                FontWeight.Bold\n"+
+            "                                                        )\n"+
+            "                                                    )\n"+
+            "\n"+
+            "                                                } else {\n"+
+            "\n"+
+            "                                                    Text(\n"+
+            "                                                        text = \"Lỗi khi tải nội dung từ URL, kiểm tra kết nối mạng!\",\n"+
+            "                                                        color = questionErrorColor,\n"+
+            "                                                        style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                            fontWeight = if (result.isCorrect)\n"+
+            "                                                                FontWeight.Normal\n"+
+            "                                                            else\n"+
+            "                                                                FontWeight.Bold\n"+
+            "                                                        ),\n"+
+            "                                                        textAlign = TextAlign.Center\n"+
+            "                                                    )\n"+
+            "                                                }\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            // ==============================\n"+
+            "                                            // 5. IMAGE URL\n"+
+            "                                            // ==============================\n"+
+            "                                            answer.text.startsWith(\"URLIMA\") -> {\n"+
+            "\n"+
+            "                                                val imageUrl = answer.text\n"+
+            "                                                    .removePrefix(\"URLIMA\")\n"+
+            "\n"+
+            "                                                ImageFromUrl(\n"+
+            "                                                    imageUrl = imageUrl,\n"+
+            "                                                    contentDescription = \"Hình ảnh từ URL\",\n"+
+            "                                                    modifier = Modifier\n"+
+            "                                                        .background(backgroundColor)\n"+
+            "                                                        .fillMaxWidth()\n"+
+            "                                                )\n"+
+            "                                            }\n"+
+            "\n"+
+            "                                            // ==============================\n"+
+            "                                            // 7. DỮ LIỆU KHÔNG CÓ TIỀN TỐ\n"+
+            "                                            // ==============================\n"+
+            "                                            else -> {\n"+
+            "\n"+
+            "                                                Text(\n"+
+            "                                                    text = answer.text,\n"+
+            "                                                    textAlign = TextAlign.Justify,\n"+
+            "                                                    modifier = Modifier\n"+
+            "                                                        .background(Color.LightGray),\n"+
+            "                                                    style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                        fontWeight = if (result.isCorrect)\n"+
+            "                                                            FontWeight.Normal\n"+
+            "                                                        else\n"+
+            "                                                            FontWeight.Bold\n"+
+            "                                                    )\n"+
+            "                                                )\n"+
+            "                                            }\n"+
+            "                                        }\n"+
+            "                                    }\n"+
+            "                                    else -> {\n"+
+            "                                        // viết như vậy cho gọn\n"+
+            "                                        Text(\n"+
+            "                                            text = \"Logic đã bị lỗi, báo cáo Zalo 0972712415 để khắc phục nhé\",\n"+
+            "                                            style = MaterialTheme.typography.bodyMedium,\n"+
+            "                                            color = Color.Gray\n"+
+            "                                        )\n"+
+            "                                    }\n"+
+            "                                }\n"+
+            "                            }\n"+
+            "                        }\n"+
+            "                    } else if (result.correctTextAnswers.isNotEmpty()) {\n"+
+            "\n"+
+            "                        // hiện đáp án và tính đúng sai của câu tự luận\n"+
+            "                        val userInput = result.userInputText\n"+
+            "                        val isCorrect = result.isCorrect\n"+
+            "                        if (isCorrect) {\n"+
+            "                            // ==========================================\n"+
+            "                            // TRƯỜNG HỢP ĐÚNG: Chỉ hiện đáp án của người dùng\n"+
+            "                            // ==========================================\n"+
+            "                            Surface(\n"+
+            "                                color = Color(0xFF1565C0), // Xanh dương đậm\n"+
+            "                                shape = RoundedCornerShape(8.dp),\n"+
+            "                                modifier = Modifier\n"+
+            "                                    .fillMaxWidth()\n"+
+            "                                    .padding(vertical = 4.dp)\n"+
+            "                            ) {\n"+
+            "                                Row(\n"+
+            "                                    modifier = Modifier\n"+
+            "                                        .fillMaxWidth()\n"+
+            "                                        .padding(vertical = 2.dp)\n"+
+            "                                        //.background(backgroundColor)\n"+
+            "                                        .padding(horizontal = 8.dp, vertical = 8.dp),\n"+
+            "                                    verticalAlignment = Alignment.CenterVertically\n"+
+            "                                ) {\n"+
+            "\n"+
+            "                                    // Biểu tượng trạng thái\n"+
+            "                                    Text(\n"+
+            "                                        text = \"✓\",\n"+
+            "                                        color = Color.White,\n"+
+            "                                        fontWeight = FontWeight.Bold,\n"+
+            "                                        modifier = Modifier.padding(end = 8.dp)\n"+
+            "                                    )\n"+
+            "                                    Text(\n"+
+            "                                        text = \"Đáp án của bạn: \$userInput\",\n"+
+            "                                        style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                            color = Color.White\n"+
+            "                                        ),\n"+
+            "                                        modifier = Modifier.padding(12.dp)\n"+
+            "                                    )\n"+
+            "                                }\n"+
+            "                            }\n"+
+            "                        } else {\n"+
+            "                            // ==========================================\n"+
+            "                            // TRƯỜNG HỢP SAI: Hiện đáp án người chơi VÀ CHỈ 1 GỢI Ý ĐÁP ÁN ĐÚNG NGẪU NHIÊN\n"+
+            "                            // ==========================================\n"+
+            "                            // Dùng remember(result) để khi recompose không bị đổi ngẫu nhiên liên tục\n"+
+            "                            val randomCorrect = remember(result) { // nếu ưu tiên lấy đáp án đầu tiên thì đổi thành firstCorrect\n"+
+            "                                result.correctTextAnswers.randomOrNull() // nếu ưu tiên lấy đáp án đầu tiên thì lấy firstOrNull()\n"+
+            "                            }\n"+
+            "\n"+
+            "                            if (randomCorrect != null) {\n"+
+            "                                val backgroundColor = Color(0xFFA04B00) // Nâu xám\n"+
+            "\n"+
+            "                                Surface(\n"+
+            "                                    color = backgroundColor,\n"+
+            "                                    shape = RoundedCornerShape(8.dp),\n"+
+            "                                    modifier = Modifier\n"+
+            "                                        .fillMaxWidth()\n"+
+            "                                        .padding(vertical = 4.dp)\n"+
+            "                                ) {\n"+
+            "                                    Row(\n"+
+            "                                        modifier = Modifier\n"+
+            "                                            .fillMaxWidth()\n"+
+            "                                            .padding(vertical = 2.dp)\n"+
+            "                                            //.background(backgroundColor)\n"+
+            "                                            .padding(horizontal = 8.dp, vertical = 8.dp),\n"+
+            "                                        verticalAlignment = Alignment.CenterVertically\n"+
+            "                                    ) {\n"+
+            "\n"+
+            "                                        // Biểu tượng trạng thái\n"+
+            "                                        Text(\n"+
+            "                                            text = \"✕\",\n"+
+            "                                            color = Color.White,\n"+
+            "                                            fontWeight = FontWeight.Bold,\n"+
+            "                                            modifier = Modifier.padding(end = 8.dp)\n"+
+            "                                        )\n"+
+            "                                        when (randomCorrect) {\n"+
+            "                                            is AnswerOption.Text -> {\n"+
+            "                                                when {\n"+
+            "                                                    // 1. TEXT THƯỜNG (có tiền tố TEXTXT)\n"+
+            "                                                    randomCorrect.text.startsWith(\"TEXTXT\") -> {\n"+
+            "                                                        val text =\n"+
+            "                                                            randomCorrect.text.removePrefix(\"TEXTXT\")\n"+
+            "                                                        Text(\n"+
+            "                                                            text = \"Bạn điền: '\$userInput' (Gợi ý đáp án đúng: \${text})\",\n"+
+            "                                                            style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                                color = Color.White\n"+
+            "                                                            ),\n"+
+            "                                                            textAlign = TextAlign.Justify,\n"+
+            "                                                            modifier = Modifier.padding(12.dp)\n"+
+            "                                                        )\n"+
+            "                                                    }\n"+
+            "\n"+
+            "                                                    // 2. TEXT RESOURCE (có tiền tố RESTEX)\n"+
+            "                                                    randomCorrect.text.startsWith(\"RESTEX\") -> {\n"+
+            "                                                        val textId = randomCorrect.text.removePrefix(\"RESTEX\")\n"+
+            "                                                        val stringRes = Res.allStringResources[textId]\n"+
+            "                                                        if (stringRes != null) {\n"+
+            "                                                            Text(\n"+
+            "                                                                text = \"Bạn điền: '\$userInput' (Gợi ý đáp án đúng: \${\n                                                                    org.jetbrains.compose.resources.stringResource(stringRes)\n                                                                })\",\n"+
+            "                                                                style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                                    color = Color.White\n"+
+            "                                                                ),\n"+
+            "                                                                textAlign = TextAlign.Justify,\n"+
+            "                                                                modifier = Modifier.padding(12.dp)\n"+
+            "                                                            )\n"+
+            "                                                        }\n"+
+            "                                                    }\n"+
+            "\n"+
+            "                                                    // 3. TEXT URL (có tiền tố URLTEX)\n"+
+            "                                                    randomCorrect.text.startsWith(\"URLTEX\") -> {\n"+
+            "                                                        val textUrl =\n"+
+            "                                                            randomCorrect.text.removePrefix(\"URLTEX\")\n"+
+            "                                                        var textContent by remember(textUrl) {\n"+
+            "                                                            mutableStateOf(\n"+
+            "                                                                \"Đang tải...\"\n"+
+            "                                                            )\n"+
+            "                                                        }\n"+
+            "                                                        var isError by remember(textUrl) {\n"+
+            "                                                            mutableStateOf(\n"+
+            "                                                                false\n"+
+            "                                                            )\n"+
+            "                                                        }\n"+
+            "\n"+
+            "                                                        LaunchedEffect(textUrl) {\n"+
+            "                                                            try {\n"+
+            "                                                                textContent =\n"+
+            "                                                                    fetchTextFromUrl(textUrl)\n"+
+            "                                                                isError = false\n"+
+            "                                                            } catch (e: Exception) {\n"+
+            "                                                                textContent =\n"+
+            "                                                                    \"Không thể tải nội dung\"\n"+
+            "                                                                isError = true\n"+
+            "                                                            }\n"+
+            "                                                        }\n"+
+            "\n"+
+            "                                                        if (!isError) {\n"+
+            "                                                            Text(\n"+
+            "                                                                text = \"Bạn điền: '\$userInput' (Gợi ý đáp án đúng: \${textContent})\",\n"+
+            "                                                                style = MaterialTheme.typography.bodyLarge.copy(\n"+
+            "                                                                    color = Color.White\n"+
+            "                                                                ),\n"+
+            "                                                                textAlign = TextAlign.Justify,\n"+
+            "                                                                modifier = Modifier.padding(12.dp)\n"+
+            "                                                            )\n"+
+            "                                                        } else {\n"+
+            "                                                            Text(\n"+
+            "                                                                text = \"Bạn điền: '\$userInput' (Lỗi tải nội dung từ URL)\",\n"+
+            "                                                                color = Color.Red,\n"+
+            "                                                                style = MaterialTheme.typography.bodyLarge,\n"+
+            "                                                                modifier = Modifier.padding(12.dp)\n"+
+            "                                                            )\n"+
+            "                                                        }\n"+
+            "                                                    }\n"+
+            "\n"+
+            "                                                    // 4. MẶC ĐỊNH KHÔNG CÓ TIỀN TỐ\n"+
+            "                                                    else -> {\n"+
+            "                                                        Text(\n" +
+            "                                                            text = \"Bạn điền: '\$userInput' (Gợi ý đáp án đúng: \${randomCorrect.text})\",\n" +
+            "                                                            style = MaterialTheme.typography.bodyLarge.copy(\n" +
+            "                                                                color = Color.White\n" +
+            "                                                            ),\n" +
+            "                                                            modifier = Modifier.padding(12.dp)\n" +
+            "                                                        )\n" +
+            "                                                    }\n" +
+            "                                                }\n" +
+            "                                            }\n" +
+            "\n" +
+            "                                            else -> {\n" +
+            "                                                Row(\n" +
+            "                                                    modifier = Modifier\n" +
+            "                                                        .fillMaxWidth()\n" +
+            "                                                        .padding(vertical = 2.dp)\n" +
+            "                                                        .background(backgroundColor)\n" +
+            "                                                        .padding(\n" +
+            "                                                            horizontal = 8.dp,\n" +
+            "                                                            vertical = 8.dp\n" +
+            "                                                        ),\n" +
+            "                                                    verticalAlignment = Alignment.CenterVertically\n" +
+            "                                                ) {\n" +
+            "\n" +
+            "                                                    // Biểu tượng trạng thái\n" +
+            "                                                    Text(\n" +
+            "                                                        text = \"✕\",\n" +
+            "                                                        color = Color.White,\n" +
+            "                                                        fontWeight = FontWeight.Bold,\n" +
+            "                                                        modifier = Modifier.padding(end = 8.dp)\n" +
+            "                                                    )\n" +
+            "                                                    Text(\n" +
+            "                                                        text = \"Dạng đáp án tự luận không hỗ trợ kiểu này.\",\n" +
+            "                                                        style = MaterialTheme.typography.bodyMedium.copy(\n" +
+            "                                                            color = Color.Red\n" +
+            "                                                        ),\n" +
+            "                                                        modifier = Modifier.padding(12.dp)\n" +
+            "                                                    )\n" +
+            "                                                }\n" +
+            "                                            }\n" +
+            "                                        }\n" +
+            "                                    }\n" +
+            "                                }\n" +
+            "                            }\n" +
+            "                        }\n" +
+            "\n" +
+            "                    }\n" +
+            "\n" +
+            "                    var showDetail by remember { mutableStateOf(false) }\n" +
+            "                    if (result.detailedCorrectAnswers.isNotEmpty()) {\n" +
+            "                        Column {\n" +
+            "                            // Nút bấm hiển thị/ẩn đáp án chi tiết\n" +
+            "                            TextButton(onClick = { showDetail = !showDetail }) {\n" +
+            "                                Text(\n" +
+            "                                    text = if (showDetail) \"Ẩn đáp án chi tiết\" else \"Đáp án chi tiết\",\n" +
+            "                                    style = MaterialTheme.typography.bodyLarge\n" +
+            "                                )\n" +
+            "                            }\n" +
+            "\n" +
+            "                            // Hiển thị danh sách đáp án chi tiết nếu đang bật\n" +
+            "                            if (showDetail) {\n" +
+            "                                result.detailedCorrectAnswers.forEachIndexed { index, detailedCorrectAnswer ->\n" +
+            "                                    Row(\n" +
+            "                                        modifier = Modifier\n" +
+            "                                            .fillMaxWidth()\n" +
+            "                                            .padding(vertical = 4.dp),\n" +
+            "                                        verticalAlignment = Alignment.Top\n" +
+            "                                    ) {\n" +
+            "                                        when (detailedCorrectAnswer) {\n" +
+            "\n" +
+            "                                            is AnswerOption.Text -> {\n" +
+            "\n" +
+            "                                                when {\n" +
+            "\n" +
+            "                                                    // 1. VĂN BẢN THƯỜNG\n" +
+            "                                                    detailedCorrectAnswer.text.startsWith(\"TEXTXT\") -> {\n" +
+            "                                                        val text = detailedCorrectAnswer.text.removePrefix(\"TEXTXT\")\n" +
+            "\n" +
+            "                                                        Text(\n" +
+            "                                                            text = text,\n" +
+            "                                                            style = MaterialTheme.typography.bodyLarge,\n" +
+            "                                                            textAlign = TextAlign.Justify\n" +
+            "                                                        )\n" +
+            "                                                    }\n" +
+            "\n" +
+            "                                                    // 2. TEXT RESOURCE\n" +
+            "                                                    detailedCorrectAnswer.text.startsWith(\"RESTEX\") -> {\n" +
+            "                                                        val textId = detailedCorrectAnswer.text.removePrefix(\"RESTEX\")\n" +
+            "\n" +
+            "                                                        // Thao tác trung gian: Lấy StringResource từ Res.allStringResources dựa vào key (textId)\n" +
+            "                                                        val stringRes = Res.allStringResources[textId]\n" +
+            "\n" +
+            "                                                        if (stringRes != null) {\n" +
+            "                                                            Text(\n" +
+            "                                                                text = org.jetbrains.compose.resources.stringResource(stringRes),\n" +
+            "                                                                style = MaterialTheme.typography.bodyLarge\n" +
+            "                                                            )\n" +
+            "                                                        }\n" +
+            "                                                    }\n" +
+            "\n" +
+            "                                                    // 3. IMAGE RESOURCE\n" +
+            "                                                    detailedCorrectAnswer.text.startsWith(\"RESIMA\") -> {\n" +
+            "                                                        val imageKey = detailedCorrectAnswer.text.removePrefix(\"RESIMA\")\n" +
+            "                                                        val drawableRes = Res.allDrawableResources[imageKey]\n" +
+            "                                                        if (drawableRes != null) {\n" +
+            "                                                            Image(\n" +
+            "                                                                painter = painterResource(drawableRes),\n" +
+            "                                                                contentDescription = null,\n" +
+            "                                                                modifier = Modifier\n" +
+            "                                                                    .fillMaxWidth(),\n" +
+            "                                                                contentScale = ContentScale.FillWidth\n" +
+            "                                                            )\n" +
+            "                                                        }\n" +
+            "                                                    }\n" +
+            "\n" +
+            "                                                    // 4. TEXT URL\n" +
+            "                                                    detailedCorrectAnswer.text.startsWith(\"URLTEX\") -> {\n" +
+            "                                                        val textUrl = detailedCorrectAnswer.text\n" +
+            "                                                            .removePrefix(\"URLTEX\")\n" +
+            "\n" +
+            "                                                        var textContent by remember {\n" +
+            "                                                            mutableStateOf(\"Đang tải...\")\n" +
+            "                                                        }\n" +
+            "\n" +
+            "                                                        var isError by remember {\n" +
+            "                                                            mutableStateOf(false)\n" +
+            "                                                        }\n" +
+            "\n" +
+            "                                                        LaunchedEffect(textUrl) {\n" +
+            "                                                            try {\n" +
+            "                                                                textContent = fetchTextFromUrl(textUrl)\n" +
+            "                                                                isError = false\n" +
+            "                                                            } catch (e: Exception) {\n" +
+            "                                                                textContent = \"Không thể tải nội dung\"\n" +
+            "                                                                isError = true\n" +
+            "                                                            }\n" +
+            "                                                        }\n" +
+            "\n" +
+            "                                                        if (!isError) {\n" +
+            "                                                            Text(\n" +
+            "                                                                text = textContent,\n" +
+            "                                                                style = MaterialTheme.typography.bodyLarge,\n" +
+            "                                                                textAlign = TextAlign.Justify,\n" +
+            "                                                                modifier = Modifier\n" +
+            "                                                                    .padding(horizontal = 4.dp)\n" +
+            "                                                                    .fillMaxWidth()\n" +
+            "                                                            )\n" +
+            "                                                        } else {\n" +
+            "                                                            Text(\n" +
+            "                                                                text = \"Lỗi khi tải nội dung từ URL, kiểm tra kết nối mạng!\",\n" +
+            "                                                                style = MaterialTheme.typography.bodyMedium,\n" +
+            "                                                                textAlign = TextAlign.Center,\n" +
+            "                                                                modifier = Modifier\n" +
+            "                                                                    .padding(horizontal = 4.dp)\n" +
+            "                                                                    .fillMaxWidth()\n" +
+            "                                                            )\n" +
+            "                                                        }\n" +
+            "                                                    }\n" +
+            "\n" +
+            "                                                    // 5. IMAGE URL\n" +
+            "                                                    detailedCorrectAnswer.text.startsWith(\"URLIMA\") -> {\n" +
+            "                                                        val imageUrl = detailedCorrectAnswer.text\n" +
+            "                                                            .removePrefix(\"URLIMA\")\n" +
+            "\n" +
+            "                                                        ImageFromUrl(\n" +
+            "                                                            imageUrl = imageUrl,\n" +
+            "                                                            contentDescription = \"Hình ảnh từ URL\",\n" +
+            "                                                            modifier = Modifier.fillMaxWidth()\n" +
+            "                                                        )\n" +
+            "                                                    }\n" +
+            "\n" +
+            "                                                    // 6. KHÔNG XÁC ĐỊNH\n" +
+            "                                                    else -> {\n" +
+            "                                                        Text(\n" +
+            "                                                            text = detailedCorrectAnswer.text,\n" +
+            "                                                            style = MaterialTheme.typography.bodyLarge,\n" +
+            "                                                            textAlign = TextAlign.Justify\n" +
+            "                                                        )\n" +
+            "                                                    }\n" +
+            "                                                }\n" +
+            "                                            }\n" +
+            "                                            else -> {}\n" +
+            "                                        }\n" +
+            "                                    }\n" +
+            "                                }\n" +
+            "                            }\n" +
+            "                        }\n" +
+            "                    }\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "    // Hiển thị nút khi cuộn lên (isToolbarVisible == true)\n" +
+            "    if (isToolbarVisible.value) {\n" +
+            "        Box(\n" +
+            "            modifier = Modifier\n" +
+            "                .padding(bottom = bottomPadding)\n" +
+            "                .fillMaxSize()\n" +
+            "        ) {\n" +
+            "            Box (\n" +
+            "                modifier = Modifier\n" +
+            "                    .fillMaxWidth()\n" +
+            "                    .background(Color.White)\n" +
+            "                    .padding(horizontal = 0.dp)\n" +
+            "                    .align(Alignment.BottomCenter),\n" +
+            "            ) {\n" +
+            "                Button(\n" +
+            "                    onClick = {\n" +
+            "                        result?.quizName?.let { quizName ->\n" +
+            "                            onBackTest(quizName)\n" +
+            "                        }\n" +
+            "                    },\n" +
+            "                    modifier = Modifier\n" +
+            "                        .align(Alignment.BottomStart)\n" +
+            "                        .wrapContentSize(),\n" +
+            "                    contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định\n" +
+            "                    shape = RoundedCornerShape(4.dp), // Bo góc nhẹ\n" +
+            "                    colors = ButtonDefaults.buttonColors(\n" +
+            "                        containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút\n" +
+            "                        contentColor = Color.Black // Màu của icon và chữ\n" +
+            "                    ),\n" +
+            "                ) {\n" +
+            "                    Column (horizontalAlignment = Alignment.CenterHorizontally) {\n" +
+            "                        Icon(imageVector = Icons.Outlined.Edit, contentDescription = \"Thi lại\", modifier = Modifier.size(20.dp))\n" +
+            "                        Text(text = \"Thi lại\", fontSize = 10.sp, fontWeight = FontWeight.Light)\n" +
+            "                    }\n" +
+            "                }\n" +
+            "                Button(\n" +
+            "                    onClick = { onHomePage() },\n" +
+            "                    modifier = Modifier\n" +
+            "                        .align(Alignment.BottomCenter)\n" +
+            "                        .wrapContentSize(),\n" +
+            "                    contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định\n" +
+            "                    shape = RoundedCornerShape(4.dp), // Bo góc nhẹ\n" +
+            "                    colors = ButtonDefaults.buttonColors(\n" +
+            "                        containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút\n" +
+            "                        contentColor = Color.Black // Màu của icon và chữ\n" +
+            "                    ),\n" +
+            "                ) {\n" +
+            "                    Column (horizontalAlignment = Alignment.CenterHorizontally) {\n" +
+            "                        Icon(imageVector = Icons.Outlined.Home, contentDescription = \"Trang đầu\", modifier = Modifier.size(20.dp))\n" +
+            "                        Text(text = \"Trang đầu\", fontSize = 10.sp, fontWeight = FontWeight.Light,\n" +
+            "                            color = Color.Black)\n" +
+            "                    }\n" +
+            "                }\n" +
+            "                Button(\n" +
+            "                    onClick = { onBack() },\n" +
+            "                    modifier = Modifier\n" +
+            "                        .align(Alignment.BottomEnd)\n" +
+            "                        .wrapContentSize(),\n" +
+            "                    colors = ButtonDefaults.buttonColors(\n" +
+            "                        containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút\n" +
+            "                        contentColor = Color.Black // Màu của icon và chữ\n" +
+            "                    ),\n" +
+            "                ) {\n" +
+            "                    Icon(\n" +
+            "                        imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Sử dụng phiên bản AutoMirrored\n" +
+            "                        contentDescription = \"Quay lại\"\n" +
+            "                    )\n" +
+            "                }\n" +
+            "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "}\n" +
+            "// Các hàm phụ và hoàn toàn không liên quan đến việc hiển thị màn hình và điều hướng\n" +
+            "@Composable\n" +
+            "fun VideoPlayerFromUrl(videoUrl: String, modifier: Modifier = Modifier) {\n" +
+            "    PlatformVideoPlayer(videoUrl = videoUrl, modifier = modifier)\n" +
+            "}\n" +
+            "\n" +
+            "// Hàm chuẩn hóa văeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyyd"
     var result = input.lowercase()
     for (i in srcM.indices) {
         result = result.replace(srcM[i], desM[i])
@@ -5176,3 +5284,587 @@ fun AudioPlayerFromUrl(audioUrl: String, modifier: Modifier = Modifier) {
     PlatformAudioPlayer(audioUrl = audioUrl, modifier = modifier)
 }
 
+
+@Serializable
+data class DriveStudentsResponse(
+    val status: String = "",
+    val totalStudents: Int = 0,
+    val students: List<StudentDriveFolder> = emptyList(),
+    val message: String? = null
+)
+
+@Serializable
+data class StudentDriveFolder(
+    val phone: String = "",
+    val folderId: String = "",
+    val fileCount: Int = 0,
+    val files: List<StudentDriveFile> = emptyList()
+) {
+    val effectiveFileCount: Int
+        get() = if (fileCount > 0) fileCount else files.size
+}
+
+@Serializable
+data class DriveFilesResponse(
+    val status: String = "",
+    val totalFiles: Int = 0,
+    val files: List<StudentDriveFile> = emptyList(),
+    val message: String? = null
+)
+
+@Serializable
+data class StudentDriveFile(
+    val fileName: String = "",
+    val fileId: String = "",
+    val lastUpdated: String = "",
+    val content: String = ""
+)
+
+@Serializable
+data class DriveFileContentResponse(
+    val status: String = "",
+    val fileName: String = "",
+    val fileId: String = "",
+    val content: String = "",
+    val message: String? = null
+)
+
+
+class StudentSubmissionsRepository(
+    private val client: HttpClient
+) {
+    companion object {
+        private const val SCRIPT_URL =
+            "https://script.google.com/macros/s/AKfycbwPaTel2KIAi1cOFsEWdeRkRzW6CnGB61yY81_5_XWg9yDZhidkde4YnsNaKNk2E5-yAg/exec"
+        //   https://script.google.com/macros/s/AKfycbwPaTel2KIAi1cOFsEWdeRkRzW6CnGB61yY81_5_XWg9yDZhidkde4YnsNaKNk2E5-yAg/exec
+    }
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
+    private fun buildUrl(
+        action: String,
+        parameterName: String? = null,
+        parameterValue: String? = null
+    ): String {
+        return URLBuilder(SCRIPT_URL).apply {
+            parameters.append("action", action)
+
+            if (parameterName != null && parameterValue != null) {
+                parameters.append(parameterName, parameterValue)
+            }
+        }.buildString()
+    }
+
+    suspend fun getStudents(): DriveStudentsResponse {
+        val response = client.get(
+            buildUrl(action = "getStudents")
+        ).bodyAsText()
+
+        return json.decodeFromString<DriveStudentsResponse>(response)
+    }
+
+    suspend fun getStudentFiles(
+        folderId: String
+    ): DriveFilesResponse {
+        val response = client.get(
+            buildUrl(
+                action = "getStudentFiles",
+                parameterName = "folderId",
+                parameterValue = folderId
+            )
+        ).bodyAsText()
+
+        return json.decodeFromString<DriveFilesResponse>(response)
+    }
+
+    suspend fun getFileContent(
+        fileId: String
+    ): DriveFileContentResponse {
+        val response = client.get(
+            buildUrl(
+                action = "getFileContent",
+                parameterName = "fileId",
+                parameterValue = fileId
+            )
+        ).bodyAsText()
+
+        return json.decodeFromString<DriveFileContentResponse>(response)
+    }
+}
+
+
+
+@Composable
+fun StudentSubmissionsScreen(
+    onBack: () -> Unit
+) {
+    // Tạo HTTP Client dùng chung cho màn hình.
+    val httpClient = remember {
+        HttpClient()
+    }
+
+    DisposableEffect(httpClient) {
+        onDispose {
+            httpClient.close()
+        }
+    }
+
+    val repository = remember(httpClient) {
+        StudentSubmissionsRepository(httpClient)
+    }
+
+    var studentsList by remember {
+        mutableStateOf<List<StudentDriveFolder>>(emptyList())
+    }
+
+    var filesList by remember {
+        mutableStateOf<List<StudentDriveFile>>(emptyList())
+    }
+
+    var selectedStudent by remember {
+        mutableStateOf<StudentDriveFolder?>(null)
+    }
+
+    var selectedFile by remember {
+        mutableStateOf<StudentDriveFile?>(null)
+    }
+
+    var fileContent by remember {
+        mutableStateOf("")
+    }
+
+    var isStudentsLoading by remember {
+        mutableStateOf(true)
+    }
+
+    var isFilesLoading by remember {
+        mutableStateOf(false)
+    }
+
+    var isContentLoading by remember {
+        mutableStateOf(false)
+    }
+
+    var errorMessage by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var studentsRetry by remember {
+        mutableIntStateOf(0)
+    }
+
+    var filesRetry by remember {
+        mutableIntStateOf(0)
+    }
+
+    var contentRetry by remember {
+        mutableIntStateOf(0)
+    }
+
+    // Bước 1: Tải danh sách học sinh.
+    LaunchedEffect(studentsRetry) {
+        isStudentsLoading = true
+        errorMessage = null
+
+        try {
+            val response = repository.getStudents()
+
+            if (response.status == "success") {
+                studentsList = response.students
+            } else {
+                errorMessage = response.message
+                    ?: "Không thể tải danh sách học sinh."
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            errorMessage = "Lỗi kết nối: ${e.message}"
+        } finally {
+            isStudentsLoading = false
+        }
+    }
+
+    // Bước 2: Hiển thị/tải danh sách file khi chọn một học sinh.
+    LaunchedEffect(
+        selectedStudent,
+        filesRetry
+    ) {
+        val student = selectedStudent ?: return@LaunchedEffect
+
+        // Nếu danh sách file đã có sẵn trong object student (từ API getStudents)
+        if (student.files.isNotEmpty()) {
+            filesList = student.files
+            isFilesLoading = false
+            return@LaunchedEffect
+        }
+
+        val folderId = student.folderId.ifEmpty { student.phone }
+        if (folderId.isEmpty()) {
+            filesList = emptyList()
+            isFilesLoading = false
+            return@LaunchedEffect
+        }
+
+        isFilesLoading = true
+        errorMessage = null
+        filesList = emptyList()
+
+        try {
+            val response = repository.getStudentFiles(folderId)
+
+            if (response.status == "success") {
+                filesList = response.files
+            } else {
+                errorMessage = response.message
+                    ?: "Không thể tải danh sách bài nộp."
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            errorMessage = "Lỗi tải danh sách file: ${e.message}"
+        } finally {
+            isFilesLoading = false
+        }
+    }
+
+    // Bước 3: Hiển thị/tải nội dung khi chọn một file.
+    LaunchedEffect(
+        selectedFile,
+        contentRetry
+    ) {
+        val file = selectedFile ?: return@LaunchedEffect
+
+        // Nếu nội dung file đã có sẵn
+        if (file.content.isNotBlank()) {
+            fileContent = file.content
+            isContentLoading = false
+            return@LaunchedEffect
+        }
+
+        if (file.fileId.isEmpty()) {
+            fileContent = "Không tìm thấy nội dung bài làm."
+            isContentLoading = false
+            return@LaunchedEffect
+        }
+
+        isContentLoading = true
+        errorMessage = null
+        fileContent = ""
+
+        try {
+            val response = repository.getFileContent(file.fileId)
+
+            if (response.status == "success") {
+                fileContent = response.content
+            } else {
+                errorMessage = response.message
+                    ?: "Không thể tải nội dung bài làm."
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            errorMessage = "Lỗi đọc nội dung file: ${e.message}"
+        } finally {
+            isContentLoading = false
+        }
+    }
+
+    // Giữ cách tính padding của màn hình cũ.
+    val topPadding = getBannerAdHeight()
+    val bottomPadding = getNavigationBarHeight()
+
+    val isLoading = when {
+        selectedFile != null -> isContentLoading
+        selectedStudent != null -> isFilesLoading
+        else -> isStudentsLoading
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                top = topPadding,
+                bottom = bottomPadding
+            )
+            .background(Color(0xFFF7F9FC))
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+
+            // Thanh tiêu đề.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "‹",
+                    modifier = Modifier
+                        .clickable {
+                            when {
+                                selectedFile != null -> {
+                                    selectedFile = null
+                                    fileContent = ""
+                                    errorMessage = null
+                                }
+
+                                selectedStudent != null -> {
+                                    selectedStudent = null
+                                    selectedFile = null
+                                    errorMessage = null
+                                }
+
+                                else -> onBack()
+                            }
+                        }
+                        .padding(
+                            horizontal = 12.dp,
+                            vertical = 4.dp
+                        ),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color(0xFF1565C0)
+                )
+
+                Text(
+                    text = when {
+                        selectedFile != null ->
+                            selectedFile?.fileName ?: "Chi tiết bài làm"
+
+                        selectedStudent != null ->
+                            "Học sinh: ${selectedStudent?.phone}"
+
+                        else ->
+                            "Bài làm học sinh (Google Drive)"
+                    },
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.width(40.dp))
+            }
+
+            // Trạng thái tải dữ liệu.
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else if (errorMessage != null) {
+
+                // Hiển thị lỗi và nút thử lại.
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = errorMessage ?: "Có lỗi xảy ra.",
+                            color = Color.Red,
+                            textAlign = TextAlign.Center
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(
+                            onClick = {
+                                when {
+                                    selectedFile != null ->
+                                        contentRetry++
+
+                                    selectedStudent != null ->
+                                        filesRetry++
+
+                                    else ->
+                                        studentsRetry++
+                                }
+                            }
+                        ) {
+                            Text("Thử lại")
+                        }
+                    }
+                }
+
+            } else {
+
+                when {
+
+                    // --------------------------------
+                    // MÀN HÌNH 3: NỘI DUNG FILE
+                    // --------------------------------
+                    selectedFile != null -> {
+
+                        Card(
+                            modifier = Modifier.fillMaxSize(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White
+                            )
+                        ) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                item {
+                                    Text(
+                                        text = fileContent,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color.DarkGray
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // --------------------------------
+                    // MÀN HÌNH 2: DANH SÁCH FILE
+                    // --------------------------------
+                    selectedStudent != null -> {
+
+                        if (filesList.isEmpty()) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "Học sinh này chưa có bài nộp nào."
+                                )
+                            }
+                        } else {
+
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(
+                                    items = filesList,
+                                    key = { it.fileId.ifEmpty { it.fileName } }
+                                ) { file ->
+
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                selectedFile = file
+                                            },
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color.White
+                                        )
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp)
+                                        ) {
+                                            Text(
+                                                text = file.fileName,
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color(0xFF0D47A1)
+                                            )
+
+                                            Spacer(
+                                                modifier = Modifier.height(4.dp)
+                                            )
+
+                                            Text(
+                                                text = "🕒 Nộp lúc: ${file.lastUpdated}",
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = Color.Gray
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // --------------------------------
+                    // MÀN HÌNH 1: DANH SÁCH HỌC SINH
+                    // --------------------------------
+                    else -> {
+
+                        if (studentsList.isEmpty()) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    "Chưa có dữ liệu bài làm nào trên Google Drive."
+                                )
+                            }
+                        } else {
+
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(
+                                    items = studentsList,
+                                    key = { it.phone.ifEmpty { it.folderId } }
+                                ) { student ->
+
+                                    Card(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                filesList = emptyList()
+                                                selectedFile = null
+                                                selectedStudent = student
+                                            },
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color.White
+                                        )
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Column {
+                                                Text(
+                                                    text = "SĐT: ${student.phone}",
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            }
+
+                                            Surface(
+                                                color = Color(0xFFE8F1F8),
+                                                shape = RoundedCornerShape(12.dp)
+                                            ) {
+                                                Text(
+                                                    text = "${student.effectiveFileCount} bài nộp",
+                                                    modifier = Modifier.padding(
+                                                        horizontal = 8.dp,
+                                                        vertical = 4.dp
+                                                    ),
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = Color(0xFF0D47A1)
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
