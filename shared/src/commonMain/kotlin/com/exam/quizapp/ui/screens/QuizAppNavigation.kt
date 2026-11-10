@@ -2563,25 +2563,27 @@ fun ResultScreen(
                                         return@launch
                                     }
                                     val rawContent = buildString {
-                                    appendLine("=== KẾT QUẢ BÀI LÀM ===")
-                                    appendLine("Quiz: $quizName")
-                                    appendLine("Điểm số: $score / $totalQuestions")
-                                    appendLine("----------------------------------------")
-                                    history.forEachIndexed { index, qr ->
-                                        val status = if (qr.isCorrect) "ĐÚNG (✓)" else "SAI (✕)"
-                                        appendLine("Câu ${index + 1}: $status")
-                                        if (!qr.userInputText.isNullOrBlank()) {
-                                            appendLine("  - Học sinh điền (Tự luận): ${qr.userInputText}")
+                                        appendLine("=== KẾT QUẢ BÀI LÀM ===")
+                                        appendLine("Quiz: $quizName")
+                                        appendLine("Điểm số: $score / $totalQuestions")
+                                        appendLine("----------------------------------------")
+                                        history.forEachIndexed { index, qr ->
+                                            val status = if (qr.isCorrect) "ĐÚNG (✓)" else "SAI (✕)"
+                                            appendLine("Câu ${index + 1}: $status")
+                                            if (!qr.userInputText.isNullOrBlank()) {
+                                                appendLine("  - Học sinh điền (Tự luận): ${qr.userInputText.trim()}")
+                                            } else if (qr.answers.isNotEmpty()) {
+                                                val selectedIdx = qr.answers.indexOf(qr.selectedAnswer)
+                                                val selectedStr = if (selectedIdx >= 0) "${'A' + selectedIdx}" else "Chưa chọn"
+
+                                                val correctIdx = qr.answers.indexOf(qr.correctAnswer)
+                                                val correctStr = if (correctIdx >= 0) "${'A' + correctIdx}" else "N/A"
+
+                                                appendLine("  - Đã chọn: $selectedStr | Đáp án đúng: $correctStr")
+                                            }
+                                            appendLine()
                                         }
-                                        if (qr.selectedAnswer != null) {
-                                            appendLine("  - Đáp án đã chọn (Trắc nghiệm): ${qr.selectedAnswer}")
-                                        }
-                                        if (qr.correctAnswer != null) {
-                                            appendLine("  - Đáp án đúng: ${qr.correctAnswer}")
-                                        }
-                                        appendLine()
                                     }
-                                }
                                     val rawFileName = "KetQua_${quizName}.txt"
                                     val contentText = buildString {
                                         for (c in rawContent) {

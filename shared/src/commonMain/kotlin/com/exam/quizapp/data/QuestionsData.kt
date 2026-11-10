@@ -147,7 +147,8 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
         ),
         "Thử nghiệm 02" to listOf(
             Question(//câu 9
-                mainContent = QuestionContent.ClipUrl("https://drive.google.com/uc?export=download&id=1NV5HHPo4MYMiGf7fXcICKTuWSBX-msw7"),
+                mainContent = QuestionContent.ClipUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/I+%E1%BB%91t+th%C4%83ng+hoa.mp4"),
+                //ClipUrl("https://drive.google.com/uc?export=download&id=1NV5HHPo4MYMiGf7fXcICKTuWSBX-msw7"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 answers = listOf(
                     AnswerOption.Text("Nhiệt kế y tế"),
