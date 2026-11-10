@@ -2870,8 +2870,11 @@ fun ResultListScreen(
         }
     }
 }
-@Serializable
+
+
+/*@Serializable
 data class SubmissionResponse(val status: String, val message: String)
+*/
 
 // MÀN HÌNH CHI TIẾT BÀI LÀM ĐÃ LƯU THEO TỪNG BÀI LÀM
 @Composable
