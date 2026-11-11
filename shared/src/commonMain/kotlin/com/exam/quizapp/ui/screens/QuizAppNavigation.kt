@@ -2553,10 +2553,8 @@ fun ResultScreen(
                     Button(
                         onClick = {
                             if (!testShowButtons) return@Button
-                            // 1. Lưu local trên máy học sinh
-                            onSaveResult()
 
-                            // 2. Nộp bài lên Google Drive cho giáo viên
+                            // Nộp bài lên Google Drive cho giáo viên trước, sau khi xong/đóng thông báo mới gọi onSaveResult()
                             if (isSubmitting) return@Button
                             isSubmitting = true
                             coroutineScope.launch {
@@ -2709,11 +2707,19 @@ fun ResultScreen(
 
     if (submitDialogMessage != null) {
         AlertDialog(
-            onDismissRequest = { submitDialogMessage = null },
+            onDismissRequest = {
+                submitDialogMessage = null
+                onSaveResult()
+            },
             title = { Text("Thông báo") },
             text = { Text(submitDialogMessage ?: "") },
             confirmButton = {
-                TextButton(onClick = { submitDialogMessage = null }) {
+                TextButton(
+                    onClick = {
+                        submitDialogMessage = null
+                        onSaveResult()
+                    }
+                ) {
                     Text("OK")
                 }
             }
@@ -5368,7 +5374,7 @@ class StudentSubmissionsRepository(
         }.buildString()
     }
 
-    suspend fun getStudents(): DriveStudentsResponse = withContext(Dispatchers.Main) {
+    suspend fun getStudents(): DriveStudentsResponse = withContext(Dispatchers.Default) {
         val response = client.get(
             buildUrl(action = "getStudents")
         ).bodyAsText()
@@ -5378,7 +5384,7 @@ class StudentSubmissionsRepository(
 
     suspend fun getStudentFiles(
         folderId: String
-    ): DriveFilesResponse = withContext(Dispatchers.Main) {
+    ): DriveFilesResponse = withContext(Dispatchers.Default) {
         val response = client.get(
             buildUrl(
                 action = "getStudentFiles",
@@ -5392,7 +5398,7 @@ class StudentSubmissionsRepository(
 
     suspend fun getFileContent(
         fileId: String
-    ): DriveFileContentResponse = withContext(Dispatchers.Main) {
+    ): DriveFileContentResponse = withContext(Dispatchers.Default) {
         val response = client.get(
             buildUrl(
                 action = "getFileContent",
