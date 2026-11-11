@@ -451,6 +451,93 @@ actual suspend fun fetchTextFromUrl(url: String): String {
     }
 }
 
+private fun isHexDigit(c: Char): Boolean {
+    return c in '0'..'9' || c in 'A'..'F' || c in 'a'..'f'
+}
+
+private fun encodeNonAsciiInUrl(url: String): String {
+    val sb = StringBuilder()
+    var i = 0
+    val len = url.length
+    while (i < len) {
+        val c = url[i]
+        if (c == '%' && i + 2 < len && isHexDigit(url[i + 1]) && isHexDigit(url[i + 2])) {
+            sb.append(c)
+            sb.append(url[i + 1])
+            sb.append(url[i + 2])
+            i += 3
+        } else if (c.code <= 127) {
+            sb.append(c)
+            i++
+        } else {
+            val charLen = if (c.isHighSurrogate() && i + 1 < len) 2 else 1
+            val charStr = url.substring(i, i + charLen)
+            val bytes = charStr.encodeToByteArray()
+            for (b in bytes) {
+                val u = b.toInt() and 0xFF
+                sb.append('%')
+                val hex = u.toString(16).uppercase()
+                if (hex.length < 2) sb.append('0')
+                sb.append(hex)
+            }
+            i += charLen
+        }
+    }
+    return sb.toString()
+}
+
+actual suspend fun fetchTextFromUrl2(url: String): String = withContext(Dispatchers.Main) {
+    TextCacheManager.get(url)?.let { return@withContext it }
+
+    val sanitizedUrl = encodeNonAsciiInUrl(url)
+
+    require(sanitizedUrl.startsWith("https://")) { "URL không hợp lệ" }
+
+    val nsUrl = NSURL.URLWithString(sanitizedUrl)
+        ?: throw IllegalArgumentException("Không tạo được URL")
+
+    val request = NSMutableURLRequest.requestWithURL(nsUrl).apply {
+        setHTTPMethod("GET")
+        setTimeoutInterval(30.0)
+    }
+
+    suspendCancellableCoroutine { continuation ->
+        val task = NSURLSession.sharedSession.dataTaskWithRequest(request) { data, response, error ->
+            try {
+                if (error != null) {
+                    throw IllegalStateException("NETWORK ERROR: ${error.localizedDescription}")
+                }
+                val httpResponse = response as? NSHTTPURLResponse
+                    ?: throw IllegalStateException("Không nhận được HTTP response")
+
+                if (httpResponse.statusCode !in 200L..299L) {
+                    throw IllegalStateException("HTTP ERROR: ${httpResponse.statusCode}")
+                }
+                val responseData = data ?: throw IllegalStateException("Không có dữ liệu TXT")
+
+                @OptIn(BetaInteropApi::class)
+                val nsText = NSString.create(data = responseData, encoding = NSUTF8StringEncoding)
+                    ?: throw IllegalStateException("Không thể giải mã nội dung UTF-8")
+
+                val result = nsText.toString().removePrefix("\uFEFF").trim()
+                if (result.isNotBlank()) {
+                    TextCacheManager.put(url, result)
+                }
+
+                if (continuation.isActive) {
+                    continuation.resume(result)
+                }
+            } catch (e: Exception) {
+                if (continuation.isActive) {
+                    continuation.resumeWithException(e)
+                }
+            }
+        }
+        continuation.invokeOnCancellation { task.cancel() }
+        task.resume()
+    }
+}
+
 @Composable
 actual fun getBannerAdHeight(): Dp = getStatusBarHeight()
 

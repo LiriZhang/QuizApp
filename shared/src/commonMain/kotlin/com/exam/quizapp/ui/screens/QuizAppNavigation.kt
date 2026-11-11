@@ -2590,10 +2590,36 @@ fun ResultScreen(
                                         }
                                     }
                                     val rawFileName = "KetQua_${quizName}.txt"
-                                    val contentText = encodeURLComponent(rawContent)
-                                    val fileNameText = encodeURLComponent(rawFileName)
+                                    val contentText = buildString {
+                                        for (c in rawContent) {
+                                            when {
+                                                c.isLetterOrDigit() || c in "-_.~" -> append(c)
+                                                c == ' ' -> append("%20")
+                                                else -> {
+                                                    val hex = c.code.toString(16).uppercase()
+                                                    append("%")
+                                                    if (hex.length < 2) append("0")
+                                                    append(hex)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    val fileNameText = buildString {
+                                        for (c in rawFileName) {
+                                            when {
+                                                c.isLetterOrDigit() || c in "-_.~" -> append(c)
+                                                c == ' ' -> append("%20")
+                                                else -> {
+                                                    val hex = c.code.toString(16).uppercase()
+                                                    append("%")
+                                                    if (hex.length < 2) append("0")
+                                                    append(hex)
+                                                }
+                                            }
+                                        }
+                                    }
                                     val url = "https://script.google.com/macros/s/AKfycbxxde1KsjDnLl-7EoOLmDtsi9WU0ECbY8Yxi8s-vnR7kZn4bL7cKOMJmxvXUjS64fr3/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
-                                    val responseText = fetchTextFromUrl(url)
+                                    val responseText = fetchTextFromUrl2(url)
                                     val json = Json.parseToJsonElement(responseText).jsonObject
                                     val status = json["status"]?.jsonPrimitive?.content ?: "error"
                                     val msg = json["message"]?.jsonPrimitive?.content ?: "Lỗi"

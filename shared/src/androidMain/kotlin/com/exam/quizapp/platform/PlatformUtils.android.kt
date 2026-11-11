@@ -448,6 +448,10 @@ actual suspend fun fetchTextFromUrl(url: String): String {
     }
 }
 
+actual suspend fun fetchTextFromUrl2(url: String): String {
+    return fetchTextFromUrl(url)
+}
+
 @Composable
 actual fun ImageFromUrl(
     imageUrl: String,
