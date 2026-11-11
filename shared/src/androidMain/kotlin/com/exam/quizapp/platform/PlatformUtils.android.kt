@@ -70,6 +70,7 @@ import java.net.URL
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
+import java.net.HttpURLConnection
 import java.net.URLEncoder
 import java.text.Normalizer
 import java.util.UUID
@@ -438,11 +439,41 @@ private val ktorClient by lazy { HttpClient() }
 actual suspend fun fetchTextFromUrl(url: String): String {
     TextCacheManager.get(url)?.let { return it }
     return try {
-        val result = ktorClient.get(url).bodyAsText().trim()
-        if (result.isNotBlank()) {
-            TextCacheManager.put(url, result)
+        withContext(Dispatchers.IO) {
+            var currentUrl = url
+            var connection = URL(currentUrl).openConnection() as HttpURLConnection
+            connection.instanceFollowRedirects = true
+            connection.requestMethod = "GET"
+            connection.connectTimeout = 15000
+            connection.readTimeout = 15000
+
+            var status = connection.responseCode
+            var redirectCount = 0
+            while ((status == HttpURLConnection.HTTP_MOVED_TEMP ||
+                    status == HttpURLConnection.HTTP_MOVED_PERM ||
+                    status == HttpURLConnection.HTTP_SEE_OTHER ||
+                    status == 307 || status == 308) && redirectCount < 5) {
+                val redirectUrl = connection.getHeaderField("Location") ?: break
+                connection.disconnect()
+                currentUrl = redirectUrl
+                connection = URL(currentUrl).openConnection() as HttpURLConnection
+                connection.instanceFollowRedirects = true
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 15000
+                connection.readTimeout = 15000
+                status = connection.responseCode
+                redirectCount++
+            }
+
+            val inputStream = if (status in 200..299) connection.inputStream else connection.errorStream
+            val result = inputStream?.bufferedReader()?.use { it.readText() }?.trim() ?: ""
+            connection.disconnect()
+
+            if (result.isNotBlank()) {
+                TextCacheManager.put(url, result)
+            }
+            result
         }
-        result
     } catch (e: Exception) {
         ""
     }
