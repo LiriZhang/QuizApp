@@ -5342,17 +5342,17 @@ class StudentSubmissionsRepository(
         }.buildString()
     }
 
-    suspend fun getStudents(): DriveStudentsResponse {
+    suspend fun getStudents(): DriveStudentsResponse = withContext(Dispatchers.Main) {
         val response = client.get(
             buildUrl(action = "getStudents")
         ).bodyAsText()
 
-        return json.decodeFromString<DriveStudentsResponse>(response)
+        json.decodeFromString<DriveStudentsResponse>(response)
     }
 
     suspend fun getStudentFiles(
         folderId: String
-    ): DriveFilesResponse {
+    ): DriveFilesResponse = withContext(Dispatchers.Main) {
         val response = client.get(
             buildUrl(
                 action = "getStudentFiles",
@@ -5361,12 +5361,12 @@ class StudentSubmissionsRepository(
             )
         ).bodyAsText()
 
-        return json.decodeFromString<DriveFilesResponse>(response)
+        json.decodeFromString<DriveFilesResponse>(response)
     }
 
     suspend fun getFileContent(
         fileId: String
-    ): DriveFileContentResponse {
+    ): DriveFileContentResponse = withContext(Dispatchers.Main) {
         val response = client.get(
             buildUrl(
                 action = "getFileContent",
@@ -5375,7 +5375,7 @@ class StudentSubmissionsRepository(
             )
         ).bodyAsText()
 
-        return json.decodeFromString<DriveFileContentResponse>(response)
+        json.decodeFromString<DriveFileContentResponse>(response)
     }
 }
 
@@ -6220,10 +6220,13 @@ fun StudentSubmissionsScreen(
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                items(
+                                itemsIndexed(
                                     items = filesList,
-                                    key = { it.fileId.ifEmpty { it.fileName } }
-                                ) { file ->
+                                    key = { index, file ->
+                                        val base = file.fileId.ifEmpty { file.fileName }
+                                        if (base.isNotBlank()) "${base}_$index" else "file_$index"
+                                    }
+                                ) { index, file ->
 
                                     Card(
                                         modifier = Modifier
@@ -6283,10 +6286,13 @@ fun StudentSubmissionsScreen(
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                items(
+                                itemsIndexed(
                                     items = studentsList,
-                                    key = { it.phone.ifEmpty { it.folderId } }
-                                ) { student ->
+                                    key = { index, student ->
+                                        val base = student.phone.ifEmpty { student.folderId }
+                                        if (base.isNotBlank()) "${base}_$index" else "student_$index"
+                                    }
+                                ) { index, student ->
 
                                     Card(
                                         modifier = Modifier
