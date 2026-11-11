@@ -5847,6 +5847,19 @@ fun SubmissionResultView(
 fun StudentSubmissionsScreen(
     onBack: () -> Unit
 ) {
+    val isToolbarVisible = remember { mutableStateOf(true) }
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y < 0) {
+                    isToolbarVisible.value = false // Cuộn xuống
+                } else if (available.y > 0) {
+                    isToolbarVisible.value = true // Cuộn lên
+                }
+                return Offset.Zero
+            }
+        }
+    }
     // Tạo HTTP Client dùng chung cho màn hình.
     val httpClient = remember {
         HttpClient()
@@ -6033,6 +6046,7 @@ fun StudentSubmissionsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .nestedScroll(nestedScrollConnection) // Theo dõi sự kiện cuộn
             .padding(
                 top = topPadding,
                 bottom = bottomPadding
@@ -6042,62 +6056,64 @@ fun StudentSubmissionsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .nestedScroll(nestedScrollConnection) // Theo dõi sự kiện cuộn
                 .padding(vertical = 4.dp)
         ) {
 
-            // Thanh tiêu đề.
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "‹",
+            if (isToolbarVisible.value) {// Thanh tiêu đề.
+                Row(
                     modifier = Modifier
-                        .clickable {
-                            when {
-                                selectedFile != null -> {
-                                    selectedFile = null
-                                    fileContent = ""
-                                    errorMessage = null
-                                }
+                        .fillMaxWidth()
+                        .padding(bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "‹",
+                        modifier = Modifier
+                            .clickable {
+                                when {
+                                    selectedFile != null -> {
+                                        selectedFile = null
+                                        fileContent = ""
+                                        errorMessage = null
+                                    }
 
-                                selectedStudent != null -> {
-                                    selectedStudent = null
-                                    selectedFile = null
-                                    errorMessage = null
-                                }
+                                    selectedStudent != null -> {
+                                        selectedStudent = null
+                                        selectedFile = null
+                                        errorMessage = null
+                                    }
 
-                                else -> onBack()
+                                    else -> onBack()
+                                }
                             }
-                        }
-                        .padding(
-                            horizontal = 12.dp,
-                            vertical = 4.dp
-                        ),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color(0xFF1565C0)
-                )
+                            .padding(
+                                horizontal = 12.dp,
+                                vertical = 4.dp
+                            ),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color(0xFF1565C0)
+                    )
 
-                Text(
-                    text = when {
-                        selectedFile != null ->
-                            selectedFile?.fileName ?: "Chi tiết bài làm"
+                    Text(
+                        text = when {
+                            selectedFile != null ->
+                                selectedFile?.fileName ?: "Chi tiết bài làm"
 
-                        selectedStudent != null ->
-                            "Học sinh: ${selectedStudent?.phone}"
+                            selectedStudent != null ->
+                                "Học sinh: ${selectedStudent?.phone}"
 
-                        else ->
-                            "Bài làm học sinh"
-                    },
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+                            else ->
+                                "Bài làm học sinh"
+                        },
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
 
-                Spacer(modifier = Modifier.width(40.dp))
+                    Spacer(modifier = Modifier.width(40.dp))
+                }
             }
 
             // Trạng thái tải dữ liệu.
@@ -6325,78 +6341,3 @@ fun StudentSubmissionsScreen(
         }
     }
 }
-/*
-Button(
-                        onClick = {
-                            if (!testShowButtons) return@Button
-                            // 1. Lưu local trên máy học sinh
-                            onSaveResult()
-
-                            // 2. Nộp bài lên Google Drive cho giáo viên
-                            if (isSubmitting) return@Button
-                            isSubmitting = true
-                            coroutineScope.launch {
-                                try {
-                                    val phone = getLoggedInPhone()
-                                    if (phone.isBlank()) {
-                                        submitDialogMessage = "Lỗi: Không tìm thấy số điện thoại đăng nhập. Vui lòng đăng nhập lại!"
-                                        isSubmitting = false
-                                        return@launch
-                                    }
-                                    val rawContent = buildString {
-                                        appendLine("=== KẾT QUẢ BÀI LÀM ===")
-                                        appendLine("Quiz: $quizName")
-                                        appendLine("Điểm số: $score / $totalQuestions")
-                                        appendLine("----------------------------------------")
-                                        history.forEachIndexed { index, qr ->
-                                            val status = if (qr.isCorrect) "ĐÚNG (✓)" else "SAI (✕)"
-                                            appendLine("Câu ${index + 1}: $status")
-                                            if (!qr.userInputText.isNullOrBlank()) {
-                                                appendLine("  - Học sinh điền (Tự luận): ${qr.userInputText.trim()}")
-                                            } else if (qr.answers.isNotEmpty()) {
-                                                val selectedIdx = qr.answers.indexOf(qr.selectedAnswer)
-                                                val selectedStr = if (selectedIdx >= 0) "$selectedIdx" else "Chưa chọn"
-
-                                                val correctIdx = qr.answers.indexOf(qr.correctAnswer)
-                                                val correctStr = if (correctIdx >= 0) "$correctIdx" else "N/A"
-
-                                                appendLine("  - Đã chọn: $selectedStr | Đáp án đúng: $correctStr")
-                                            }
-                                            appendLine()
-                                        }
-                                    }
-                                    val rawFileName = "KetQua_${quizName}.txt"
-                                    val contentText = encodeURLComponent(rawContent)
-                                    val fileNameText = encodeURLComponent(rawFileName)
-                                    val url = "https://script.google.com/macros/s/AKfycbxxde1KsjDnLl-7EoOLmDtsi9WU0ECbY8Yxi8s-vnR7kZn4bL7cKOMJmxvXUjS64fr3/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
-                                    val responseText = fetchTextFromUrl(url)
-                                    val json = Json.parseToJsonElement(responseText).jsonObject
-                                    val status = json["status"]?.jsonPrimitive?.content ?: "error"
-                                    val msg = json["message"]?.jsonPrimitive?.content ?: "Lỗi"
-                                    submitDialogMessage = if (status == "success") "Lưu máy & Nộp bài Google Drive thành công!" else msg
-                                } catch (e: Exception) {
-                                    submitDialogMessage = "Đã lưu máy nhưng nộp Drive thất bại: ${e.message}"
-                                } finally {
-                                    isSubmitting = false
-                                }
-                            }
-                        },
-                        modifier = Modifier.weight(1f),
-                        contentPadding = PaddingValues(0.dp),
-                        shape = RoundedCornerShape(4.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.LightGray.copy(0.3f),
-                            contentColor = Color.Black
-                        ),
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            if (isSubmitting) {
-                                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-                            } else {
-                                Icon(imageVector = Icons.Outlined.Save, contentDescription = "Lưu & Nộp", modifier = Modifier.size(20.dp))
-                                Text(text = "Lưu & Nộp", fontSize = 10.sp, fontWeight = FontWeight.Light, color = Color.Black)
-                            }
-                        }
-                    }
-
- */
