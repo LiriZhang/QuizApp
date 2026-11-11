@@ -96,3 +96,25 @@ expect fun getBannerAdHeight(): Dp
 expect fun isUserLoggedIn(): Boolean
 
 expect fun setUserLoggedIn(loggedIn: Boolean)
+
+/**
+ * Hàm mã hóa URL component chuẩn UTF-8 tương thích trên cả Android, iOS và các nền tảng khác.
+ */
+fun encodeURLComponent(value: String): String {
+    val bytes = value.encodeToByteArray()
+    return buildString {
+        for (b in bytes) {
+            val u = b.toInt() and 0xFF
+            val c = u.toChar()
+            if (c in 'a'..'z' || c in 'A'..'Z' || c in '0'..'9' || c in "-_.~") {
+                append(c)
+            } else {
+                append('%')
+                val hex = u.toString(16).uppercase()
+                if (hex.length < 2) append('0')
+                append(hex)
+            }
+        }
+    }
+}
+

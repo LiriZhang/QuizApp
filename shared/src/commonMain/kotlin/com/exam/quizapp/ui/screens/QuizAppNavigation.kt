@@ -30,6 +30,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.geometry.Offset
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -2588,36 +2590,10 @@ fun ResultScreen(
                                         }
                                     }
                                     val rawFileName = "KetQua_${quizName}.txt"
-                                    val contentText = buildString {
-                                        for (c in rawContent) {
-                                            when {
-                                                c.isLetterOrDigit() || c in "-_.~" -> append(c)
-                                                c == ' ' -> append("%20")
-                                                else -> {
-                                                    val hex = c.code.toString(16).uppercase()
-                                                    append("%")
-                                                    if (hex.length < 2) append("0")
-                                                    append(hex)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    val fileNameText = buildString {
-                                        for (c in rawFileName) {
-                                            when {
-                                                c.isLetterOrDigit() || c in "-_.~" -> append(c)
-                                                c == ' ' -> append("%20")
-                                                else -> {
-                                                    val hex = c.code.toString(16).uppercase()
-                                                    append("%")
-                                                    if (hex.length < 2) append("0")
-                                                    append(hex)
-                                                }
-                                            }
-                                        }
-                                    }
+                                    val contentText = encodeURLComponent(rawContent)
+                                    val fileNameText = encodeURLComponent(rawFileName)
                                     val url = "https://script.google.com/macros/s/AKfycbxxde1KsjDnLl-7EoOLmDtsi9WU0ECbY8Yxi8s-vnR7kZn4bL7cKOMJmxvXUjS64fr3/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
-                                    val responseText = fetchTextFromUrlCommon(url)
+                                    val responseText = fetchTextFromUrl(url)
                                     val json = Json.parseToJsonElement(responseText).jsonObject
                                     val status = json["status"]?.jsonPrimitive?.content ?: "error"
                                     val msg = json["message"]?.jsonPrimitive?.content ?: "Lỗi"
@@ -5414,7 +5390,6 @@ data class ParsedSubmission(
 )
 
 
-private val quizQuestions by lazy { quizQuestions1 +quizQuestions2 + quizQuestions3 }
 fun parseStudentSubmissionContent(fileContent: String): ParsedSubmission? {
     if (fileContent.isBlank()) return null
 
@@ -5439,7 +5414,7 @@ fun parseStudentSubmissionContent(fileContent: String): ParsedSubmission? {
 
     if (quizName.isBlank()) return null
 
-    val originalQuestions = quizQuestions[quizName] ?: return null
+    val originalQuestions = quizQuestions3[quizName] ?: return null
     if (originalQuestions.isEmpty()) return null
 
     data class ParsedQuestionState(
@@ -5941,13 +5916,15 @@ fun StudentSubmissionsScreen(
         errorMessage = null
 
         try {
-            val response = repository.getStudents()
+            // withContext(Dispatchers.Main) ép iOS phải chạy trên Main Thread để khỏi bị đá văng
+            val response = withContext(Dispatchers.Main) {
+                repository.getStudents()
+            }
 
             if (response.status == "success") {
                 studentsList = response.students
             } else {
-                errorMessage = response.message
-                    ?: "Không thể tải danh sách học sinh."
+                errorMessage = response.message ?: "Không thể tải danh sách học sinh."
             }
         } catch (e: CancellationException) {
             throw e
@@ -6348,20 +6325,78 @@ fun StudentSubmissionsScreen(
         }
     }
 }
+/*
+Button(
+                        onClick = {
+                            if (!testShowButtons) return@Button
+                            // 1. Lưu local trên máy học sinh
+                            onSaveResult()
 
-private val ktorClient by lazy { HttpClient() }
+                            // 2. Nộp bài lên Google Drive cho giáo viên
+                            if (isSubmitting) return@Button
+                            isSubmitting = true
+                            coroutineScope.launch {
+                                try {
+                                    val phone = getLoggedInPhone()
+                                    if (phone.isBlank()) {
+                                        submitDialogMessage = "Lỗi: Không tìm thấy số điện thoại đăng nhập. Vui lòng đăng nhập lại!"
+                                        isSubmitting = false
+                                        return@launch
+                                    }
+                                    val rawContent = buildString {
+                                        appendLine("=== KẾT QUẢ BÀI LÀM ===")
+                                        appendLine("Quiz: $quizName")
+                                        appendLine("Điểm số: $score / $totalQuestions")
+                                        appendLine("----------------------------------------")
+                                        history.forEachIndexed { index, qr ->
+                                            val status = if (qr.isCorrect) "ĐÚNG (✓)" else "SAI (✕)"
+                                            appendLine("Câu ${index + 1}: $status")
+                                            if (!qr.userInputText.isNullOrBlank()) {
+                                                appendLine("  - Học sinh điền (Tự luận): ${qr.userInputText.trim()}")
+                                            } else if (qr.answers.isNotEmpty()) {
+                                                val selectedIdx = qr.answers.indexOf(qr.selectedAnswer)
+                                                val selectedStr = if (selectedIdx >= 0) "$selectedIdx" else "Chưa chọn"
 
-suspend fun fetchTextFromUrlCommon(url: String): String {
-    TextCacheManager.get(url)?.let { return it }
-    return try {
-        val result = ktorClient.get(url).bodyAsText().trim()
-        if (result.isNotBlank()) {
-            TextCacheManager.put(url, result)
-        }
-        result
-    } catch (e: Exception) {
-        ""
-    }
-}
+                                                val correctIdx = qr.answers.indexOf(qr.correctAnswer)
+                                                val correctStr = if (correctIdx >= 0) "$correctIdx" else "N/A"
 
+                                                appendLine("  - Đã chọn: $selectedStr | Đáp án đúng: $correctStr")
+                                            }
+                                            appendLine()
+                                        }
+                                    }
+                                    val rawFileName = "KetQua_${quizName}.txt"
+                                    val contentText = encodeURLComponent(rawContent)
+                                    val fileNameText = encodeURLComponent(rawFileName)
+                                    val url = "https://script.google.com/macros/s/AKfycbxxde1KsjDnLl-7EoOLmDtsi9WU0ECbY8Yxi8s-vnR7kZn4bL7cKOMJmxvXUjS64fr3/exec?phone=$phone&content=$contentText&fileName=$fileNameText"
+                                    val responseText = fetchTextFromUrl(url)
+                                    val json = Json.parseToJsonElement(responseText).jsonObject
+                                    val status = json["status"]?.jsonPrimitive?.content ?: "error"
+                                    val msg = json["message"]?.jsonPrimitive?.content ?: "Lỗi"
+                                    submitDialogMessage = if (status == "success") "Lưu máy & Nộp bài Google Drive thành công!" else msg
+                                } catch (e: Exception) {
+                                    submitDialogMessage = "Đã lưu máy nhưng nộp Drive thất bại: ${e.message}"
+                                } finally {
+                                    isSubmitting = false
+                                }
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                        contentPadding = PaddingValues(0.dp),
+                        shape = RoundedCornerShape(4.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.LightGray.copy(0.3f),
+                            contentColor = Color.Black
+                        ),
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (isSubmitting) {
+                                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                            } else {
+                                Icon(imageVector = Icons.Outlined.Save, contentDescription = "Lưu & Nộp", modifier = Modifier.size(20.dp))
+                                Text(text = "Lưu & Nộp", fontSize = 10.sp, fontWeight = FontWeight.Light, color = Color.Black)
+                            }
+                        }
+                    }
 
+ */
