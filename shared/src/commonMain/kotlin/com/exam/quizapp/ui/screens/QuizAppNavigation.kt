@@ -5368,14 +5368,14 @@ class StudentSubmissionsRepository {
     }
 
     suspend fun getStudents(): DriveStudentsResponse = withContext(Dispatchers.Default) {
-        val response = fetchTextFromUrl(buildUrl(action = "getStudents"))
+        val response = fetchTextFromUrl3(buildUrl(action = "getStudents"))
         json.decodeFromString<DriveStudentsResponse>(response)
     }
 
     suspend fun getStudentFiles(
         folderId: String
     ): DriveFilesResponse = withContext(Dispatchers.Default) {
-        val response = fetchTextFromUrl(
+        val response = fetchTextFromUrl3(
             buildUrl(
                 action = "getStudentFiles",
                 parameterName = "folderId",
@@ -5388,7 +5388,7 @@ class StudentSubmissionsRepository {
     suspend fun getFileContent(
         fileId: String
     ): DriveFileContentResponse = withContext(Dispatchers.Default) {
-        val response = fetchTextFromUrl(
+        val response = fetchTextFromUrl3(
             buildUrl(
                 action = "getFileContent",
                 parameterName = "fileId",
@@ -5775,7 +5775,7 @@ fun SubmissionResultView(
 
                                             LaunchedEffect(randomCorrect.textUrl) {
                                                 try {
-                                                    textContent = fetchTextFromUrl(randomCorrect.textUrl)
+                                                    textContent = fetchTextFromUrl3(randomCorrect.textUrl)
                                                     isError = false
                                                 } catch (e: Exception) {
                                                     textContent = "Không thể tải nội dung, kiểm tra kết nối mạng!"

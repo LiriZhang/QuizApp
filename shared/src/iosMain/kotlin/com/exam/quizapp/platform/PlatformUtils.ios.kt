@@ -537,7 +537,9 @@ actual suspend fun fetchTextFromUrl2(url: String): String = withContext(Dispatch
         task.resume()
     }
 }
-
+actual suspend fun fetchTextFromUrl3(url: String): String {
+    return fetchTextFromUrl(url)
+}
 @Composable
 actual fun getBannerAdHeight(): Dp = getStatusBarHeight()
 
