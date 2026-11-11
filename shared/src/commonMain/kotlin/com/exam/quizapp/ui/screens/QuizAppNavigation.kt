@@ -2880,10 +2880,6 @@ fun ResultListScreen(
 }
 
 
-/*@Serializable
-data class SubmissionResponse(val status: String, val message: String)
-*/
-
 // MÀN HÌNH CHI TIẾT BÀI LÀM ĐÃ LƯU THEO TỪNG BÀI LÀM
 @Composable
 fun ResultDetailScreen(
@@ -5346,67 +5342,58 @@ data class DriveFileContentResponse(
 )
 
 
-class StudentSubmissionsRepository(
-    private val client: HttpClient
-) {
+class StudentSubmissionsRepository {
     companion object {
         private const val SCRIPT_URL =
             "https://script.google.com/macros/s/AKfycbwPaTel2KIAi1cOFsEWdeRkRzW6CnGB61yY81_5_XWg9yDZhidkde4YnsNaKNk2E5-yAg/exec"
-        //   https://script.google.com/macros/s/AKfycbwPaTel2KIAi1cOFsEWdeRkRzW6CnGB61yY81_5_XWg9yDZhidkde4YnsNaKNk2E5-yAg/exec
     }
 
     private val json = Json {
         ignoreUnknownKeys = true
     }
 
-
     private fun buildUrl(
         action: String,
         parameterName: String? = null,
         parameterValue: String? = null
     ): String {
-        return URLBuilder(SCRIPT_URL).apply {
-            parameters.append("action", action)
-
+        return buildString {
+            append(SCRIPT_URL)
+            append("?action=").append(action)
             if (parameterName != null && parameterValue != null) {
-                parameters.append(parameterName, parameterValue)
+                append("&").append(parameterName).append("=").append(parameterValue)
             }
-        }.buildString()
+        }
     }
 
     suspend fun getStudents(): DriveStudentsResponse = withContext(Dispatchers.Default) {
-        val response = client.get(
-            buildUrl(action = "getStudents")
-        ).bodyAsText()
-
+        val response = fetchTextFromUrl(buildUrl(action = "getStudents"))
         json.decodeFromString<DriveStudentsResponse>(response)
     }
 
     suspend fun getStudentFiles(
         folderId: String
     ): DriveFilesResponse = withContext(Dispatchers.Default) {
-        val response = client.get(
+        val response = fetchTextFromUrl(
             buildUrl(
                 action = "getStudentFiles",
                 parameterName = "folderId",
                 parameterValue = folderId
             )
-        ).bodyAsText()
-
+        )
         json.decodeFromString<DriveFilesResponse>(response)
     }
 
     suspend fun getFileContent(
         fileId: String
     ): DriveFileContentResponse = withContext(Dispatchers.Default) {
-        val response = client.get(
+        val response = fetchTextFromUrl(
             buildUrl(
                 action = "getFileContent",
                 parameterName = "fileId",
                 parameterValue = fileId
             )
-        ).bodyAsText()
-
+        )
         json.decodeFromString<DriveFileContentResponse>(response)
     }
 }
@@ -5893,19 +5880,8 @@ fun StudentSubmissionsScreen(
             }
         }
     }
-    // Tạo HTTP Client dùng chung cho màn hình.
-    val httpClient = remember {
-        HttpClient()
-    }
-
-    DisposableEffect(httpClient) {
-        onDispose {
-            httpClient.close()
-        }
-    }
-
-    val repository = remember(httpClient) {
-        StudentSubmissionsRepository(httpClient)
+    val repository = remember {
+        StudentSubmissionsRepository()
     }
 
     var studentsList by remember {
