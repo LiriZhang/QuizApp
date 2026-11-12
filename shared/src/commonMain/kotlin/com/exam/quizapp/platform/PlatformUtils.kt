@@ -55,10 +55,11 @@ expect fun playSound(isCorrect: Boolean)
 expect fun playVoice(isCorrect: Boolean)
 
 expect fun triggerVibration()
-
+//Hàm phục vụ chung nhưng mà riêng
 expect suspend fun fetchTextFromUrl(url: String): String
-
+// Hàm phục vụ cho ios
 expect suspend fun fetchTextFromUrl2(url: String): String
+// Hàm phục vụ cho android
 expect suspend fun fetchTextFromUrl3(url: String): String
 
 expect suspend fun uploadQuizResultToDrive(
@@ -93,7 +94,7 @@ fun isVipAccount(phone: String = getLoggedInPhone()): Boolean {
     val cleanPhone = phone.trim()
     return cleanPhone.isNotEmpty() && VIP_PHONE_NUMBERS.contains(cleanPhone)
 }
-
+// Hàm kiểm tra tài khoản có được phép vào hay không
 suspend fun checkAccountAccessStatus(
     phone: String = getLoggedInPhone(),
     scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
@@ -136,7 +137,7 @@ suspend fun checkAccountAccessStatus(
         AccountCheckResult.NO_NETWORK
     }
 }
-
+// Hàm kiểm tra tài khoản có phải là tài khoản giáo viên hay không
 suspend fun checkIsTeacherAccount(
     phone: String = getLoggedInPhone(),
     teacherScriptUrl: String = "https://script.google.com/macros/s/AKfycbzmMJ18Yzq_Tl5Mp2vvDCmsmw9OSDMIVfQ8AGDkb8cS6qB89slkMIiWKWKChWGYcUmC/exec"
@@ -169,13 +170,6 @@ suspend fun checkIsTeacherAccount(
     }
 }
 
-suspend fun checkAccountExpiredStatus(
-    phone: String = getLoggedInPhone(),
-    scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
-): Boolean {
-    return checkAccountAccessStatus(phone, scriptUrl) != AccountCheckResult.AUTHORIZED
-}
-
 
 @Composable
 fun getStatusBarHeight(): Dp {
@@ -203,7 +197,7 @@ expect fun setUserLoggedIn(loggedIn: Boolean)
 /**
  * Hàm mã hóa URL component chuẩn UTF-8 tương thích trên cả Android, iOS và các nền tảng khác.
  */
-fun encodeURLComponent(value: String): String {
+/*fun encodeURLComponent(value: String): String {
     val bytes = value.encodeToByteArray()
     return buildString {
         for (b in bytes) {
@@ -221,3 +215,9 @@ fun encodeURLComponent(value: String): String {
     }
 }
 
+suspend fun checkAccountExpiredStatus(
+    phone: String = getLoggedInPhone(),
+    scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
+): Boolean {
+    return checkAccountAccessStatus(phone, scriptUrl) != AccountCheckResult.AUTHORIZED
+}*/
