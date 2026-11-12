@@ -56,14 +56,24 @@ fun TheoryAndExerciseScreen(
     onTheorySelected: () -> Unit,
     onSavedResultsSelected: () -> Unit = {},
     onStudentSubmissionsSelected: () -> Unit = {},
-    expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
+    expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec",
+    teacherCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbwPaTel2KIAi1cOFsEWdeRkRzW6CnGB61yY81_5_XWg9yDZhidkde4YnsNaKNk2E5-yAg/exec"
 ) {
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
     val coroutineScope = rememberCoroutineScope()
 
     var isChecking by remember { mutableStateOf(false) }
+    var isTeacherRole by remember { mutableStateOf(false) }
     var expiredDialogMessage by remember { mutableStateOf<String?>(null) }
+
+    // Kiểm tra quyền Giáo Viên khi mở màn hình (Có mạng + SĐT nằm trong danh sách Giáo Viên)
+    LaunchedEffect(Unit) {
+        val phone = getLoggedInPhone()
+        if (phone.isNotBlank()) {
+            isTeacherRole = checkIsTeacherAccount(phone, teacherCheckScriptUrl)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -186,22 +196,24 @@ fun TheoryAndExerciseScreen(
                 )
             }
 
-            // Dòng 4 (Dòng cuối cùng): Nút Bài làm học sinh
-            OutlinedButton(
-                onClick = { onStudentSubmissionsSelected() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Edit,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Bài Làm Học Sinh",
-                    style = MaterialTheme.typography.titleMedium
-                )
+            // Dòng 4 (Chỉ hiển thị đối với tài khoản Giáo Viên có kết nối mạng): Nút Bài làm học sinh
+            if (isTeacherRole) {
+                OutlinedButton(
+                    onClick = { onStudentSubmissionsSelected() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 5.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Edit,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "Bài Làm Học Sinh",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }

@@ -138,6 +138,38 @@ suspend fun checkAccountAccessStatus(
     }
 }
 
+suspend fun checkIsTeacherAccount(
+    phone: String = getLoggedInPhone(),
+    teacherScriptUrl: String = "https://script.google.com/macros/s/AKfycbwPaTel2KIAi1cOFsEWdeRkRzW6CnGB61yY81_5_XWg9yDZhidkde4YnsNaKNk2E5-yAg/exec"
+): Boolean {
+    if (phone.isBlank()) return false
+    return try {
+        val encodedPhone = buildString {
+            for (c in phone.trim()) {
+                if (c.isLetterOrDigit() || c in "-_.~") append(c)
+                else {
+                    val hex = c.code.toString(16).uppercase()
+                    append("%")
+                    if (hex.length < 2) append("0")
+                    append(hex)
+                }
+            }
+        }
+        val url = if (teacherScriptUrl.contains("?")) "$teacherScriptUrl&action=checkTeacherPhone&phone=$encodedPhone" else "$teacherScriptUrl?action=checkTeacherPhone&phone=$encodedPhone"
+        val responseText = fetchTextFromUrl(url)
+        if (responseText.isBlank() || responseText.contains("Không thể tải") || responseText.contains("NETWORK ERROR")) {
+            return false
+        }
+        val json = Json.parseToJsonElement(responseText).jsonObject
+        val status = json["status"]?.jsonPrimitive?.content ?: ""
+        val isTeacher = json["isTeacher"]?.jsonPrimitive?.booleanOrNull 
+            ?: (status == "teacher")
+        isTeacher
+    } catch (e: Exception) {
+        false
+    }
+}
+
 suspend fun checkAccountExpiredStatus(
     phone: String = getLoggedInPhone(),
     scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
