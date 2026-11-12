@@ -366,10 +366,10 @@ fun ChapterSelectionScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
                             imageVector = Icons.Filled.Home,
-                            contentDescription = "Trang đầu",
+                            contentDescription = "Trang chủ",
                             modifier = Modifier.size(20.dp)
                         )
-                        Text(text = "Trang đầu", fontSize = 10.sp)
+                        Text(text = "Trang chủ", fontSize = 10.sp)
                     }
                 }
             }

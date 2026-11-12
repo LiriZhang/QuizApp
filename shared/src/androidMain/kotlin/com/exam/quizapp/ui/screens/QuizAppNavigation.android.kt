@@ -75,6 +75,7 @@ actual fun QuizApp(
                 onBackApp = {
                     playVoice(isCorrect = false)
                     viewModel.resetTest()
+                    navController.popBackStack()
                 }
             )
         }
