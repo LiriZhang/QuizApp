@@ -78,15 +78,32 @@ expect fun getLoggedInPhone(): String
 expect fun setLoggedInPhone(phone: String)
 
 enum class AccountCheckResult {
-    AUTHORIZED,   // SĐT nằm trong danh sách cho phép
+    AUTHORIZED,   // SĐT nằm trong danh sách cho phép (hoặc VIP)
     EXPIRED,      // SĐT KHÔNG nằm trong danh sách (Hết hạn)
     NO_NETWORK    // Mất kết nối mạng Internet
+}
+
+// Danh sách số điện thoại Tài khoản VIP (Không cần mạng & Bỏ qua kiểm tra Google Sheet)
+val VIP_PHONE_NUMBERS = setOf(
+    "0972712415",
+    "0900000000",
+    "0911111111"
+)
+
+fun isVipAccount(phone: String = getLoggedInPhone()): Boolean {
+    val cleanPhone = phone.trim()
+    return cleanPhone.isNotEmpty() && VIP_PHONE_NUMBERS.contains(cleanPhone)
 }
 
 suspend fun checkAccountAccessStatus(
     phone: String = getLoggedInPhone(),
     scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
 ): AccountCheckResult {
+    // 1. Kiểm tra nếu là tài khoản VIP -> Cho phép vào ngay không cần kết nối mạng
+    if (isVipAccount(phone)) {
+        return AccountCheckResult.AUTHORIZED
+    }
+
     if (phone.isBlank()) return AccountCheckResult.EXPIRED
     return try {
         val encodedPhone = buildString {

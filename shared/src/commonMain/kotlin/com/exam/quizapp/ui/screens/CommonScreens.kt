@@ -86,11 +86,15 @@ fun TheoryAndExerciseScreen(
 
             Button(
                 onClick = {
+                    val phone = getLoggedInPhone()
+                    if (isVipAccount(phone)) {
+                        onExerciseSelected()
+                        return@Button
+                    }
                     if (isChecking) return@Button
                     isChecking = true
                     coroutineScope.launch {
                         try {
-                            val phone = getLoggedInPhone()
                             val checkResult = checkAccountAccessStatus(phone, expiredCheckScriptUrl)
                             when (checkResult) {
                                 AccountCheckResult.AUTHORIZED -> {
