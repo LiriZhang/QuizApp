@@ -53,10 +53,16 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun TheoryAndExerciseScreen(
     onExerciseSelected: () -> Unit,
-    onTheorySelected: () -> Unit
+    onTheorySelected: () -> Unit,
+    expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbxYL6GqGJrouwnFIHmhadxLzpSA-149zC1C/exec"
 ) {
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
+    val coroutineScope = rememberCoroutineScope()
+
+    var isChecking by remember { mutableStateOf(false) }
+    var expiredDialogMessage by remember { mutableStateOf<String?>(null) }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,24 +85,56 @@ fun TheoryAndExerciseScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = { onExerciseSelected() },
+                onClick = {
+                    if (isChecking) return@Button
+                    isChecking = true
+                    coroutineScope.launch {
+                        try {
+                            val phone = getLoggedInPhone()
+                            val isExpired = checkAccountExpiredStatus(phone, expiredCheckScriptUrl)
+                            if (isExpired) {
+                                expiredDialogMessage = "Tài khoản của bạn đã hết hạn, liên hệ 0972712415 để được gia hạn"
+                            } else {
+                                onExerciseSelected()
+                            }
+                        } catch (e: Exception) {
+                            onExerciseSelected()
+                        } finally {
+                            isChecking = false
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                ),
+                enabled = !isChecking
             ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "Làm Bài Tập",
-                    style = MaterialTheme.typography.titleMedium
-                )
+                if (isChecking) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Đang kiểm tra...",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "Làm Bài Tập",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
 
             OutlinedButton(
@@ -116,6 +154,21 @@ fun TheoryAndExerciseScreen(
                 )
             }
         }
+    }
+
+    if (expiredDialogMessage != null) {
+        AlertDialog(
+            onDismissRequest = { expiredDialogMessage = null },
+            title = { Text("Thông báo", fontWeight = FontWeight.Bold) },
+            text = { Text(expiredDialogMessage ?: "") },
+            confirmButton = {
+                TextButton(
+                    onClick = { expiredDialogMessage = null }
+                ) {
+                    Text("OK", fontWeight = FontWeight.Bold)
+                }
+            }
+        )
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import kotlinx.serialization.json.*
 
 object TextCacheManager {
     private val memoryCache = mutableMapOf<String, String>()
@@ -75,6 +76,34 @@ expect fun getDeviceId(): String
 expect fun getLoggedInPhone(): String
 
 expect fun setLoggedInPhone(phone: String)
+
+suspend fun checkAccountExpiredStatus(
+    phone: String = getLoggedInPhone(),
+    scriptUrl: String = "https://script.google.com/macros/s/AKfycbxYL6GqGJrouwnFIHmhadxLzpSA-149zC1C/exec"
+): Boolean {
+    if (phone.isBlank()) return false
+    return try {
+        val encodedPhone = buildString {
+            for (c in phone.trim()) {
+                if (c.isLetterOrDigit() || c in "-_.~") append(c)
+                else {
+                    val hex = c.code.toString(16).uppercase()
+                    append("%")
+                    if (hex.length < 2) append("0")
+                    append(hex)
+                }
+            }
+        }
+        val url = if (scriptUrl.contains("?")) "$scriptUrl&action=checkExpiredPhone&phone=$encodedPhone" else "$scriptUrl?action=checkExpiredPhone&phone=$encodedPhone"
+        val responseText = fetchTextFromUrl3(url)
+        val json = Json.parseToJsonElement(responseText).jsonObject
+        val status = json["status"]?.jsonPrimitive?.content ?: ""
+        val isExpired = json["isExpired"]?.jsonPrimitive?.booleanOrNull ?: false
+        status == "expired" || isExpired
+    } catch (e: Exception) {
+        false
+    }
+}
 
 
 @Composable
