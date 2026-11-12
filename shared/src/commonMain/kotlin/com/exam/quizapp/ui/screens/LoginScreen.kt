@@ -161,7 +161,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Vui lòng nhập Số điện thoại và Mật khẩu để tiếp tục. Hoặc liên hệ 0972712415 để mua tài khoản và được cấp mật khẩu (giá 200K)",
+                    text = "Nếu đã được cấp tài khoản và mật khẩu vui lòng nhập số điện thoại và mật khẩu để tiếp tục, nếu chưa có tài khoản liên hệ 0972712415 để được cấp tài khoản và được mật khẩu",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -178,7 +178,7 @@ fun LoginScreen(
                             errorMessage = null
                         }
                     },
-                    label = { Text("Số điện thoại (10 số)") },
+                    label = { Text("Số điện thoại (đúng 10 chữ số)") },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Phone,
@@ -194,7 +194,7 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Trường nhập Mật khẩu
                 OutlinedTextField(
