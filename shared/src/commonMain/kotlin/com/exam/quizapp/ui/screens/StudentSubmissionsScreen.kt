@@ -22,8 +22,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.exam.quizapp.data.quizQuestions3
 import com.exam.quizapp.model.AnswerOption
 import com.exam.quizapp.model.QuestionResult
@@ -37,6 +39,13 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.stringResource
+
+private data class AnswerStyle(
+    val backgroundColor: Color,
+    val textColor: Color,
+    val border: BorderStroke,
+    val statusIcon: String
+)
 
 @Serializable
 data class DriveStudentsResponse(
@@ -352,13 +361,23 @@ fun SubmissionResultView(
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
 
-                    RenderQuestionContent(content = result.mainQuestion)
+                    // NỘI DUNG CÂU HỎI (Màu nền RẤT NHẠT hơn phần câu trả lời)
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFFF7F9FC),
+                        border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(10.dp)) {
+                            RenderQuestionContent(content = result.mainQuestion)
 
-                    result.extraQuestions.forEach { extra ->
-                        RenderQuestionContent(content = extra)
+                            result.extraQuestions.forEach { extra ->
+                                RenderQuestionContent(content = extra)
+                            }
+                        }
                     }
-
-                    Spacer(modifier = Modifier.height(4.dp))
 
                     if (result.answers.isNotEmpty()) {
                         val selectedAnswer = result.selectedAnswer
@@ -368,45 +387,65 @@ fun SubmissionResultView(
                             val isCorrectAnswer = answer == correctAnswer
                             val isSelected = answer == selectedAnswer
 
-                            val backgroundColor = when {
-                                isSelected && isCorrectAnswer -> Color(0xFF1565C0)
-                                isSelected && !isCorrectAnswer -> Color(0xFFA04B00)
-                                !isSelected && isCorrectAnswer -> Color(0xFFD6E8FF)
-                                else -> Color(0xFFF2F2F2)
+                            // Bảng màu thiết kế tối ưu tương phản cao & hỗ trợ người mù màu:
+                            // 1. Chọn & Đúng: Nền Xanh Lá Cây Đậm (0xFF1B5E20), Chữ Trắng, Viền Đậm 2dp, Icon ✓
+                            // 2. Chọn & Sai: Nền Đỏ Đô Đậm (0xFFB71C1C), Chữ Trắng, Viền Đậm 2dp, Icon ✕
+                            // 3. Không chọn & Đáp Án Đúng: Nền Xanh Lá Nhạt (0xFFE8F5E9), Chữ Xanh Đậm (0xFF1B5E20), Viền 1.5dp, Icon ✓
+                            // 4. Không chọn (Khác): Nền Trắng (0xFFFFFFFF), Chữ Xám Đen (0xFF334155), Viền Mảnh 1dp, Icon —
+                            val (backgroundColor, textColor, border, statusIcon) = when {
+                                isSelected && isCorrectAnswer -> AnswerStyle(
+                                    Color(0xFF1B5E20),
+                                    Color.White,
+                                    BorderStroke(2.dp, Color(0xFF2E7D32)),
+                                    "✓ [ĐÃ CHỌN - ĐÚNG] "
+                                )
+                                isSelected && !isCorrectAnswer -> AnswerStyle(
+                                    Color(0xFFB71C1C),
+                                    Color.White,
+                                    BorderStroke(2.dp, Color(0xFFD32F2F)),
+                                    "✕ [ĐÃ CHỌN - SAI] "
+                                )
+                                !isSelected && isCorrectAnswer -> AnswerStyle(
+                                    Color(0xFFE8F5E9),
+                                    Color(0xFF1B5E20),
+                                    BorderStroke(1.5.dp, Color(0xFF4CAF50)),
+                                    "✓ [ĐÁP ÁN ĐÚNG] "
+                                )
+                                else -> AnswerStyle(
+                                    Color(0xFFFFFFFF),
+                                    Color(0xFF334155),
+                                    BorderStroke(1.dp, Color(0xFFCBD5E1)),
+                                    "— "
+                                )
                             }
 
-                            val textColor = when {
-                                isSelected -> Color.White
-                                !isSelected && isCorrectAnswer -> Color(0xFF0D47A1)
-                                else -> Color(0xFF333333)
-                            }
-
-                            val statusIcon = when {
-                                isSelected && isCorrectAnswer -> "✓"
-                                isSelected && !isCorrectAnswer -> "✕"
-                                !isSelected && isCorrectAnswer -> "✓"
-                                else -> "—"
-                            }
-
-                            Row(
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = backgroundColor,
+                                border = border,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 2.dp)
-                                    .background(backgroundColor, shape = RoundedCornerShape(6.dp))
-                                    .padding(horizontal = 10.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                    .padding(vertical = 3.dp)
                             ) {
-                                Text(
-                                    text = statusIcon,
-                                    color = textColor,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = statusIcon,
+                                        color = textColor,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 13.sp,
+                                        modifier = Modifier.padding(end = 6.dp)
+                                    )
 
-                                RenderAnswerOptionContent(
-                                    answer = answer,
-                                    textColor = textColor
-                                )
+                                    RenderAnswerOptionContent(
+                                        answer = answer,
+                                        textColor = textColor
+                                    )
+                                }
                             }
                         }
                     } else if (result.correctTextAnswers.isNotEmpty() || !result.userInputText.isNullOrBlank()) {
@@ -415,8 +454,9 @@ fun SubmissionResultView(
 
                         if (isCorrect) {
                             Surface(
-                                color = Color(0xFF1565C0),
+                                color = Color(0xFF1B5E20),
                                 shape = RoundedCornerShape(8.dp),
+                                border = BorderStroke(2.dp, Color(0xFF2E7D32)),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)
@@ -428,7 +468,7 @@ fun SubmissionResultView(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "✓",
+                                        text = "✓ [ĐÚNG]",
                                         color = Color.White,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(end = 8.dp)
@@ -443,11 +483,12 @@ fun SubmissionResultView(
                             val randomCorrect = remember(result) {
                                 result.correctTextAnswers.randomOrNull()
                             }
-                            val backgroundColor = Color(0xFFA04B00)
+                            val backgroundColor = Color(0xFFB71C1C)
 
                             Surface(
                                 color = backgroundColor,
                                 shape = RoundedCornerShape(8.dp),
+                                border = BorderStroke(2.dp, Color(0xFFD32F2F)),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)

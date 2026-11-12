@@ -939,26 +939,28 @@ fun AllQuestionsScreen(
                         )
 
                         // -------------------------------------------------
-                        // NỘI DUNG CÂU HỎI
+                        // NỘI DUNG CÂU HỎI (Màu nền RẤT NHẠT hơn phần câu trả lời)
                         // -------------------------------------------------
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color(0xFFF7F9FC),
+                            border = BorderStroke(1.dp, Color(0xFFE2E8F0)),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(10.dp)) {
+                                RenderQuestionContent(
+                                    content = question.mainContent
+                                )
 
-                        RenderQuestionContent(
-                            content = question.mainContent
-                        )
-
-                        // -------------------------------------------------
-                        // CÂU HỎI PHỤ
-                        // -------------------------------------------------
-
-                        question.extraContents.forEach { extra ->
-                            RenderQuestionContent(
-                                content = extra
-                            )
+                                question.extraContents.forEach { extra ->
+                                    RenderQuestionContent(
+                                        content = extra
+                                    )
+                                }
+                            }
                         }
-
-                        Spacer(
-                            modifier = Modifier.height(8.dp)
-                        )
 
                         // =================================================
                         // 1. CÂU HỎI TRẮC NGHIỆM
@@ -973,39 +975,44 @@ fun AllQuestionsScreen(
                                 val isSelected =
                                     selectedAnswers[index] == answerIndex
 
+                                // Chọn -> Nền ĐẬM (Royal Blue), Chữ Trắng, Viền Đậm, Icon ✓
+                                // Chưa chọn -> Nền Sáng (Trắng), Chữ Xám Đen, Viền Mảnh, Icon ○
                                 val backgroundColor =
                                     if (isSelected) {
-                                        Color(0xFFD6E8FF)
+                                        Color(0xFF0D47A1)
                                     } else {
-                                        Color(0xFFF2F2F2)
+                                        Color(0xFFFFFFFF)
                                     }
+
+                                val textColor =
+                                    if (isSelected) {
+                                        Color.White
+                                    } else {
+                                        Color(0xFF1E293B)
+                                    }
+
+                                val border =
+                                    if (isSelected) {
+                                        BorderStroke(2.dp, Color(0xFF0A3880))
+                                    } else {
+                                        BorderStroke(1.dp, Color(0xFFCBD5E1))
+                                    }
+
+                                val statusIcon = if (isSelected) "✓ " else "○ "
 
                                 Surface(
                                     shape = RoundedCornerShape(8.dp),
                                     color = backgroundColor,
-
-                                    border =
-                                        if (isSelected) {
-                                            BorderStroke(
-                                                1.dp,
-                                                Color(0xFF1565C0)
-                                            )
-                                        } else {
-                                            null
-                                        },
-
+                                    border = border,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 3.dp)
                                         .clickable {
-
                                             selectedAnswers[index] =
                                                 answerIndex
-
                                             warningMessage = null
                                         }
                                 ) {
-
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -1016,9 +1023,17 @@ fun AllQuestionsScreen(
                                         verticalAlignment =
                                             Alignment.CenterVertically
                                     ) {
+                                        Text(
+                                            text = statusIcon,
+                                            color = textColor,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            modifier = Modifier.padding(end = 6.dp)
+                                        )
 
                                         RenderAnswerOptionContent(
-                                            answer = answer
+                                            answer = answer,
+                                            textColor = textColor
                                         )
                                     }
                                 }
