@@ -86,8 +86,7 @@ enum class AccountCheckResult {
 // Danh sách số điện thoại Tài khoản VIP (Không cần mạng & Bỏ qua kiểm tra Google Sheet)
 val VIP_PHONE_NUMBERS = setOf(
     "0972712415",
-    "0999999999",
-    "0988888888"
+    "0555555555",
 )
 
 fun isVipAccount(phone: String = getLoggedInPhone()): Boolean {
@@ -140,7 +139,7 @@ suspend fun checkAccountAccessStatus(
 
 suspend fun checkIsTeacherAccount(
     phone: String = getLoggedInPhone(),
-    teacherScriptUrl: String = "https://script.google.com/macros/s/AKfycbwPaTel2KIAi1cOFsEWdeRkRzW6CnGB61yY81_5_XWg9yDZhidkde4YnsNaKNk2E5-yAg/exec"
+    teacherScriptUrl: String = "https://script.google.com/macros/s/AKfycbzmMJ18Yzq_Tl5Mp2vvDCmsmw9OSDMIVfQ8AGDkb8cS6qB89slkMIiWKWKChWGYcUmC/exec"
 ): Boolean {
     if (phone.isBlank()) return false
     return try {
