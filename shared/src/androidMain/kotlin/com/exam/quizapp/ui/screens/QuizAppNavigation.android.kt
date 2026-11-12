@@ -125,9 +125,7 @@ actual fun QuizApp(
                 onHomePage = {
                     playVoice(isCorrect = false)
                     viewModel.goToHome()
-                    navController.navigate("theory_and_exercise") {
-                        popUpTo("theory_and_exercise") { inclusive = true }
-                    }
+                    navController.navigate("chapter_selection")
                 },
                 onBack = {
                     playVoice(isCorrect = false)
@@ -147,9 +145,7 @@ actual fun QuizApp(
                 onHomePage = {
                     playVoice(isCorrect = false)
                     viewModel.goToHome()
-                    navController.navigate("theory_and_exercise") {
-                        popUpTo("theory_and_exercise") { inclusive = true }
-                    }
+                    navController.navigate("chapter_selection")
                 },
                 onBack = {
                     playVoice(isCorrect = false)
@@ -202,9 +198,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.resetChapter()
-                        navController.navigate("theory_and_exercise") {
-                            popUpTo("theory_and_exercise") { inclusive = true }
-                        }
+                        navController.navigate("chapter_selection")
                     },
                     onBackQuiz = {
                         playVoice(isCorrect = false)
@@ -238,9 +232,7 @@ actual fun QuizApp(
                 onHomePage = {
                     playVoice(isCorrect = false)
                     viewModel.resetChapter()
-                    navController.navigate("theory_and_exercise") {
-                        popUpTo("theory_and_exercise") { inclusive = true }
-                    }
+                    navController.navigate("chapter_selection")
                 },
                 onBackQuiz = {
                     playVoice(isCorrect = false)
@@ -280,9 +272,7 @@ actual fun QuizApp(
                 },
                 onHomePage = {
                     playVoice(isCorrect = false)
-                    navController.navigate("theory_and_exercise") {
-                        popUpTo("theory_and_exercise") { inclusive = true }
-                    }
+                    navController.navigate("chapter_selection")
                 },
                 onQuizReviewSelected = {
                     playVoice(isCorrect = true)
@@ -308,9 +298,7 @@ actual fun QuizApp(
                 onHomePage = {
                     playVoice(isCorrect = false)
                     viewModel.goToHome()
-                    navController.navigate("theory_and_exercise") {
-                        popUpTo("theory_and_exercise") { inclusive = true }
-                    }
+                    navController.navigate("chapter_selection")
                 },
                 onBack = {
                     playVoice(isCorrect = false)
@@ -331,9 +319,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        navController.navigate("theory_and_exercise") {
-                            popUpTo("theory_and_exercise") { inclusive = true }
-                        }
+                        navController.navigate("chapter_selection")
                     },
                     onBack = {
                         playVoice(isCorrect = false)

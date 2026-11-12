@@ -137,7 +137,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        currentScreen = IosScreen.TheoryAndExercise
+                        currentScreen = IosScreen.ChapterSelection
                     },
                     onBack = {
                         playVoice(isCorrect = false)
@@ -163,7 +163,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.resetChapter()
-                        currentScreen = IosScreen.TheoryAndExercise
+                        currentScreen = IosScreen.ChapterSelection
                     },
                     onBackQuiz = {
                         playVoice(isCorrect = false)
@@ -218,7 +218,7 @@ actual fun QuizApp(
                         onHomePage = {
                             playVoice(isCorrect = false)
                             viewModel.resetChapter()
-                            currentScreen = IosScreen.TheoryAndExercise
+                            currentScreen = IosScreen.ChapterSelection
                         },
                         onBackQuiz = {
                             playVoice(isCorrect = false)
@@ -274,7 +274,7 @@ actual fun QuizApp(
                     },
                     onHomePage = {
                         playVoice(isCorrect = false)
-                        currentScreen = IosScreen.TheoryAndExercise
+                        currentScreen = IosScreen.ChapterSelection
                     },
                     onQuizReviewSelected = {
                         playVoice(isCorrect = true)
@@ -303,7 +303,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        currentScreen = IosScreen.TheoryAndExercise
+                        currentScreen = IosScreen.ChapterSelection
                     },
                     onBack = {
                         playVoice(isCorrect = false)
@@ -323,7 +323,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        currentScreen = IosScreen.TheoryAndExercise
+                        currentScreen = IosScreen.ChapterSelection
                     },
                     onBack = {
                         playVoice(isCorrect = false)
