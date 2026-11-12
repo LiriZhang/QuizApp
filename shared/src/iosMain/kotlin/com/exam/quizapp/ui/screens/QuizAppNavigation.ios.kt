@@ -137,7 +137,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        currentScreen = IosScreen.ChapterSelection
+                        currentScreen = IosScreen.TheoryAndExercise
                     },
                     onBack = {
                         playVoice(isCorrect = false)
@@ -163,7 +163,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.resetChapter()
-                        currentScreen = IosScreen.ChapterSelection
+                        currentScreen = IosScreen.TheoryAndExercise
                     },
                     onBackQuiz = {
                         playVoice(isCorrect = false)
@@ -218,7 +218,7 @@ actual fun QuizApp(
                         onHomePage = {
                             playVoice(isCorrect = false)
                             viewModel.resetChapter()
-                            currentScreen = IosScreen.ChapterSelection
+                            currentScreen = IosScreen.TheoryAndExercise
                         },
                         onBackQuiz = {
                             playVoice(isCorrect = false)
@@ -274,7 +274,7 @@ actual fun QuizApp(
                     },
                     onHomePage = {
                         playVoice(isCorrect = false)
-                        currentScreen = IosScreen.ChapterSelection
+                        currentScreen = IosScreen.TheoryAndExercise
                     },
                     onQuizReviewSelected = {
                         playVoice(isCorrect = true)
@@ -323,7 +323,7 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        currentScreen = IosScreen.ChapterSelection
+                        currentScreen = IosScreen.TheoryAndExercise
                     },
                     onBack = {
                         playVoice(isCorrect = false)
