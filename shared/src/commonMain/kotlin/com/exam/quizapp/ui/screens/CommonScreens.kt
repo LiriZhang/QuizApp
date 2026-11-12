@@ -54,7 +54,7 @@ import org.jetbrains.compose.resources.stringResource
 fun TheoryAndExerciseScreen(
     onExerciseSelected: () -> Unit,
     onTheorySelected: () -> Unit,
-    expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbxYL6GqGJrouwnFIHmhadxLzpSA-149zC1C/exec"
+    expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
 ) {
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
@@ -91,14 +91,20 @@ fun TheoryAndExerciseScreen(
                     coroutineScope.launch {
                         try {
                             val phone = getLoggedInPhone()
-                            val isExpired = checkAccountExpiredStatus(phone, expiredCheckScriptUrl)
-                            if (isExpired) {
-                                expiredDialogMessage = "Tài khoản của bạn đã hết hạn, liên hệ 0972712415 để được gia hạn"
-                            } else {
-                                onExerciseSelected()
+                            val checkResult = checkAccountAccessStatus(phone, expiredCheckScriptUrl)
+                            when (checkResult) {
+                                AccountCheckResult.AUTHORIZED -> {
+                                    onExerciseSelected()
+                                }
+                                AccountCheckResult.EXPIRED -> {
+                                    expiredDialogMessage = "Tài khoản của bạn đã hết hạn, liên hệ 0972712415 để được gia hạn"
+                                }
+                                AccountCheckResult.NO_NETWORK -> {
+                                    expiredDialogMessage = "Không thể kết nối mạng. Vui lòng kiểm tra kết nối Internet để tiếp tục!"
+                                }
                             }
                         } catch (e: Exception) {
-                            onExerciseSelected()
+                            expiredDialogMessage = "Không thể kết nối mạng. Vui lòng kiểm tra kết nối Internet để tiếp tục!"
                         } finally {
                             isChecking = false
                         }

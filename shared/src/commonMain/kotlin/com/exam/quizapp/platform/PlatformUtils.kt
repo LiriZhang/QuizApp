@@ -77,11 +77,17 @@ expect fun getLoggedInPhone(): String
 
 expect fun setLoggedInPhone(phone: String)
 
-suspend fun checkAccountExpiredStatus(
+enum class AccountCheckResult {
+    AUTHORIZED,   // SĐT nằm trong danh sách cho phép
+    EXPIRED,      // SĐT KHÔNG nằm trong danh sách (Hết hạn)
+    NO_NETWORK    // Mất kết nối mạng Internet
+}
+
+suspend fun checkAccountAccessStatus(
     phone: String = getLoggedInPhone(),
-    scriptUrl: String = "https://script.google.com/macros/s/AKfycbxYL6GqGJrouwnFIHmhadxLzpSA-149zC1C/exec"
-): Boolean {
-    if (phone.isBlank()) return false
+    scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
+): AccountCheckResult {
+    if (phone.isBlank()) return AccountCheckResult.EXPIRED
     return try {
         val encodedPhone = buildString {
             for (c in phone.trim()) {
@@ -94,15 +100,32 @@ suspend fun checkAccountExpiredStatus(
                 }
             }
         }
-        val url = if (scriptUrl.contains("?")) "$scriptUrl&action=checkExpiredPhone&phone=$encodedPhone" else "$scriptUrl?action=checkExpiredPhone&phone=$encodedPhone"
-        val responseText = fetchTextFromUrl3(url)
+        val url = if (scriptUrl.contains("?")) "$scriptUrl&action=checkPhone&phone=$encodedPhone" else "$scriptUrl?action=checkPhone&phone=$encodedPhone"
+        val responseText = fetchTextFromUrl(url)
+        if (responseText.isBlank() || responseText.contains("Không thể tải") || responseText.contains("NETWORK ERROR")) {
+            return AccountCheckResult.NO_NETWORK
+        }
         val json = Json.parseToJsonElement(responseText).jsonObject
         val status = json["status"]?.jsonPrimitive?.content ?: ""
+        val isAuthorized = json["isAuthorized"]?.jsonPrimitive?.booleanOrNull 
+            ?: (status == "active" || status == "authorized" || status == "success")
         val isExpired = json["isExpired"]?.jsonPrimitive?.booleanOrNull ?: false
-        status == "expired" || isExpired
+
+        if (isAuthorized && !isExpired) {
+            AccountCheckResult.AUTHORIZED
+        } else {
+            AccountCheckResult.EXPIRED
+        }
     } catch (e: Exception) {
-        false
+        AccountCheckResult.NO_NETWORK
     }
+}
+
+suspend fun checkAccountExpiredStatus(
+    phone: String = getLoggedInPhone(),
+    scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
+): Boolean {
+    return checkAccountAccessStatus(phone, scriptUrl) != AccountCheckResult.AUTHORIZED
 }
 
 
