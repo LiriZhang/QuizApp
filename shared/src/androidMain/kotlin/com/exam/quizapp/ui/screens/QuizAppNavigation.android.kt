@@ -46,6 +46,14 @@ actual fun QuizApp(
                 onExerciseSelected = {
                     playVoice(isCorrect = true)
                     navController.navigate("chapter_selection")
+                },
+                onSavedResultsSelected = {
+                    playVoice(isCorrect = true)
+                    navController.navigate("resultList")
+                },
+                onStudentSubmissionsSelected = {
+                    playVoice(isCorrect = true)
+                    navController.navigate("student_submissions")
                 }
             )
         }

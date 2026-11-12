@@ -86,8 +86,8 @@ enum class AccountCheckResult {
 // Danh sách số điện thoại Tài khoản VIP (Không cần mạng & Bỏ qua kiểm tra Google Sheet)
 val VIP_PHONE_NUMBERS = setOf(
     "0972712415",
-    "0900000000",
-    "0911111111"
+    "0999999999",
+    "0988888888"
 )
 
 fun isVipAccount(phone: String = getLoggedInPhone()): Boolean {

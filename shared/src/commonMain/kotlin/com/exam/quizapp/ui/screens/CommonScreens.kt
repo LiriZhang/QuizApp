@@ -54,6 +54,8 @@ import org.jetbrains.compose.resources.stringResource
 fun TheoryAndExerciseScreen(
     onExerciseSelected: () -> Unit,
     onTheorySelected: () -> Unit,
+    onSavedResultsSelected: () -> Unit = {},
+    onStudentSubmissionsSelected: () -> Unit = {},
     expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
 ) {
     val topPadding = getBannerAdHeight()
@@ -82,8 +84,9 @@ fun TheoryAndExerciseScreen(
                 modifier = Modifier.padding(horizontal = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
+            // Dòng 1: Nút Làm bài tập
             Button(
                 onClick = {
                     val phone = getLoggedInPhone()
@@ -116,7 +119,7 @@ fun TheoryAndExerciseScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(vertical = 5.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -147,11 +150,12 @@ fun TheoryAndExerciseScreen(
                 }
             }
 
+            // Dòng 2: Nút Lý thuyết
             OutlinedButton(
                 onClick = { onTheorySelected() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 5.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Build,
@@ -160,6 +164,42 @@ fun TheoryAndExerciseScreen(
                 )
                 Text(
                     text = "Lý Thuyết (Đang cập nhật)",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            // Dòng 3: Nút Bài đã lưu
+            OutlinedButton(
+                onClick = { onSavedResultsSelected() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Folder,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "Bài Đã Lưu",
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            // Dòng 4 (Dòng cuối cùng): Nút Bài làm học sinh
+            OutlinedButton(
+                onClick = { onStudentSubmissionsSelected() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Edit,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "Bài Làm Học Sinh",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -319,20 +359,9 @@ fun ChapterSelectionScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(onClick = onList) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Outlined.Folder,
-                            contentDescription = "Bài đã lưu",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(text = "Bài đã lưu", fontSize = 10.sp)
-                    }
-                }
-
                 TextButton(onClick = onBackApp) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
@@ -341,28 +370,6 @@ fun ChapterSelectionScreen(
                             modifier = Modifier.size(20.dp)
                         )
                         Text(text = "Trang đầu", fontSize = 10.sp)
-                    }
-                }
-
-                TextButton(onClick = onStudentSubmissions) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Outlined.Edit,
-                            contentDescription = "Bài làm học sinh",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(text = "Bài làm HS", fontSize = 10.sp)
-                    }
-                }
-
-                TextButton(onClick = onBackApp) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Quay lại",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Text(text = "Quay lại", fontSize = 10.sp)
                     }
                 }
             }

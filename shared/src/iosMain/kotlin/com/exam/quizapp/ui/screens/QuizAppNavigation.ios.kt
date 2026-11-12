@@ -62,6 +62,14 @@ actual fun QuizApp(
                     onExerciseSelected = {
                         playVoice(isCorrect = true)
                         currentScreen = IosScreen.ChapterSelection
+                    },
+                    onSavedResultsSelected = {
+                        playVoice(isCorrect = true)
+                        currentScreen = IosScreen.ResultList
+                    },
+                    onStudentSubmissionsSelected = {
+                        playVoice(isCorrect = true)
+                        currentScreen = IosScreen.StudentSubmissions
                     }
                 )
             }
@@ -89,7 +97,7 @@ actual fun QuizApp(
             }
             is IosScreen.StudentSubmissions -> {
                 StudentSubmissionsScreen(
-                    onBack = { currentScreen = IosScreen.ChapterSelection }
+                    onBack = { currentScreen = IosScreen.TheoryAndExercise }
                 )
             }
             is IosScreen.LessonSelection -> {
@@ -295,11 +303,11 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        currentScreen = IosScreen.ChapterSelection
+                        currentScreen = IosScreen.TheoryAndExercise
                     },
                     onBack = {
                         playVoice(isCorrect = false)
-                        currentScreen = IosScreen.ChapterSelection
+                        currentScreen = IosScreen.TheoryAndExercise
                     }
                 )
             }
