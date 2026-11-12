@@ -387,34 +387,34 @@ fun SubmissionResultView(
                             val isCorrectAnswer = answer == correctAnswer
                             val isSelected = answer == selectedAnswer
 
-                            // Bảng màu thiết kế tối ưu tương phản cao & hỗ trợ người mù màu:
-                            // 1. Chọn & Đúng: Nền Xanh Lá Cây Đậm (0xFF1B5E20), Chữ Trắng, Viền Đậm 2dp, Icon ✓
-                            // 2. Chọn & Sai: Nền Đỏ Đô Đậm (0xFFB71C1C), Chữ Trắng, Viền Đậm 2dp, Icon ✕
-                            // 3. Không chọn & Đáp Án Đúng: Nền Xanh Lá Nhạt (0xFFE8F5E9), Chữ Xanh Đậm (0xFF1B5E20), Viền 1.5dp, Icon ✓
-                            // 4. Không chọn (Khác): Nền Trắng (0xFFFFFFFF), Chữ Xám Đen (0xFF334155), Viền Mảnh 1dp, Icon —
+                            // Bảng màu thiết kế rõ ràng, thẩm mỹ dành cho giáo viên chấm/xem bài:
+                            // 1. Chọn & Đúng: Nền Xanh Dương Đậm (0xFF1565C0), Chữ Trắng, Icon ✓ [ĐÚNG]
+                            // 2. Chọn & Sai: Nền Cam Nâu Đậm (0xFFA04B00), Chữ Trắng, Icon ✕ [SAI]
+                            // 3. Không chọn & Đáp Án Đúng: Nền Xanh Dương Nhạt (0xFFD6E8FF), Chữ Xanh Đậm (0xFF0D47A1), Icon ✓ [ĐÁP ÁN ĐÚNG]
+                            // 4. Không chọn (Khác): Nền Trắng/Xám Nhạt (0xFFF2F2F2), Chữ Xám Đen (0xFF333333), Icon —
                             val (backgroundColor, textColor, border, statusIcon) = when {
                                 isSelected && isCorrectAnswer -> AnswerStyle(
-                                    Color(0xFF1B5E20),
+                                    Color(0xFF1565C0),
                                     Color.White,
-                                    BorderStroke(2.dp, Color(0xFF2E7D32)),
-                                    "✓ [ĐÃ CHỌN - ĐÚNG] "
+                                    BorderStroke(1.5.dp, Color(0xFF0D47A1)),
+                                    "✓ [ĐÚNG] "
                                 )
                                 isSelected && !isCorrectAnswer -> AnswerStyle(
-                                    Color(0xFFB71C1C),
+                                    Color(0xFFA04B00),
                                     Color.White,
-                                    BorderStroke(2.dp, Color(0xFFD32F2F)),
-                                    "✕ [ĐÃ CHỌN - SAI] "
+                                    BorderStroke(1.5.dp, Color(0xFF803800)),
+                                    "✕ [SAI] "
                                 )
                                 !isSelected && isCorrectAnswer -> AnswerStyle(
-                                    Color(0xFFE8F5E9),
-                                    Color(0xFF1B5E20),
-                                    BorderStroke(1.5.dp, Color(0xFF4CAF50)),
+                                    Color(0xFFD6E8FF),
+                                    Color(0xFF0D47A1),
+                                    BorderStroke(1.5.dp, Color(0xFF1565C0)),
                                     "✓ [ĐÁP ÁN ĐÚNG] "
                                 )
                                 else -> AnswerStyle(
-                                    Color(0xFFFFFFFF),
-                                    Color(0xFF334155),
-                                    BorderStroke(1.dp, Color(0xFFCBD5E1)),
+                                    Color(0xFFF2F2F2),
+                                    Color(0xFF333333),
+                                    BorderStroke(1.dp, Color(0xFFE0E0E0)),
                                     "— "
                                 )
                             }
@@ -454,9 +454,9 @@ fun SubmissionResultView(
 
                         if (isCorrect) {
                             Surface(
-                                color = Color(0xFF1B5E20),
+                                color = Color(0xFF1565C0),
                                 shape = RoundedCornerShape(8.dp),
-                                border = BorderStroke(2.dp, Color(0xFF2E7D32)),
+                                border = BorderStroke(1.5.dp, Color(0xFF0D47A1)),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)
@@ -483,12 +483,12 @@ fun SubmissionResultView(
                             val randomCorrect = remember(result) {
                                 result.correctTextAnswers.randomOrNull()
                             }
-                            val backgroundColor = Color(0xFFB71C1C)
+                            val backgroundColor = Color(0xFFA04B00)
 
                             Surface(
                                 color = backgroundColor,
                                 shape = RoundedCornerShape(8.dp),
-                                border = BorderStroke(2.dp, Color(0xFFD32F2F)),
+                                border = BorderStroke(1.5.dp, Color(0xFF803800)),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 4.dp)
@@ -500,7 +500,7 @@ fun SubmissionResultView(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "✕",
+                                        text = "✕ [SAI]",
                                         color = Color.White,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(end = 8.dp)
