@@ -31,8 +31,6 @@ expect fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier = Modifier)
 @Composable
 expect fun PlatformAudioPlayer(audioUrl: String, modifier: Modifier = Modifier)
 
-/*@Composable
-expect fun PlatformBannerAd(modifier: Modifier = Modifier)*/
 
 @Composable
 expect fun ImageFromUrl(
@@ -97,7 +95,7 @@ fun isVipAccount(phone: String = getLoggedInPhone()): Boolean {
 // Hàm kiểm tra tài khoản có được phép vào hay không
 suspend fun checkAccountAccessStatus(
     phone: String = getLoggedInPhone(),
-    scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
+    scriptUrl: String = "https://script.google.com/macros/s/AKfycbxGbdrTZeC41zepftxa2JFXEZaqRw4ED7Mx67Qbb3l1y4UxOTM7za2Tm6IzvRUPndcI/exec"
 ): AccountCheckResult {
     // 1. Kiểm tra nếu là tài khoản VIP -> Cho phép vào ngay không cần kết nối mạng
     if (isVipAccount(phone)) {
@@ -193,31 +191,3 @@ expect fun getBannerAdHeight(): Dp
 expect fun isUserLoggedIn(): Boolean
 
 expect fun setUserLoggedIn(loggedIn: Boolean)
-
-/**
- * Hàm mã hóa URL component chuẩn UTF-8 tương thích trên cả Android, iOS và các nền tảng khác.
- */
-/*fun encodeURLComponent(value: String): String {
-    val bytes = value.encodeToByteArray()
-    return buildString {
-        for (b in bytes) {
-            val u = b.toInt() and 0xFF
-            val c = u.toChar()
-            if (c in 'a'..'z' || c in 'A'..'Z' || c in '0'..'9' || c in "-_.~") {
-                append(c)
-            } else {
-                append('%')
-                val hex = u.toString(16).uppercase()
-                if (hex.length < 2) append('0')
-                append(hex)
-            }
-        }
-    }
-}
-
-suspend fun checkAccountExpiredStatus(
-    phone: String = getLoggedInPhone(),
-    scriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec"
-): Boolean {
-    return checkAccountAccessStatus(phone, scriptUrl) != AccountCheckResult.AUTHORIZED
-}*/

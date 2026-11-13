@@ -56,7 +56,7 @@ fun TheoryAndExerciseScreen(
     onTheorySelected: () -> Unit,
     onSavedResultsSelected: () -> Unit = {},
     onStudentSubmissionsSelected: () -> Unit = {},
-    expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbwlkRLT0WqlrrWgPnUSuCPolPuRS28GBQcJgVjQBL0rHwWSSvsoxe1qXNQtjh-Usor2/exec",
+    expiredCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbxGbdrTZeC41zepftxa2JFXEZaqRw4ED7Mx67Qbb3l1y4UxOTM7za2Tm6IzvRUPndcI/exec",
     teacherCheckScriptUrl: String = "https://script.google.com/macros/s/AKfycbzmMJ18Yzq_Tl5Mp2vvDCmsmw9OSDMIVfQ8AGDkb8cS6qB89slkMIiWKWKChWGYcUmC/exec"
 ) {
     val topPadding = getBannerAdHeight()
