@@ -175,7 +175,7 @@ actual fun QuizApp(
                         viewModel.selectAnswer(answerIndex)
                         if (viewModel.showResult) {
                             navController.navigate("result/${viewModel.score}/${questions.size}/${viewModel.selectedLesson}")
-                            onQuizCompleted()
+                            //onQuizCompleted()
                         }
                     },
                     onTextAnswerSubmitted = { userInput, isCorrect ->
@@ -188,7 +188,7 @@ actual fun QuizApp(
 
                         if (viewModel.showResult) {
                             navController.navigate("result/${viewModel.score}/${questions.size}/${viewModel.selectedLesson}")
-                            onQuizCompleted()
+                            //onQuizCompleted()
                         }
                     },
                     onBackQuestion = {
@@ -298,7 +298,8 @@ actual fun QuizApp(
                 onHomePage = {
                     playVoice(isCorrect = false)
                     viewModel.goToHome()
-                    navController.navigate("chapter_selection")
+                    navController.navigate("theory_and_exercise")
+                    //navController.navigate("chapter_selection")
                 },
                 onBack = {
                     playVoice(isCorrect = false)

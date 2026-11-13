@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -1248,6 +1250,472 @@ fun QuestionScreen(
 
                 }
 
+            }
+        }
+    }
+}
+// MÀN HÌNH HIỂN THỊ DANH SÁCH MỘT LƯỢT THEO DẠNG REVIEW CÂN NHẮC DÙNG CHUNG HOẶC RIÊNG NHÉ
+@Composable
+fun ReviewQuizScreen(
+    lessonName: String, // Tên bài thi
+    questions: List<Question>, // Danh sách các câu hỏi
+    onStartQuiz: () -> Unit, // Hàm điều hướng sang màn hình làm bài trắc nghiệm
+    onHomePage: () -> Unit,
+    onBack: () -> Unit, // Hàm quay lại màn hình trước
+
+) {
+    val topPadding = getBannerAdHeight()
+    val bottomPadding = getNavigationBarHeight()
+    // Biến trạng thái để kiểm soát hiển thị tiêu đề và nút
+    val isToolbarVisible = remember { mutableStateOf(true) }
+    // Sử dụng nestedScroll để phát hiện khi người dùng cuộn
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y < 0) {
+                    // Cuộn xuống, ẩn tiêu đề và nút
+                    isToolbarVisible.value = false
+                } else if (available.y > 0) {
+                    // Cuộn lên, hiện tiêu đề và nút
+                    isToolbarVisible.value = true
+                }
+                return Offset.Zero
+            }
+        }
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = topPadding)
+            .nestedScroll(nestedScrollConnection), // Theo dõi sự kiện cuộn
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Hiển thị tiêu đề và điểm số nếu isToolbarVisible là true
+        if (isToolbarVisible.value) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray.copy(alpha = 0.5f))
+            )
+            {
+                Text(
+                    text = lessonName,
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = topPadding, bottom = bottomPadding)
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
+                    .nestedScroll(nestedScrollConnection), // Theo dõi sự kiện cuộn
+
+            ) {
+                itemsIndexed(questions) { index, question ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        val currentQuestionIndex = questions.indexOf(question) + 1                    // Hiển thị câu hỏi
+                        Text(
+                            text = "Câu $currentQuestionIndex",
+                            color = Color(0xFF0D47A1),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                        // Hiển thị câu hỏi
+                        when (val content = question.mainContent) {
+                            is QuestionContent.AudioUrl -> {
+                                AudioPlayerFromUrl(
+                                    audioUrl = content.audioUrl, // hoặc it.audioUrl tùy tên biến trong khối when của bạn
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                            is QuestionContent.ClipUrl -> {
+                                VideoPlayerFromUrl(
+                                    videoUrl = content.clipUrl,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            } //Luu y
+
+                            is QuestionContent.TextRes -> Text(
+                                text = org.jetbrains.compose.resources.stringResource(content.textRes),
+                                style = MaterialTheme.typography.titleLarge,
+                                textAlign = TextAlign.Justify,
+                                color = Color.Black, // Màu chữ đen
+                                modifier = Modifier
+                                    .background(Color.LightGray)
+                                    // modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                                    .fillMaxWidth()
+                            )
+
+                            is QuestionContent.Text -> Text(
+                                text = content.text,
+                                style = MaterialTheme.typography.titleLarge,
+                                textAlign = TextAlign.Justify,
+                                color = Color.Black, // Màu chữ đen
+                                modifier = Modifier
+                                    .background(Color.LightGray)
+                                    //modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                                    .fillMaxWidth()
+                            )
+
+                            is QuestionContent.ImageRes -> Image(
+                                painter = painterResource(content.imageRes),
+                                contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentScale = ContentScale.FillWidth
+                                //.background(Color.Unspecified.copy(alpha = 1.0f))
+                            )
+
+                            is QuestionContent.ImageUrl -> {
+                                if (content.imageUrl.contains("long") || content.imageUrl.contains("big")) {
+                                    // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
+                                    ImageFromUrl(
+                                        imageUrl = content.imageUrl,
+                                        contentDescription = "Hình ảnh câu hỏi"
+                                    )
+                                } else {
+                                    // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
+                                    ZoomableImageFromUrl(
+                                        imageUrl = content.imageUrl,
+                                        contentDescription = "Hình ảnh câu hỏi"
+                                    )
+                                }
+                            }
+                            is QuestionContent.TextUrl -> {
+                                var textContent by remember { mutableStateOf("Đang tải...") }
+                                var isError by remember { mutableStateOf(false) }
+
+                                LaunchedEffect(content.textUrl) {
+                                    try {
+                                        textContent =
+                                            fetchTextFromUrl(content.textUrl)
+                                        isError = false
+                                    } catch (e: Exception) {
+                                        textContent =
+                                            "Không thể tải nội dung, chưa được kết nối mạng hoặc " +
+                                                    "nội dung bị lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục"
+                                        isError = true
+                                    }
+                                }
+
+                                if (!isError) {
+                                    Text(
+                                        text = textContent,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        textAlign = TextAlign.Justify,
+                                        color = Color.Black, // Màu chữ đen
+                                        modifier = Modifier
+                                            .background(Color.LightGray)
+                                            //modifier = Modifier
+                                            .padding(horizontal = 4.dp)
+                                            .fillMaxWidth()
+                                    )
+                                } else {
+                                    Text(
+                                        text = "Lỗi khi tải nội dung, chưa được kết nối mạng hoặc nội dung bị " +
+                                                "lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục",
+                                        style = MaterialTheme.typography.bodyLarge.copy(color = Color.Red),
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .padding(horizontal = 4.dp)
+                                            .fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+                        // Hiển thị phần câu hỏi thêm
+                        question.extraContents.forEachIndexed { extraTextIndex, extraText ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 2.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                /*Text(
+                                    text = "${'A' + answerIndex}: ",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(end = 4.dp)
+                                )*/
+                                when (extraText) {
+                                    is QuestionContent.AudioUrl -> {
+                                        AudioPlayerFromUrl(
+                                            audioUrl = extraText.audioUrl, // hoặc it.audioUrl tùy tên biến trong khối when của bạn
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                    is QuestionContent.ClipUrl -> {
+                                        VideoPlayerFromUrl(
+                                            videoUrl = extraText.clipUrl,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    } //Luu y
+
+                                    is QuestionContent.TextRes -> Text(
+                                        text = org.jetbrains.compose.resources.stringResource(extraText.textRes),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        textAlign = TextAlign.Justify,
+                                        color = Color.Black, // Màu chữ đen
+                                        modifier = Modifier
+                                            .background(Color.LightGray)
+                                            // modifier = Modifier
+                                            .padding(horizontal = 4.dp)
+                                            .fillMaxWidth()
+                                    )
+
+                                    is QuestionContent.Text -> Text(
+                                        text = extraText.text,
+                                        style = MaterialTheme.typography.titleLarge,
+                                        textAlign = TextAlign.Justify,
+                                        color = Color.Black, // Màu chữ đen
+                                        modifier = Modifier
+                                            .background(Color.LightGray)
+                                            //modifier = Modifier
+                                            .padding(horizontal = 4.dp)
+                                            .fillMaxWidth()
+                                    )
+
+                                    is QuestionContent.ImageRes -> Image(
+                                        painter = painterResource(extraText.imageRes),
+                                        contentDescription = "Hình ảnh câu hỏi", // Thêm mô tả cho hình ảnh câu hỏi
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        contentScale = ContentScale.FillWidth
+                                        //.background(Color.Unspecified.copy(alpha = 1.0f))
+                                    )
+
+                                    is QuestionContent.ImageUrl -> {
+                                        if (extraText.imageUrl.contains("long") || extraText.imageUrl.contains("big")) {
+                                            // Nếu url chứa từ "long" hoặc "big", gọi hàm ImageFromUrl để tải và hiển thị ảnh không có phóng to
+                                            ImageFromUrl(
+                                                imageUrl = extraText.imageUrl,
+                                                contentDescription = "Hình ảnh câu hỏi"
+                                            )
+                                        } else {
+                                            // Các trường hợp còn lại, dùng ZoomableImageFromUrl để tải và hiển thị ảnh có thể phóng to
+                                            ZoomableImageFromUrl(
+                                                imageUrl = extraText.imageUrl,
+                                                contentDescription = "Hình ảnh câu hỏi"
+                                            )
+                                        }
+                                    }
+                                    is QuestionContent.TextUrl -> {
+                                        var textContent by remember { mutableStateOf("Đang tải...") }
+                                        var isError by remember { mutableStateOf(false) }
+
+                                        LaunchedEffect(extraText.textUrl) {
+                                            try {
+                                                textContent =
+                                                    fetchTextFromUrl(
+                                                        extraText.textUrl
+                                                    )
+                                                isError = false
+                                            } catch (e: Exception) {
+                                                textContent =
+                                                    "Không thể tải nội dung, chưa được kết nối mạng hoặc " +
+                                                            "nội dung bị lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục"
+                                                isError = true
+                                            }
+                                        }
+
+                                        if (!isError) {
+                                            Text(
+                                                text = textContent,
+                                                style = MaterialTheme.typography.titleLarge,
+                                                textAlign = TextAlign.Justify,
+                                                color = Color.Black, // Màu chữ đen
+                                                modifier = Modifier
+                                                    .background(Color.LightGray)
+                                                    //modifier = Modifier
+                                                    .padding(horizontal = 4.dp)
+                                                    .fillMaxWidth()
+                                            )
+                                        } else {
+                                            Text(
+                                                text = "Lỗi khi tải nội dung, chưa được kết nối mạng hoặc nội dung bị " +
+                                                        "lỗi. Nếu nội dụng bị lỗi phản hồi qua Zalo: 0972712415 để khắc phục",
+                                                style = MaterialTheme.typography.bodyLarge.copy(color = Color.Red),
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier
+                                                    .padding(horizontal = 4.dp)
+                                                    .fillMaxWidth()
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // Hiển thị đáp án
+                        question.answers.forEachIndexed { answerIndex, answer ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 2.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                /*Text(
+                                    text = "${'A' + answerIndex}: ",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(end = 4.dp)
+                                )*/
+                                when (answer) {
+                                    is AnswerOption.Text -> Text(
+                                        text = answer.text,
+                                        textAlign = TextAlign.Justify
+                                    )
+                                    is AnswerOption.TextRes -> Text(
+                                        text = org.jetbrains.compose.resources.stringResource(answer.textRes),
+                                        //style = MaterialTheme.typography.titleLarge,
+                                        textAlign = TextAlign.Justify,
+                                        //modifier = Modifier.padding(horizontal = 4.dp).fillMaxWidth()
+                                    )
+
+                                    is AnswerOption.ImageUrl -> ImageFromUrl(
+                                        imageUrl = answer.imageUrl,
+                                        contentDescription = "Đáp án dạng ảnh",
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                    is AnswerOption.TextUrl -> {
+                                        var textContent by remember { mutableStateOf("Đang tải...") }
+                                        var isError by remember { mutableStateOf(false) }
+
+                                        LaunchedEffect(answer.textUrl) {
+                                            try {
+                                                textContent =
+                                                    fetchTextFromUrl(
+                                                        answer.textUrl
+                                                    )
+                                                isError = false
+                                            } catch (e: Exception) {
+                                                textContent =
+                                                    "Không thể tải nội dung, kiểm tra kết nối mạng hoặc phản hồi nội dung lỗi qua Zaolo: 0972721415"
+                                                isError = true
+                                            }
+                                        }
+
+                                        if (!isError) {
+                                            Text(
+                                                text = textContent,
+                                                textAlign = TextAlign.Justify,
+                                                //modifier = Modifier.padding(horizontal = 4.dp).fillMaxWidth()
+                                            )
+                                        } else {
+                                            Text(
+                                                text = "Lỗi khi tải nội dung, kiểm tra kết nối mạng hoặc phản hồi lỗi nội dụng qua Zalo: 0972712415",
+                                                textAlign = TextAlign.Justify,
+                                                //modifier = Modifier.padding(horizontal = 4.dp).fillMaxWidth()
+                                            )
+                                        }
+                                    }
+
+                                    is AnswerOption.ImageRes -> Box(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Image(
+                                            painter = painterResource(answer.imageRes),
+                                            contentDescription = "Hình ảnh đáp án", // Thêm mô tả cho hình ảnh đáp án
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .align(Alignment.Center),
+                                            contentScale = ContentScale.FillWidth
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        HorizontalDivider(
+                            color = Color.Gray,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
+                }
+            }
+            // Nút bắt đầu làm bài trắc nghiệm
+            // Hiển thị nút khi cuộn lên (isToolbarVisible == true)
+            if (isToolbarVisible.value) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 4.dp)
+                ) {
+                    Box (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .padding(horizontal = 0.dp)
+                            .align(Alignment.BottomCenter),
+                    ) {
+                        Button(
+                            onClick = {
+                                if (lessonName != "Bài thi") {
+                                    onStartQuiz ()
+                                }
+                            },
+                            modifier = Modifier
+                                .align(Alignment.BottomStart) // Căn chỉnh ở dưới bên trái
+                                //.padding(bottom = bottomPadding)
+                                .wrapContentSize(),
+                            contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định
+                            shape = RoundedCornerShape(4.dp), // Bo góc nhẹ
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.LightGray.copy(0.3f),
+                                contentColor = Color.Black
+                            ),
+                        ) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally)  {
+                                Icon(imageVector = Icons.Outlined.PlayArrow, contentDescription = "Làm bài", modifier = Modifier.size(20.dp))
+                                Text(text = "Làm bài", fontSize = 10.sp, fontWeight = FontWeight.Light)
+                            }
+                        }
+                        Button(
+                            onClick = { onHomePage() },
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .wrapContentSize(),
+                            contentPadding = PaddingValues(0.dp), // Loại bỏ padding mặc định
+                            shape = RoundedCornerShape(4.dp), // Bo góc nhẹ
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.LightGray.copy(0.3f), // Màu nền của nút
+                                contentColor = Color.Black // Màu của icon và chữ
+                            ),
+                        ) {
+                            Column (horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(imageVector = Icons.Outlined.Home , contentDescription = "Trang đầu", modifier = Modifier.size(20.dp))
+                                Text(text = "Trang đầu", fontSize = 10.sp, fontWeight = FontWeight.Light,
+                                    color = Color.Black)
+                            }
+                        }
+                        // Nút "Quay lại"
+                        Button(
+                            onClick = onBack,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                //.padding(bottom = bottomPadding)
+                                .wrapContentSize(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.LightGray.copy(0.3f),
+                                contentColor = Color.Black
+                            ),
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Sử dụng phiên bản AutoMirrored
+                                contentDescription = "Quay lại"
+                            )
+                        }
+                    }
+                }
             }
         }
     }

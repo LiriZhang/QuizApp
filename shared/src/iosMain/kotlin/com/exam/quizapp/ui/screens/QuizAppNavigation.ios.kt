@@ -40,6 +40,10 @@ actual fun QuizApp(
     var currentScreen by remember {
         mutableStateOf<IosScreen>(if (isUserLoggedIn()) IosScreen.TheoryAndExercise else IosScreen.Login)
     }
+    // Lưu màn hình trước khi vào ResultList
+    var previousScreen by remember {
+        mutableStateOf<IosScreen>(IosScreen.TheoryAndExercise)
+    }
     val resultViewModel = remember { ResultViewModel() }
 
     Surface(
@@ -65,6 +69,7 @@ actual fun QuizApp(
                     },
                     onSavedResultsSelected = {
                         playVoice(isCorrect = true)
+                        previousScreen = currentScreen
                         currentScreen = IosScreen.ResultList
                     },
                     onStudentSubmissionsSelected = {
@@ -270,6 +275,7 @@ actual fun QuizApp(
                             totalQuestions = screen.totalQuestions,
                             history = viewModel.history
                         )
+                        previousScreen = screen
                         currentScreen = IosScreen.ResultList
                     },
                     onHomePage = {
@@ -303,11 +309,13 @@ actual fun QuizApp(
                     onHomePage = {
                         playVoice(isCorrect = false)
                         viewModel.goToHome()
-                        currentScreen = IosScreen.ChapterSelection
+                        currentScreen = IosScreen.TheoryAndExercise
+                        //currentScreen = IosScreen.ChapterSelection
                     },
                     onBack = {
                         playVoice(isCorrect = false)
-                        currentScreen = IosScreen.TheoryAndExercise
+                        currentScreen = previousScreen
+                        //currentScreen = IosScreen.TheoryAndExercise
                     }
                 )
             }
