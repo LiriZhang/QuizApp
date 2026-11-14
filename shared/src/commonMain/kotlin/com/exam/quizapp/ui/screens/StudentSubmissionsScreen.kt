@@ -31,6 +31,7 @@ import com.exam.quizapp.model.AnswerOption
 import com.exam.quizapp.model.QuestionResult
 import com.exam.quizapp.platform.fetchTextFromUrl3
 import com.exam.quizapp.platform.getBannerAdHeight
+import com.exam.quizapp.platform.getLoggedInPhone
 import com.exam.quizapp.platform.getNavigationBarHeight
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -628,6 +629,13 @@ fun SubmissionResultView(
     }
 }
 
+// Phân quyền hiển thị bài làm học sinh theo SĐT Giáo viên đăng nhập
+private val TEACHER_STUDENT_PERMISSIONS: Map<String, Set<String>> = mapOf(
+    "0972712415" to setOf("0972712415", "0987057417"),
+    "0976037854" to setOf("0364634010", "0384801966"),
+    "0666666666" to setOf("0555555555", "0444444444")
+)
+
 @Composable
 fun StudentSubmissionsScreen(
     onBack: () -> Unit
@@ -707,7 +715,18 @@ fun StudentSubmissionsScreen(
             }
 
             if (response.status == "success") {
-                studentsList = response.students
+                val allStudents = response.students
+                val loggedInTeacherPhone = getLoggedInPhone().trim()
+                val allowedStudentPhones = TEACHER_STUDENT_PERMISSIONS[loggedInTeacherPhone]
+
+                studentsList = if (allowedStudentPhones != null) {
+                    allStudents.filter { student ->
+                        val cleanPhone = student.phone.trim()
+                        allowedStudentPhones.contains(cleanPhone)
+                    }
+                } else {
+                    allStudents
+                }
             } else {
                 errorMessage = response.message ?: "Không thể tải danh sách học sinh."
             }

@@ -10,27 +10,29 @@ expect val quizQuestions1: Map<String, List<Question>>
 expect val quizQuestions2: Map<String, List<Question>>
 val quizQuestions3: Map<String, List<Question>> by lazy {
     mapOf(
-        "Thử nghiệm 01" to listOf(
+        "Bài kiểm thử phần mềm 01" to listOf(
             Question(
-                mainContent = QuestionContent.Text(" câu hỏi thuần văn bản Nhiệt kế y tế"),
+                mainContent = QuestionContent.Text("Dạng text thông thường, ngay trong code phần mềm nhé"),
                 //correctAnswer = 3 // Đáp án đúng là D
                 answers = listOf(
-                    AnswerOption.Text("Nhiệt kế y tế"),
-                    AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
-                    AnswerOption.Text("Nhiệt kế thủy ngân"),
-                    AnswerOption.Text("Nhiệt kế rượu")
+                    AnswerOption.Text("Dạng text đáp án sai"),
+                    AnswerOption.Text("Dạng text đáp án đúng"),
+                    AnswerOption.Text("Dạng text đáp án sai"),
+                    AnswerOption.Text("Dạng text đáp án sai")
                 ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),
             Question(
-                mainContent = QuestionContent.TextRes(Res.string.mau_1),
-                //correctAnswer = 3 // Đáp án đúng là D
-                answers = listOf(
-                    AnswerOption.Text("câu này có câu hỏi là tài nguyên chuỗi, cầu trả lời có hình ảnh và cả chuỗi"),
-                    AnswerOption.Text("Nhiệt kế, lưỡng; kim"),
-                    AnswerOption.TextRes(Res.string.mau_1),
-                    AnswerOption.ImageRes(Res.drawable.anhmau)
-                ),
+                mainContent = QuestionContent.ImageRes(Res.drawable.nk_ruou_mo_hinh),
+                extraContents = listOf(
+                    QuestionContent.Text("Hình phía trên là hình ảnh lấy từ tài nguyên hình ảnh của")
+                ),                answers = listOf(
+                    AnswerOption.Text("Nhiệt kế y tế"),
+                    AnswerOption.Text("Nhiệt kế rượu"),
+                    AnswerOption.ImageRes(Res.drawable.placeholder1),
+                    AnswerOption.Text("Ảnh phía trên là ảnh lấy từ tài nguyên hình ảnh, " +
+                            "dùng để kiểm thử có hiển thị đúng như mong đợi không ?"),
+                    ),
                 correctAnswer = 1 // Đáp án đúng là B
             ),
             Question( // câu 3
@@ -38,14 +40,12 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
                 //correctAnswer = 3 // Đáp án đúng là D
                 extraContents = listOf(
                     QuestionContent.TextUrl("https://s3.ap-southeast-1.amazonaws.com/com.exam.quizapp/TXTTH/NH6C1.txt"),
-                    QuestionContent.Text("Xuân trên là texturl nhé"),
+                    QuestionContent.Text("Văn bản phía trên là văn bản lấy từ link đã lưu trên aws3 để kiểm thử, đáp án đúng trong câu này là THU hoặc Hè"),
 
-                    QuestionContent.TextRes(Res.string.mau_1),
-                    QuestionContent.ImageRes(Res.drawable.anhmau),
                 ),
                 correctTextAnswers = listOf(
                     AnswerOption.Text("Thu"),
-                    AnswerOption.TextRes(Res.string.mau_2),
+                    AnswerOption.Text("Hè"),
 
                     ),
                 detailedCorrectAnswers = listOf(
@@ -138,7 +138,7 @@ val quizQuestions3: Map<String, List<Question>> by lazy {
             Question( //câu 8
                 mainContent = QuestionContent.TextRes(Res.string.mau_1),
                 answers = listOf(
-                    AnswerOption.Text("Nhiệt kế y tế"),
+                    AnswerOption.Text("Phí dưới là hình ảnh lấy từ tài nguyên và từ đám mây"),
                     AnswerOption.ImageRes(Res.drawable.anhmau),
                     AnswerOption.ImageUrl("https://lirizhang.github.io/C17.jpg"),
                 ),

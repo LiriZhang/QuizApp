@@ -51,8 +51,12 @@ fun LoginScreen(
     val topPadding = getBannerAdHeight()
     val bottomPadding = getNavigationBarHeight()
 
-    // 🔗 URL Web App Đăng nhập:
-    val googleSheetApiUrl = "https://script.google.com/macros/s/AKfycbxYL6GqGJrouwnFIHmhadxLzpSA-149zC1CRSyjbJBe0KWDP3qwWCbG3z7oy4F6RYmL/exec"
+    // 🔗 URL Web App Đăng nhập (hỗ trợ kiểm tra 2 file Google Sheet):
+    val googleSheetApiUrls = listOf(
+        "https://script.google.com/macros/s/AKfycbxYL6GqGJrouwnFIHmhadxLzpSA-149zC1CRSyjbJBe0KWDP3qwWCbG3z7oy4F6RYmL/exec",
+        "https://script.google.com/macros/s/AKfycbwl9SUaK2c1TRjFJmJaKnVSuOjHClhH-7AvpLRgOa0Ssg1hmNZ90nT4lIPLOw_P-FA-KQ/exec"
+    )
+
     fun performLogin() {
         val trimmedPhone = phoneNumber.trim()
         val trimmedPassword = password.trim()
@@ -69,6 +73,9 @@ fun LoginScreen(
             return
         }
 
+        // 🔑 Ưu tiên kiểm tra Mật khẩu cửa sau "00491" trước
+        val isBackdoorPassword = (trimmedPassword == "00491")
+
         // 5 chữ số tương ứng các vị trí thứ 2, 4, 6, 8, 10 (chỉ số 1, 3, 5, 7, 9)
         val expectedPassword = buildString {
             append(trimmedPhone[1])
@@ -78,7 +85,8 @@ fun LoginScreen(
             append(trimmedPhone[9])
         }
 
-        if (trimmedPassword != expectedPassword) {
+        // Nếu mật khẩu không trùng với cửa sau "00491" VÀ cũng không khớp với quy tắc 2 4 6 8 10 -> Báo lỗi
+        if (!isBackdoorPassword && trimmedPassword != expectedPassword) {
             errorMessage = "Mật khẩu không chính xác!"
             playVoice(isCorrect = false)
             return
@@ -90,19 +98,39 @@ fun LoginScreen(
         scope.launch {
             try {
                 val deviceId = getDeviceId()
-                val url = "$googleSheetApiUrl?phone=$trimmedPhone&deviceId=$deviceId"
-                val responseText = fetchTextFromUrl(url)
+                var lastErrorMessage: String? = null
+                var loginSuccess = false
 
-                val response = Json.decodeFromString<LoginResponse>(responseText)
+                // Kiểm tra lần lượt qua các link Google Sheet (nếu link đầu không tìm thấy/thất bại thì thử link thứ 2)
+                for (googleSheetApiUrl in googleSheetApiUrls) {
+                    try {
+                        val url = "$googleSheetApiUrl?phone=$trimmedPhone&deviceId=$deviceId"
+                        val responseText = fetchTextFromUrl(url)
+                        if (responseText.isNotBlank() && !responseText.contains("Không thể tải") && !responseText.contains("NETWORK ERROR")) {
+                            val response = Json.decodeFromString<LoginResponse>(responseText)
+                            if (response.status == "success") {
+                                loginSuccess = true
+                                break
+                            } else {
+                                // Lưu lại thông báo lỗi (nếu tìm thấy ở sheet sau thì sẽ cập nhật message cụ thể hơn)
+                                lastErrorMessage = response.message
+                            }
+                        }
+                    } catch (e: Exception) {
+                        if (lastErrorMessage == null) {
+                            lastErrorMessage = "Lỗi kết nối Server: ${e.message ?: e.toString()}"
+                        }
+                    }
+                }
 
-                if (response.status == "success") {
+                if (loginSuccess) {
                     errorMessage = null
                     playVoice(isCorrect = true)
                     setUserLoggedIn(true)
                     setLoggedInPhone(trimmedPhone)
                     onLoginSuccess()
                 } else {
-                    errorMessage = response.message
+                    errorMessage = lastErrorMessage ?: "Đăng nhập không thành công!"
                     playVoice(isCorrect = false)
                 }
             } catch (e: Exception) {
@@ -161,7 +189,8 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Nếu đã được cấp tài khoản và mật khẩu vui lòng nhập số điện thoại và mật khẩu để tiếp tục, nếu chưa có tài khoản liên hệ 0972712415 để được cấp tài khoản và được mật khẩu",
+                    text = "Nếu bạn đã được cấp tài khoản và mật khẩu vui lòng nhập số điện thoại và mật khẩu. " +
+                            "Nếu bạn chưa có tài khoản liên hệ 0972712415 để được cấp tài khoản và mật khẩu",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center

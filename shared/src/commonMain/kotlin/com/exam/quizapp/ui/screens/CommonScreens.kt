@@ -407,7 +407,7 @@ fun LessonSelectionScreen(
     val bottomPadding = getNavigationBarHeight()
     val quizzes = when (chapter) {
         "VẬT LÍ NHIỆT" -> listOf(
-            "Thử nghiệm 01",
+            "Bài kiểm thử phần mềm 01",
             "Thử nghiệm 02",
             "Thử nghiệm 03",
             "Thử nghiệm 04",
