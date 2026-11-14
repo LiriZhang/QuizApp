@@ -25,41 +25,6 @@ object TextCacheManager {
     }
 }
 
-@Composable
-expect fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier = Modifier)
-
-@Composable
-expect fun PlatformAudioPlayer(audioUrl: String, modifier: Modifier = Modifier)
-
-
-@Composable
-expect fun ImageFromUrl(
-    imageUrl: String,
-    contentDescription: String,
-    modifier: Modifier = Modifier
-)
-
-@Composable
-expect fun ZoomableImageFromUrl(
-    imageUrl: String,
-    contentDescription: String,
-    modifier: Modifier = Modifier
-)
-
-expect fun playSound(isCorrect: Boolean)
-
-/*expect fun playPlatformSound(isCorrect: Boolean)*/
-
-expect fun playVoice(isCorrect: Boolean)
-
-expect fun triggerVibration()
-//Hàm phục vụ chung nhưng mà riêng
-expect suspend fun fetchTextFromUrl(url: String): String
-// Hàm phục vụ cho ios
-expect suspend fun fetchTextFromUrl2(url: String): String
-// Hàm phục vụ cho android
-expect suspend fun fetchTextFromUrl3(url: String): String
-
 expect suspend fun uploadQuizResultToDrive(
     url: String,
     phone: String,
@@ -135,15 +100,29 @@ suspend fun checkAccountAccessStatus(
         AccountCheckResult.NO_NETWORK
     }
 }
+// Danh sách số điện thoại Giáo viên cố định trên mã code (Ưu tiên kiểm tra trước Google Sheet)
+val TEACHER_PHONE_NUMBERS = setOf(
+    "0972712415",
+    "0987057417",
+)
+
 // Hàm kiểm tra tài khoản có phải là tài khoản giáo viên hay không
 suspend fun checkIsTeacherAccount(
     phone: String = getLoggedInPhone(),
     teacherScriptUrl: String = "https://script.google.com/macros/s/AKfycbzmMJ18Yzq_Tl5Mp2vvDCmsmw9OSDMIVfQ8AGDkb8cS6qB89slkMIiWKWKChWGYcUmC/exec"
 ): Boolean {
-    if (phone.isBlank()) return false
+    val cleanPhone = phone.trim()
+    if (cleanPhone.isBlank()) return false
+
+    // 1. Ưu tiên kiểm tra danh sách số điện thoại giáo viên trên mã code trước
+    if (TEACHER_PHONE_NUMBERS.contains(cleanPhone)) {
+        return true
+    }
+
+    // 2. Nếu không nằm trong mã code, tiếp tục kiểm tra trên Google Sheet
     return try {
         val encodedPhone = buildString {
-            for (c in phone.trim()) {
+            for (c in cleanPhone) {
                 if (c.isLetterOrDigit() || c in "-_.~") append(c)
                 else {
                     val hex = c.code.toString(16).uppercase()
@@ -191,3 +170,37 @@ expect fun getBannerAdHeight(): Dp
 expect fun isUserLoggedIn(): Boolean
 
 expect fun setUserLoggedIn(loggedIn: Boolean)
+
+@Composable
+expect fun PlatformVideoPlayer(videoUrl: String, modifier: Modifier = Modifier)
+
+@Composable
+expect fun PlatformAudioPlayer(audioUrl: String, modifier: Modifier = Modifier)
+
+@Composable
+expect fun ImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+)
+
+@Composable
+expect fun ZoomableImageFromUrl(
+    imageUrl: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+)
+
+expect fun playSound(isCorrect: Boolean)
+
+/*expect fun playPlatformSound(isCorrect: Boolean)*/
+
+expect fun playVoice(isCorrect: Boolean)
+
+expect fun triggerVibration()
+//Hàm phục vụ chung nhưng mà riêng
+expect suspend fun fetchTextFromUrl(url: String): String
+// Hàm phục vụ cho ios
+expect suspend fun fetchTextFromUrl2(url: String): String
+// Hàm phục vụ cho android
+expect suspend fun fetchTextFromUrl3(url: String): String

@@ -69,7 +69,7 @@ fun TheoryAndExerciseScreen(
     var isTeacherRole by remember { mutableStateOf(false) }
     var expiredDialogMessage by remember { mutableStateOf<String?>(null) }
 
-    // Kiểm tra quyền Giáo Viên khi mở màn hình (Có mạng + SĐT nằm trong danh sách Giáo Viên)
+    // Kiểm tra quyền Giáo Viên khi mở màn hình (Ưu tiên danh sách SĐT Giáo viên trong mã code, sau đó kiểm tra Google Sheet)
     LaunchedEffect(Unit) {
         val phone = getLoggedInPhone()
         if (phone.isNotBlank()) {
